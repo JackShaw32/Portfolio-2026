@@ -72,7 +72,7 @@ export default function Projects() {
     <section ref={sectionRef} id="projects" className="py-16 md:py-32 relative">
       <div className="container mx-auto px-6 relative z-10">
 
-        <div className="projects-heading text-center mb-16 md:mb-28 flex flex-col items-center">
+        <div className="projects-heading opacity-0 text-center mb-16 md:mb-28 flex flex-col items-center">
           <h2 className="text-[clamp(1.2rem,6vw,2rem)] sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-foreground mb-4 md:mb-6 whitespace-nowrap">
             {pr.title}<span className="text-primary">{pr.titleHighlight}</span>
           </h2>
@@ -88,7 +88,7 @@ export default function Projects() {
               <div key={project.slug} data-project-slug={project.slug} className="project-row flex flex-col xl:flex-row gap-10 lg:gap-16 items-center group">
 
                 {/* Image mockup */}
-                <div className={`project-img-wrap w-full xl:w-3/5 ${isEven ? "xl:order-2" : "xl:order-1"}`}>
+                <div className={`project-img-wrap opacity-0 w-full xl:w-3/5 ${isEven ? "xl:order-2" : "xl:order-1"}`}>
                   <a
                     href={`/projects/${project.slug}`}
                     className="group/img block relative rounded-3xl overflow-hidden border border-foreground/10 group-hover/img:border-primary/30 transition-all duration-500 shadow-2xl shadow-black/20"
@@ -125,7 +125,7 @@ export default function Projects() {
                 </div>
 
                 {/* Content */}
-                <div className={`project-content w-full xl:w-2/5 flex flex-col justify-center ${isEven ? "xl:order-1 xl:pl-4" : "xl:order-2 xl:pr-4"}`}>
+                <div className={`project-content opacity-0 w-full xl:w-2/5 flex flex-col justify-center ${isEven ? "xl:order-1 xl:pl-4" : "xl:order-2 xl:pr-4"}`}>
                   <div className="flex flex-wrap items-center gap-3 mb-4 md:mb-6">
                     <span className="font-mono text-5xl font-black text-foreground/8 select-none leading-none">{project.number}</span>
                     <span className={`text-xs uppercase tracking-widest font-black px-4 py-1.5 rounded-full border ${project.accent}`}>
