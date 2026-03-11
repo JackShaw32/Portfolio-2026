@@ -1,0 +1,11 @@
+# robots.txt — jackshaw32.vercel.app
+# https://www.robotstxt.org/robotstxt.html
+
+User-agent: *
+Allow: /
+
+# Block API routes from being indexed
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://jackshaw32.vercel.app/sitemap-index.xml

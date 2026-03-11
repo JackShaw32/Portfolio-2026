@@ -1,0 +1,1 @@
+export { sendEmail } from '../lib/sendEmail';

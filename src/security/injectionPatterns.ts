@@ -1,0 +1,23 @@
+// Patrones de prompt injection conocidos
+export const INJECTION_PATTERNS = [
+  /ignore\s+(previous|all|above|prior)\s+instructions?/i,
+  /forget\s+(your|the|all)\s+(instructions?|prompt|rules?|context)/i,
+  /you\s+are\s+now\s+/i,
+  /act\s+as\s+(a\s+)?(different|new|another|unrestricted)/i,
+  /pretend\s+(you\s+are|to\s+be)/i,
+  /new\s+(persona|personality|identity|role|instructions?)/i,
+  /jailbreak/i,
+  /\bDAN\b/,
+  /developer\s+mode/i,
+  /turn\s+off\s+(your\s+)?(filters?|restrictions?|rules?)/i,
+  /speak\s+freely/i,
+  /no\s+restrictions?/i,
+  /bypass\s+(your\s+)?(rules?|filters?|restrictions?)/i,
+  /system\s*:/i,
+  /\[INST\]/i,
+  /<<SYS>>/i,
+  /\bbase64\b.*\bdecode\b/i,
+  /reveal\s+(your\s+)?(system\s+)?prompt/i,
+  /show\s+(me\s+)?(your\s+)?(system\s+)?instructions?/i,
+  /what\s+(are\s+)?(your\s+)?(system\s+)?(prompt|instructions?)/i,
+];

@@ -1,0 +1,5 @@
+// TOOL_LEAK_RE — shared between streamPipeline.ts and textToolParser.ts
+// Matches post-tool text that is actually the model narrating its own tool call.
+// Any post-tool buffer or "after" text matching this regex is silently discarded.
+export const TOOL_LEAK_RE =
+  /\[tool\s*call\]|\btool_call\b|^(?:showProject|showContact|showSkills|showExperience|showAvailability|sendContactForm)\b|showProject\s*[–\-]|showContact\s*[–\-]|showSkills\s*[–\-]|showExperience\s*[–\-]|showAvailability\s*[–\-]|sendContactForm\s*[–\-]|T\u00EDtulo\s*:|Descripci\u00F3n\s*:|Tecnolog\u00EDas\s*:|VIDEO\s*:|Image[n]?\s*:|<function[=/]\w+>|Puedes ver los detalles|You can see the details|\/projects\/|Eduardo est\u00E1r\u00E1 en contacto contigo pronto|Eduardo will be in contact with you soon/i;
