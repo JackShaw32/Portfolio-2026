@@ -281,13 +281,21 @@
   
   
     body {
-      @apply bg-background text-foreground;
+      @apply text-foreground;
       font-family: 'Inter', system-ui, sans-serif;
+      background-color: transparent;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
       background-color: var(--background);
       background-image: radial-gradient(var(--bg-dot) 1px, transparent 1px);
       background-size: 32px 32px;
-      background-attachment: fixed;
-      overflow-x: hidden;
+      pointer-events: none;
     }
   
     code,
