@@ -213,11 +213,17 @@ function ImageSlider({ images, title }: { images: readonly string[]; title: stri
   }, [moveTo, canNavigate, isReady]);
 
   const onDragDown = (e: React.PointerEvent) => {
-    if (!canNavigate || !isReady) return;
+    if (!canNavigate || !isReady || isAnimating.current) return;
     dragStartX.current = e.clientX;
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
   };
-  
+
+  const onDragMove = (e: React.PointerEvent) => {
+    if (!canNavigate || !isReady || dragStartX.current === null || isAnimating.current) return;
+    const delta = e.clientX - dragStartX.current;
+    gsap.set(trackRef.current, { x: getX(idxRef.current) + delta });
+  };
+
   const onDragUp = (e: React.PointerEvent) => {
     if (!canNavigate || !isReady || dragStartX.current === null) return;
     const delta = e.clientX - dragStartX.current;
@@ -226,6 +232,9 @@ function ImageSlider({ images, title }: { images: readonly string[]; title: stri
     if (Math.abs(delta) > cw * 0.05) {
       if (delta < 0) moveTo(idxRef.current + 1);
       else moveTo(idxRef.current - 1);
+    } else {
+      // snap back si el swipe fue muy corto
+      gsap.to(trackRef.current, { x: getX(idxRef.current), duration: 0.25, ease: "power2.out" });
     }
   };
 
@@ -241,6 +250,7 @@ function ImageSlider({ images, title }: { images: readonly string[]; title: stri
         ref={containerRef}
         className="relative overflow-hidden select-none touch-none"
         onPointerDown={onDragDown}
+        onPointerMove={onDragMove}
         onPointerUp={onDragUp}
       >
         {/* Mostrar un placeholder mientras no está listo */}
