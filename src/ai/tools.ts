@@ -179,6 +179,11 @@ export const toolsDefinition = {
         return { success: false, reason: 'invalid_email' };
       }
 
+      // Require a real message — not empty, not an email address, not too short.
+      if (safeMessage.length < 10 || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(safeMessage)) {
+        return { success: false, reason: 'missing_message' };
+      }
+
       const result = await sendEmail({
         name:    safeName,
         email:   safeEmail,

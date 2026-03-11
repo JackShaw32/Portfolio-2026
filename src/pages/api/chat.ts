@@ -116,6 +116,13 @@ export const POST: APIRoute = async ({ request }) => {
   // so the model cannot call sendContactForm with invented placeholder data.
   // On subsequent turns the message won't match this pattern and tools re-enable normally.
   const isSendMsg      = lastQuestion ? isSendMessageIntent(lastQuestion) : false;
+  // If the user's last message looks like just an email address or a short name (1-2 words, < 30 chars)
+  // it means we're mid-way through data collection — force text-only so the model asks for the next field.
+  const isDataCollectionTurn =
+    !!lastQuestion &&
+    !isSendMsg &&
+    !forcedTool &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lastQuestion.trim());  // just an email address
 
   // -- Guard: if sendContactForm already succeeded in this conversation, remove it
   // from the available tools so the LLM cannot call it again.
@@ -127,6 +134,21 @@ export const POST: APIRoute = async ({ request }) => {
         .filter(k => k !== 'sendContactForm')
         .reduce((acc, k) => ({ ...acc, [k]: toolsDefinition[k] }), {} as Partial<typeof toolsDefinition>)
     : toolsDefinition;
+
+  // Detect the final "message" step of contact data collection.
+  // At this point the user has provided name + email in prior turns and is now sending the message body.
+  // Force sendContactForm so the 8b model doesn't silently return empty text.
+  const prevUserMsgs = trimmedMessages.slice(0, -1).filter(m => m.role === 'user');
+  const isContactMessageStep =
+    !isSendMsg &&
+    !forcedTool &&
+    !isDataCollectionTurn &&
+    !contactFormAlreadySent &&
+    trimmedMessages.length >= 5 &&
+    trimmedMessages.some(m => m.role === 'user' && isSendMessageIntent(m.content)) &&
+    prevUserMsgs.some(m => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m.content.trim())) &&
+    !!lastQuestion &&
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lastQuestion.trim());
 
   const encoder = new TextEncoder();
 
@@ -185,6 +207,20 @@ export const POST: APIRoute = async ({ request }) => {
     return { toolChoice: 'none' as const };
   }
 
+  // Block tools when the user just provided an email address (mid data-collection).
+  // The model must ask for the next field (message) instead of jumping to sendContactForm.
+  if (stepNumber === 0 && isDataCollectionTurn) {
+    return { toolChoice: 'none' as const };
+  }
+
+  // Force sendContactForm when all three fields (name, email, message) are now available.
+  if (stepNumber === 0 && isContactMessageStep) {
+    return {
+      toolChoice: { type: 'tool', toolName: 'sendContactForm' } as any,
+      activeTools: ['sendContactForm'] as any,
+    };
+  }
+
   // -- Step 0: force whichever tool was detected --
   // This guarantees the card always appears for explicit show-intents,
   // and prevents the model from replacing a tool call with plain text.
@@ -237,6 +273,12 @@ export const POST: APIRoute = async ({ request }) => {
             if (stepNumber === 0 && isSendMsg) {
               return { toolChoice: 'none' as const };
             }
+            if (stepNumber === 0 && isDataCollectionTurn) {
+              return { toolChoice: 'none' as const };
+            }
+            if (stepNumber === 0 && isContactMessageStep) {
+              return { toolChoice: { type: 'tool', toolName: 'sendContactForm' } as any, activeTools: ['sendContactForm'] as any };
+            }
             if (stepNumber === 0 && forcedTool) {
               return { toolChoice: { type: 'tool', toolName: forcedTool } as any, activeTools: [forcedTool] as any };
             }
@@ -274,6 +316,9 @@ export const POST: APIRoute = async ({ request }) => {
               toolChoice: { type: 'tool', toolName: forcedTool } as any,
               activeTools: [forcedTool] as any,
             };
+          }
+          if (stepNumber === 0 && isContactMessageStep) {
+            return { toolChoice: { type: 'tool', toolName: 'sendContactForm' } as any, activeTools: ['sendContactForm'] as any };
           }
           if (stepNumber >= 1) return { toolChoice: 'none', activeTools: [] as any };
           return { toolChoice: 'auto' };

@@ -9,7 +9,9 @@ import { TOOL_LEAK_RE } from './leakPatterns';
 //   <function=toolName>{...}</function>   — correct closing
 //   <function/toolName>{...}<function     — malformed closing (truncated)
 //   <function=toolName>{...}<function     — malformed closing (truncated)
-export const TEXT_TOOL_CALL_RE = /<function[=/](\w+)>([\s\S]*?)(?:<\/function>|<function(?![=/\w]))/g;
+//   <function=toolName>{...}             — no closing tag at all (end of output)
+//   function=toolName>{...}              — missing leading < (model glitch)
+export const TEXT_TOOL_CALL_RE = /<?function[=/](\w+)>([\s\S]*?)(?:<\/function>|<?function(?![=/\w])|$)/g;
 
 export async function parseAndExecuteTextToolCalls(
   text: string,
@@ -44,7 +46,7 @@ export async function parseAndExecuteTextToolCalls(
         const fakeEmails = ['user@email.com', 'user@example.com', 'email@example.com'];
         const hasName    = n.length >= 2 && n.toLowerCase() !== 'user';
         const hasEmail   = e.includes('@') && e.length >= 5 && !fakeEmails.includes(e.toLowerCase());
-        const hasMessage = m.length >= 3;
+        const hasMessage = m.length >= 10 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m);
         if (!hasName || !hasEmail || !hasMessage) {
           // Fake/incomplete data — skip silently, let before-text (if any) be the response
           lastIndex = match.index + match[0].length;
