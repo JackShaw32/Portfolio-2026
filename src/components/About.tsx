@@ -80,8 +80,8 @@ export default function About() {
 
             <div className="flex flex-col items-center gap-6 order-first md:order-last reveal">
               <div className="relative">
-                <div className="absolute inset-0 rounded-full bg-blue-500/10 blur-3xl scale-[3]" />
-                <div className="absolute inset-0 rounded-full bg-indigo-400/8 blur-[80px] scale-[4]" />
+                <div className="absolute inset-0 rounded-full bg-blue-500/10 blur-3xl scale-[3] pointer-events-none" />
+                <div className="absolute inset-0 rounded-full bg-indigo-400/8 blur-[80px] scale-[4] pointer-events-none" />
                 <div className="relative w-56 h-56 rounded-full flex items-center justify-center overflow-hidden ring-1 ring-indigo-400/20 ring-offset-4 ring-offset-background shadow-[0_0_80px_20px_rgba(99,102,241,0.06)]">
                   <img
                     src="/20220924_233024.webp"

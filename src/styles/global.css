@@ -313,7 +313,7 @@
     background-color: var(--background);
   }
   ::view-transition-old(root) {
-    animation: vt-fade-out 220ms ease forwards;
+    animation: vt-fade-out 120ms ease forwards;
   }
   ::view-transition-new(root) {
     animation: none;
