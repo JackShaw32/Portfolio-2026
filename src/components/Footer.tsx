@@ -65,7 +65,7 @@ export default function Footer({ subPage = false }: { subPage?: boolean }) {
           </div>
 
           <div>
-            <h3 className="font-semibold text-foreground mb-6 uppercase tracking-wider text-sm">{ft.navigation}</h3>
+            <h2 className="font-semibold text-foreground mb-6 uppercase tracking-wider text-sm">{ft.navigation}</h2>
             <ul className="space-y-4">
               {links.map((link) => (
                 <li key={link.name}>
@@ -110,7 +110,7 @@ export default function Footer({ subPage = false }: { subPage?: boolean }) {
           </div>
 
           <div>
-            <h3 className="font-semibold text-foreground mb-6 uppercase tracking-wider text-sm">{ft.technologies}</h3>
+            <h2 className="font-semibold text-foreground mb-6 uppercase tracking-wider text-sm">{ft.technologies}</h2>
             <ul className="space-y-4">
               {["Astro v5", "React 19", "TypeScript", "Tailwind CSS v4", "Radix UI", "GSAP", "TanStack Query", "React Hook Form + Zod", "Vercel AI SDK + Groq LLM"].map((tech) => (
                 <li key={tech} className="text-muted-foreground flex items-center gap-2">
@@ -126,7 +126,7 @@ export default function Footer({ subPage = false }: { subPage?: boolean }) {
           <div className="flex items-center gap-1.5">
             © {year || "2026"} Designed & Developed by Eduardo Cabral.
           </div>
-          <div className="font-mono text-xs text-muted-foreground/40 bg-muted/30 px-2 py-1 rounded">
+          <div className="font-mono text-xs text-muted-foreground/70 bg-muted/30 px-2 py-1 rounded">
             v2.0.0
           </div>
         </div>

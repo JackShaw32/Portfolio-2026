@@ -90,13 +90,13 @@ export default function Skills() {
             <div className="glass rounded-3xl p-8 border border-foreground/5 hover:border-foreground/10 transition-colors h-full">
               <div className="flex items-center gap-3 mb-8">
                 <Briefcase className="w-5 h-5 text-primary" />
-                <h3 className="font-mono text-sm font-bold uppercase tracking-wider">{sk.workExperience}</h3>
+                <h2 className="font-mono text-sm font-bold uppercase tracking-wider">{sk.workExperience}</h2>
               </div>
               <div className="space-y-8 border-l border-foreground/10 pl-6 ml-2 relative">
                 {experience.map((item, i) => (
                   <div key={i} className="relative pb-2">
                     <div className="absolute -left-[29px] top-1 w-3 h-3 rounded-full bg-background border-2 border-primary" />
-                    <h4 className="text-foreground font-semibold">{item.role}</h4>
+                    <h3 className="text-foreground font-semibold">{item.role}</h3>
                     <div className="text-primary text-sm font-medium mb-1">{item.company}</div>
                     <div className="text-muted-foreground text-xs font-mono mb-3">{item.period}</div>
 
@@ -145,14 +145,14 @@ export default function Skills() {
               <div className="glass rounded-3xl p-8 border border-foreground/5 hover:border-foreground/10 transition-colors h-full">
                 <div className="flex items-center gap-3 mb-8">
                   <GraduationCap className="w-5 h-5 text-primary" />
-                  <h3 className="font-mono text-sm font-bold uppercase tracking-wider">{sk.education}</h3>
+                  <h2 className="font-mono text-sm font-bold uppercase tracking-wider">{sk.education}</h2>
                 </div>
 
                 <div className="flex flex-col gap-4">
                   {education.map((item, i) => (
                     <div key={i} className="relative bg-background/30 p-4 rounded-xl border border-foreground/5 hover:border-primary/20 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div>
-                        <h4 className="text-foreground font-semibold text-sm leading-tight mb-1">{item.degree}</h4>
+                        <h3 className="text-foreground font-semibold text-sm leading-tight mb-1">{item.degree}</h3>
                         <div className="text-muted-foreground text-xs">{item.institution}</div>
                       </div>
                       <div className="text-primary text-[10px] font-mono border border-primary/20 bg-primary/5 inline-flex w-fit px-2 py-1 rounded whitespace-nowrap">
