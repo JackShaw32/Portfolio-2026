@@ -40,6 +40,13 @@ function ImageSlider({ images, title }: { images: readonly string[]; title: stri
     return Math.max(0, cw - peek * 2);
   }, []);
 
+  const getSlideHeight = useCallback((slideW: number): number => {
+    // 4:3 on mobile, 16:9 on sm+  (matches aspect-[4/3] sm:aspect-video)
+    return window.innerWidth < 640
+      ? Math.round(slideW * 3 / 4)
+      : Math.round(slideW * 9 / 16);
+  }, []);
+
   const getX = useCallback((extIdx: number): number => {
     if (!containerRef.current) return 0;
     const cw = containerRef.current.offsetWidth;
@@ -59,8 +66,10 @@ function ImageSlider({ images, title }: { images: readonly string[]; title: stri
           // Actualizar tamaños cuando el contenedor tenga dimensiones reales
           const slideW = getSlideWidth();
           if (slideW > 0 && trackRef.current) {
+            const slideH = getSlideHeight(slideW);
             trackRef.current.querySelectorAll<HTMLElement>(".slide-item").forEach(el => {
               el.style.width = `${slideW}px`;
+              el.style.height = `${slideH}px`;
             });
             
             const newX = getX(idxRef.current);
@@ -83,8 +92,10 @@ function ImageSlider({ images, title }: { images: readonly string[]; title: stri
       if (containerRef.current) {
         const slideW = getSlideWidth();
         if (slideW > 0 && trackRef.current) {
+          const slideH = getSlideHeight(slideW);
           trackRef.current.querySelectorAll<HTMLElement>(".slide-item").forEach(el => {
             el.style.width = `${slideW}px`;
+            el.style.height = `${slideH}px`;
           });
 
           const initialX = getX(1);
@@ -103,7 +114,7 @@ function ImageSlider({ images, title }: { images: readonly string[]; title: stri
       resizeObserver.disconnect();
       clearTimeout(initTimer);
     };
-  }, [getX, getSlideWidth]);
+  }, [getX, getSlideWidth, getSlideHeight]);
 
   // Recalcular en resize de ventana
   useEffect(() => {
@@ -112,8 +123,10 @@ function ImageSlider({ images, title }: { images: readonly string[]; title: stri
       
       const slideW = getSlideWidth();
       if (slideW > 0) {
+        const slideH = getSlideHeight(slideW);
         trackRef.current.querySelectorAll<HTMLElement>(".slide-item").forEach(el => {
           el.style.width = `${slideW}px`;
+          el.style.height = `${slideH}px`;
         });
         
         const newX = getX(idxRef.current);
@@ -127,7 +140,7 @@ function ImageSlider({ images, title }: { images: readonly string[]; title: stri
 
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
-  }, [getX, getSlideWidth]);
+  }, [getX, getSlideWidth, getSlideHeight]);
 
   const moveTo = useCallback((extIdx: number) => {
     if (isAnimating.current || !trackRef.current || !containerRef.current || !isReady) return;
