@@ -1,4 +1,4 @@
-import { Code2, Github, Linkedin, Mail, Twitter, ArrowUpRight } from "lucide-react";
+import { Terminal, Github, Linkedin, Mail, Twitter, ArrowUpRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useLanguage } from "./hooks/useLanguage";
 import { translations } from "../lib/translations";
@@ -40,9 +40,9 @@ export default function Footer({ subPage = false }: { subPage?: boolean }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div className="lg:col-span-2 space-y-6">
             <div className="flex items-center gap-2">
-              <Code2 className="w-6 h-6 text-primary" />
+              <Terminal className="w-6 h-6 text-primary" />
               <span className="font-mono text-xl font-bold">
-                edu<span className="text-primary">.dev</span>
+                Eduardo<span className="text-primary"> Cabral</span>
               </span>
             </div>
             <p className="text-muted-foreground max-w-sm leading-relaxed">

@@ -461,7 +461,7 @@ export const translations = {
     },
     footer: {
       tagline:
-        "Construyo experiencias digitales con enfoque en rendimiento, accesibilidad y diseño moderno.",
+        "Construyo productos digitales que generan impacto real.",
       navigation: "Navegación",
       technologies: "Built with",
       madeWith: "Hecho con",
@@ -992,7 +992,7 @@ export const translations = {
     },
     footer: {
       tagline:
-        "I build exceptional digital experiences with a focus on performance, accessibility, and modern design.",
+        "I build digital products that create real impact.",
       navigation: "Navigation",
       technologies: "Stack of this portfolio",
       madeWith: "Made with",
