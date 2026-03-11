@@ -18,7 +18,7 @@ function OGImage() {
       /* @__PURE__ */ jsx("div", { tw: "flex font-black leading-none text-[90px] tracking-[-2px] bg-clip-text text-transparent [background-image:linear-gradient(90deg,#909090_0%,#cccccc_18%,#f0f0f0_32%,#ffffff_44%,#d8d8d8_54%,#969696_68%,#c8c8c8_80%,#f4f4f4_92%,#909090_100%)]", children: "Eduardo Cabral" }),
       /* @__PURE__ */ jsxs("div", { tw: "flex items-center gap-2.5 text-[28px]", children: [
         /* @__PURE__ */ jsx("span", { tw: "text-white font-mono", children: ">" }),
-        /* @__PURE__ */ jsx("span", { tw: "text-white/70", children: "Full-Stack Developer" })
+        /* @__PURE__ */ jsx("span", { tw: "text-white/70", children: "Full-Stack JavaScript Developer" })
       ] }),
       /* @__PURE__ */ jsx("div", { tw: "flex text-3xl text-white/50 leading-relaxed max-w-[760px]", children: "Soluciones Web Escalables con Impacto" }),
       /* @__PURE__ */ jsx("div", { tw: "flex gap-2.5 mt-2", children: techStack.map((tech) => /* @__PURE__ */ jsx("div", { tw: "flex px-4 py-1.5 border border-white/10 rounded-lg text-white/65 bg-white/5 text-[15px]", children: tech }, tech)) })

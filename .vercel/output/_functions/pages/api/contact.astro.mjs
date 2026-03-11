@@ -1,8 +1,16 @@
-import { s as sendEmail } from '../../chunks/sendEmail_t5E3o4V2.mjs';
+import { c as checkRateLimit, s as sendEmail } from '../../chunks/sendEmail_DMfAVsIJ.mjs';
 export { renderers } from '../../renderers.mjs';
 
 const sanitize = (s) => s.replace(/<[^>]*>/g, "").replace(/[<>"'`]/g, "").trim();
 const POST = async ({ request }) => {
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0].trim() || request.headers.get("x-real-ip") || "0.0.0.0";
+  const rateCheck = checkRateLimit(ip);
+  if (!rateCheck.allowed) {
+    return new Response(JSON.stringify({ success: false, error: "rate_limited" }), {
+      status: 429,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
   let name, email, message;
   try {
     ({ name, email, message } = await request.json());

@@ -1,7 +1,7 @@
 import { createGroq } from '@ai-sdk/groq';
 import { jsonSchema, streamText, stepCountIs } from 'ai';
-import { B as BASE_PROMPT, L as LANG_INSTRUCTION_EN, a as LANG_INSTRUCTION_ES, E as ERROR_EN, b as ERROR_ES } from '../../chunks/prompt_CtxjbIgR.mjs';
-import { s as sendEmail } from '../../chunks/sendEmail_t5E3o4V2.mjs';
+import { B as BASE_PROMPT, L as LANG_INSTRUCTION, E as ERROR_EN, a as ERROR_ES } from '../../chunks/prompt_BCsBdmHI.mjs';
+import { L as LIMITS, s as sendEmail, c as checkRateLimit } from '../../chunks/sendEmail_DMfAVsIJ.mjs';
 export { renderers } from '../../renderers.mjs';
 
 const SECTION_LABELS = {
@@ -10,17 +10,20 @@ const SECTION_LABELS = {
   projects: "Projects section",
   optimizations: "Optimizations & Performance section",
   about: "About Eduardo section",
-  contact: "Contact section"
+  contact: "Contact section",
+  uncuartodemilla: 'project detail page for "1/4 de Milla E-Commerce"',
+  expresoomega: 'project detail page for "Expreso Omega Logistics"',
+  alfyvivi: 'project detail page for "Alfy & Vivi — Evento"'
 };
 const VALID_SECTIONS = new Set(Object.keys(SECTION_LABELS));
 
 const __vite_import_meta_env__ = {"ASSETS_PREFIX": undefined, "BASE_URL": "/", "DEV": false, "MODE": "production", "PROD": true, "SITE": "https://jackshaw32.vercel.app", "SSR": true};
 function buildKeyPool() {
   const keys = [];
-  const single = "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";
+  const single = "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";
   keys.push(single);
   for (let i = 1; i <= 19; i++) {
-    const k = Object.assign(__vite_import_meta_env__, { GROQ_API_KEY: "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" })[`GROQ_API_KEY_${i}`];
+    const k = Object.assign(__vite_import_meta_env__, { GROQ_API_KEY: "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" })[`GROQ_API_KEY_${i}`];
     if (k && !keys.includes(k)) keys.push(k);
   }
   return keys;
@@ -43,41 +46,6 @@ function markKeyCooldown(index, err) {
   const seconds = err?.responseHeaders?.["retry-after"] ? Math.ceil(parseFloat(err.responseHeaders["retry-after"])) : 60;
   keyCooldownUntil[index] = Date.now() + seconds * 1e3;
   console.warn(`[EduBot] Key #${index + 1} rate-limited → cooldown ${seconds}s`);
-}
-
-const LIMITS = {
-  PER_MINUTE: 5,
-  PER_HOUR: 20,
-  PER_DAY: 50,
-  MAX_MSG_LENGTH: 500};
-const ipStore = /* @__PURE__ */ new Map();
-setInterval(() => {
-  const now = Date.now();
-  for (const [ip, record] of ipStore.entries()) {
-    if (now > record.day.reset) ipStore.delete(ip);
-  }
-}, 60 * 60 * 1e3);
-function checkRateLimit(ip) {
-  const now = Date.now();
-  const record = ipStore.get(ip) ?? {
-    minute: { count: 0, reset: now + 6e4 },
-    hour: { count: 0, reset: now + 36e5 },
-    day: { count: 0, reset: now + 864e5 }
-  };
-  if (now > record.minute.reset) record.minute = { count: 0, reset: now + 6e4 };
-  if (now > record.hour.reset) record.hour = { count: 0, reset: now + 36e5 };
-  if (now > record.day.reset) record.day = { count: 0, reset: now + 864e5 };
-  if (record.minute.count >= LIMITS.PER_MINUTE)
-    return { allowed: false, reason: "Mandaste demasiados mensajes seguidos. Esperá un minuto 🙏" };
-  if (record.hour.count >= LIMITS.PER_HOUR)
-    return { allowed: false, reason: "Alcanzaste el límite por hora. Volvé en unos minutos 😅" };
-  if (record.day.count >= LIMITS.PER_DAY)
-    return { allowed: false, reason: "Alcanzaste el límite diario. Volvé mañana 😅" };
-  record.minute.count++;
-  record.hour.count++;
-  record.day.count++;
-  ipStore.set(ip, record);
-  return { allowed: true };
 }
 
 const INJECTION_PATTERNS = [
@@ -133,8 +101,8 @@ function validateMessages(messages) {
     if (msg.role === "user") {
       const content2 = typeof msg.content === "string" ? msg.content : JSON.stringify(msg.content);
       const check = sanitizeInput(content2);
-      if (!check.safe && check.reason === "INJECTION_ATTEMPT") {
-        return { valid: false, reason: "INJECTION_ATTEMPT" };
+      if (!check.safe) {
+        return { valid: false, reason: check.reason ?? "INVALID_CONTENT" };
       }
     }
   }
@@ -183,6 +151,9 @@ function detectForcedTool(msg) {
 function wantsAllProjects(msg) {
   return ALL_PROJECTS_PATTERN.test(msg);
 }
+function isSendMessageIntent(msg) {
+  return SEND_MESSAGE_PATTERN.test(msg);
+}
 
 const sanitizeStr = (s) => s.replace(/<[^>]*>/g, "").replace(/[<>"'`]/g, "").slice(0, 300);
 const toolsDefinition = {
@@ -196,10 +167,9 @@ const toolsDefinition = {
         description: { type: "string" },
         tech: { type: "string" },
         url: { type: "string" },
-        video: { type: "string" },
         image: { type: "string" }
       },
-      required: ["title", "description", "tech", "url", "video", "image"]
+      required: ["title", "description", "tech", "url", "image"]
     }),
     execute: async (args) => {
       if (!args?.title) return null;
@@ -208,14 +178,19 @@ const toolsDefinition = {
         "https://www.expresoomega.com/",
         "https://alfyvivi.com/"
       ];
+      const ALLOWED_IMAGES = [
+        "/projects/14milla.webp",
+        "/projects/alfyvivi.webp",
+        "/projects/omega.webp"
+      ];
       const safeUrl = ALLOWED_URLS.includes(args.url) ? args.url : "#";
+      const safeImage = ALLOWED_IMAGES.includes(args.image) ? args.image : "";
       return {
         title: sanitizeStr(args.title),
         description: sanitizeStr(args.description),
         tech: args.tech.split(",").map((t) => sanitizeStr(t.trim())).filter(Boolean),
         url: safeUrl,
-        video: args.video ?? "",
-        image: args.image ?? ""
+        image: safeImage
       };
     }
   },
@@ -228,7 +203,7 @@ const toolsDefinition = {
     }),
     execute: async () => ({
       linkedin: "https://linkedin.com/in/raul-eduardo-cabral",
-      email: "jackshaw32@live.com.ar",
+      email: "jackshaw@live.com.ar",
       cvEs: "https://drive.google.com/file/d/1rowPwlyhJPDIUqs-4N_WmLW_LS1Y7Noz/view?usp=sharing",
       cvEn: "https://drive.google.com/file/d/1dPo1RNqasoNxXUjwk6nGuDBWIPoD2_mY/view?usp=sharing",
       portfolio: "https://educabral.site/",
@@ -351,21 +326,39 @@ const toolsDefinition = {
   }
 };
 
-const TEXT_TOOL_CALL_RE = /<function\/([\w]+)>([\s\S]*?)<\/function>/g;
+const TOOL_LEAK_RE = /\[tool\s*call\]|\btool_call\b|^(?:showProject|showContact|showSkills|showExperience|showAvailability|sendContactForm)\b|showProject\s*[–\-]|showContact\s*[–\-]|showSkills\s*[–\-]|showExperience\s*[–\-]|showAvailability\s*[–\-]|sendContactForm\s*[–\-]|T\u00EDtulo\s*:|Descripci\u00F3n\s*:|Tecnolog\u00EDas\s*:|VIDEO\s*:|Image[n]?\s*:|<function[=/]\w+>|Puedes ver los detalles|You can see the details|\/projects\/|Eduardo est\u00E1r\u00E1 en contacto contigo pronto|Eduardo will be in contact with you soon/i;
+
+const TEXT_TOOL_CALL_RE = /<function[=/](\w+)>([\s\S]*?)(?:<\/function>|<function(?![=/\w]))/g;
 async function parseAndExecuteTextToolCalls(text, tools, controller, encoder) {
   let lastIndex = 0;
   TEXT_TOOL_CALL_RE.lastIndex = 0;
   let match;
   while ((match = TEXT_TOOL_CALL_RE.exec(text)) !== null) {
     const before = text.slice(lastIndex, match.index).replace(/<\/?function[^>]*>/g, "").trim();
-    if (before) controller.enqueue(encoder.encode(`0:${JSON.stringify(before)}
+    if (before && !TOOL_LEAK_RE.test(before)) {
+      const filtered = before.replace(/^(Puedes ver|You can see|Aqu[ií]|Claro|Aqu\u00ED)[\s\S]*/i, "").trim();
+      if (filtered) controller.enqueue(encoder.encode(`0:${JSON.stringify(filtered)}
 `));
+    }
     const toolName = match[1];
     if (toolName in tools) {
       let args = {};
       try {
         args = JSON.parse(match[2]);
       } catch {
+      }
+      if (toolName === "sendContactForm") {
+        const n = String(args.name ?? "").trim();
+        const e = String(args.email ?? "").trim();
+        const m = String(args.message ?? "").trim();
+        const fakeEmails = ["user@email.com", "user@example.com", "email@example.com"];
+        const hasName = n.length >= 2 && n.toLowerCase() !== "user";
+        const hasEmail = e.includes("@") && e.length >= 5 && !fakeEmails.includes(e.toLowerCase());
+        const hasMessage = m.length >= 3;
+        if (!hasName || !hasEmail || !hasMessage) {
+          lastIndex = match.index + match[0].length;
+          continue;
+        }
       }
       const toolCallId = `txt_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
       controller.enqueue(encoder.encode(`9:${JSON.stringify({ toolCallId, toolName, args })}
@@ -383,15 +376,16 @@ async function parseAndExecuteTextToolCalls(text, tools, controller, encoder) {
     lastIndex = match.index + match[0].length;
   }
   const after = text.slice(lastIndex).replace(/<\/?function[^>]*>/g, "").trim();
-  if (after) controller.enqueue(encoder.encode(`0:${JSON.stringify(after)}
+  if (after && !TOOL_LEAK_RE.test(after)) {
+    controller.enqueue(encoder.encode(`0:${JSON.stringify(after)}
 `));
+  }
 }
 
 async function pipeStreamToController(result, controller, encoder, tools, onToolCallEmitted) {
   let textBuffer = [];
   let postToolBuffer = [];
   let hadToolCall = false;
-  const TOOL_LEAK_RE = /\[tool\s*call\]|\btool_call\b|showProject\s*[–\-]|showContact\s*[–\-]|showSkills\s*[–\-]|showExperience\s*[–\-]|showAvailability\s*[–\-]|sendContactForm\s*[–\-]|Título\s*:|Descripción\s*:|Tecnologías\s*:|VIDEO\s*:|Image\s*:/i;
   const flushBuffer = (buf) => {
     for (const chunk of buf) {
       controller.enqueue(encoder.encode(`0:${JSON.stringify(chunk)}
@@ -483,13 +477,12 @@ const POST = async ({ request }) => {
   const safeLang = language === "en" ? "en" : "es";
   const msgCheck = validateMessages(messages);
   if (!msgCheck.valid) {
-    const status = msgCheck.reason === "INJECTION_ATTEMPT" ? 400 : 400;
-    return new Response(JSON.stringify({ error: "Mensaje inv�lido." }), {
-      status,
+    return new Response(JSON.stringify({ error: "Mensaje inválido." }), {
+      status: 400,
       headers: { "Content-Type": "application/json" }
     });
   }
-  const rawMessages = messages.filter((m) => m.role === "user" || m.role === "assistant").slice(-8).map((m) => ({
+  const rawMessages = messages.filter((m) => m.role === "user" || m.role === "assistant").slice(-6).map((m) => ({
     role: m.role,
     content: typeof m.content === "string" ? m.content.trim().length > 0 ? m.content.slice(0, LIMITS.MAX_MSG_LENGTH) : "[visual response]" : String(m.content).slice(0, LIMITS.MAX_MSG_LENGTH)
   }));
@@ -502,10 +495,13 @@ const POST = async ({ request }) => {
     }
   }
   const errorMessage = safeLang === "en" ? ERROR_EN : ERROR_ES;
-  const rateLimitMessage = safeLang === "en" ? "? The assistant is temporarily busy. Please wait a few seconds and try again." : "? El asistente est� ocupado en este momento. Esper� unos segundos y volv� a intentarlo.";
-  const langInstruction = safeLang === "en" ? LANG_INSTRUCTION_EN : LANG_INSTRUCTION_ES;
+  const rateLimitMessage = safeLang === "en" ? "⚠️ The assistant is temporarily busy. Please wait a few seconds and try again." : "⚠️ El asistente está ocupado en este momento. Esperá unos segundos y volvé a intentarlo.";
+  const langLock = safeLang === "en" ? "\n\n⚡ LANGUAGE LOCK: This session is in ENGLISH. Every single response MUST be in English. No Spanish. No exceptions." : '\n\n⚡ IDIOMA LOCK: Esta sesión es en ESPAÑOL RIOPLATENSE. Respondé TODO en español con "vos". Sin excepciones.';
   const safeSection = typeof pageContext === "string" && VALID_SECTIONS.has(pageContext) ? pageContext : null;
-  const pageContextStr = safeSection ? `
+  const isProjectPage = safeSection && ["uncuartodemilla", "expresoomega", "alfyvivi"].includes(safeSection);
+  const pageContextStr = safeSection ? isProjectPage ? `
+USER CONTEXT: The user is currently on the ${SECTION_LABELS[safeSection]}. When they say "mostrame el proyecto" / "show me the project" without specifying which one, they mean THIS project (${safeSection}). Show ONLY this project's card.
+` : `
 USER CONTEXT: The user is currently viewing the "${SECTION_LABELS[safeSection]}" of the portfolio.
 ` : "";
   const lastQuestion = trimmedMessages.at(-1)?.content;
@@ -518,6 +514,7 @@ USER CONTEXT: The user is currently viewing the "${SECTION_LABELS[safeSection]}"
   }
   const forcedTool = lastQuestion ? detectForcedTool(lastQuestion) : null;
   const multiProject = forcedTool === "showProject" && !!lastQuestion && wantsAllProjects(lastQuestion);
+  const isSendMsg = lastQuestion ? isSendMessageIntent(lastQuestion) : false;
   const contactFormAlreadySent = trimmedMessages.some(
     (m) => m.role === "assistant" && m.content.includes("sendContactForm was already called and succeeded")
   );
@@ -550,7 +547,7 @@ USER CONTEXT: The user is currently viewing the "${SECTION_LABELS[safeSection]}"
   try {
     primaryResult = await streamText({
       model: getGroq()(PRIMARY_MODEL),
-      system: BASE_PROMPT + pageContextStr + langInstruction,
+      system: BASE_PROMPT + pageContextStr + LANG_INSTRUCTION + langLock,
       messages: trimmedMessages,
       tools: activeTools,
       toolChoice: "auto",
@@ -559,8 +556,11 @@ USER CONTEXT: The user is currently viewing the "${SECTION_LABELS[safeSection]}"
       maxRetries: 0,
       prepareStep: ({ stepNumber }) => {
         if (multiProject) {
-          if (stepNumber >= 3) return { toolChoice: "none" };
+          if (stepNumber >= 3) return { toolChoice: "none", activeTools: [] };
           return { toolChoice: "auto" };
+        }
+        if (stepNumber === 0 && isSendMsg) {
+          return { toolChoice: "none" };
         }
         if (stepNumber === 0 && forcedTool) {
           return {
@@ -568,7 +568,7 @@ USER CONTEXT: The user is currently viewing the "${SECTION_LABELS[safeSection]}"
             activeTools: [forcedTool]
           };
         }
-        if (stepNumber >= 1) return { toolChoice: "none" };
+        if (stepNumber >= 1) return { toolChoice: "none", activeTools: [] };
         return { toolChoice: "auto" };
       }
     });
@@ -579,21 +579,65 @@ USER CONTEXT: The user is currently viewing the "${SECTION_LABELS[safeSection]}"
     if (isRateLimitErr) {
       markKeyCooldown(getKeyIdx(), primaryErr);
       const rotated = rotateKey();
-      console.warn(`[EduBot] 8b rate limited, ${rotated ? "rotated key → 70b" : "no keys available → fallback"}`);
-      useFallback = true;
+      if (rotated) {
+        console.warn("[EduBot] 8b rate limited → rotated key, retrying 8b");
+        try {
+          primaryResult = await streamText({
+            model: getGroq()(PRIMARY_MODEL),
+            system: BASE_PROMPT + pageContextStr + LANG_INSTRUCTION + langLock,
+            messages: trimmedMessages,
+            tools: activeTools,
+            toolChoice: "auto",
+            stopWhen: stepCountIs(5),
+            maxOutputTokens: 600,
+            maxRetries: 0,
+            prepareStep: ({ stepNumber }) => {
+              if (multiProject) {
+                if (stepNumber >= 3) return { toolChoice: "none", activeTools: [] };
+                return { toolChoice: "auto" };
+              }
+              if (stepNumber === 0 && isSendMsg) {
+                return { toolChoice: "none" };
+              }
+              if (stepNumber === 0 && forcedTool) {
+                return { toolChoice: { type: "tool", toolName: forcedTool }, activeTools: [forcedTool] };
+              }
+              if (stepNumber >= 1) return { toolChoice: "none", activeTools: [] };
+              return { toolChoice: "auto" };
+            }
+          });
+        } catch (retryErr) {
+          const retryIsRL = retryErr?.statusCode === 429 || String(retryErr?.message).includes("Rate limit") || String(retryErr?.message).includes("rate_limit");
+          if (retryIsRL) markKeyCooldown(getKeyIdx(), retryErr);
+          console.warn("[EduBot] Rotated key also failed → fallback 70b");
+          useFallback = true;
+        }
+      } else {
+        console.warn("[EduBot] 8b rate limited, no keys available → fallback 70b");
+        useFallback = true;
+      }
     } else if (isFunctionFail) {
       console.warn("[EduBot] Function call failed, retrying with 70b...");
       try {
         primaryResult = await streamText({
           model: getGroq()(FALLBACK_MODEL),
-          system: BASE_PROMPT + pageContextStr + langInstruction,
+          system: BASE_PROMPT + pageContextStr + LANG_INSTRUCTION + langLock,
           messages: trimmedMessages,
           tools: activeTools,
           toolChoice: "auto",
-          // sin forzar
           stopWhen: stepCountIs(3),
           maxOutputTokens: 600,
-          maxRetries: 0
+          maxRetries: 0,
+          prepareStep: ({ stepNumber }) => {
+            if (stepNumber === 0 && forcedTool) {
+              return {
+                toolChoice: { type: "tool", toolName: forcedTool },
+                activeTools: [forcedTool]
+              };
+            }
+            if (stepNumber >= 1) return { toolChoice: "none", activeTools: [] };
+            return { toolChoice: "auto" };
+          }
         });
       } catch (retryErr) {
         console.error("[EduBot] Retry also failed:", retryErr);
@@ -608,7 +652,7 @@ USER CONTEXT: The user is currently viewing the "${SECTION_LABELS[safeSection]}"
     try {
       const fallbackResult = await streamText({
         model: getGroq()(FALLBACK_MODEL),
-        system: BASE_PROMPT + pageContextStr + langInstruction,
+        system: BASE_PROMPT + pageContextStr + LANG_INSTRUCTION + langLock,
         messages: trimmedMessages,
         maxOutputTokens: 600
       });
@@ -656,18 +700,24 @@ USER CONTEXT: The user is currently viewing the "${SECTION_LABELS[safeSection]}"
       } catch (streamErr) {
         console.error("[EduBot] Stream error ? fallback");
         const isRateLimit = streamErr?.statusCode === 429 || String(streamErr?.message).includes("Rate limit") || String(streamErr?.message).includes("rate_limit");
+        let emergencyModel = FALLBACK_MODEL;
         if (isRateLimit) {
           markKeyCooldown(getKeyIdx(), streamErr);
-          rotateKey();
-          console.warn("[EduBot] Stream rate limit → emergency with rotated key");
+          const rotated = rotateKey();
+          if (rotated) {
+            emergencyModel = PRIMARY_MODEL;
+            console.warn("[EduBot] Stream rate limit → rotated key, emergency 8b");
+          } else {
+            console.warn("[EduBot] Stream rate limit → no keys, emergency 70b (separate TPM)");
+          }
         } else {
           console.warn("[EduBot] Stream error → emergency 70b");
         }
         const emergencyCanShowTools = toolCallsEmitted === 0 && forcedTool !== null;
         try {
           const emergency = await streamText({
-            model: getGroq()(FALLBACK_MODEL),
-            system: BASE_PROMPT + pageContextStr + langInstruction,
+            model: getGroq()(emergencyModel),
+            system: BASE_PROMPT + pageContextStr + LANG_INSTRUCTION,
             messages: trimmedMessages,
             maxOutputTokens: 600,
             ...emergencyCanShowTools ? {
@@ -676,7 +726,7 @@ USER CONTEXT: The user is currently viewing the "${SECTION_LABELS[safeSection]}"
               // Mirror primary prepareStep: force tool on step 0 only, then text-only
               prepareStep: ({ stepNumber }) => {
                 if (multiProject) {
-                  if (stepNumber >= 3) return { toolChoice: "none" };
+                  if (stepNumber >= 3) return { toolChoice: "none", activeTools: [] };
                   return { toolChoice: "auto" };
                 }
                 if (stepNumber === 0 && forcedTool) {
@@ -685,7 +735,7 @@ USER CONTEXT: The user is currently viewing the "${SECTION_LABELS[safeSection]}"
                     activeTools: [forcedTool]
                   };
                 }
-                if (stepNumber >= 1) return { toolChoice: "none" };
+                if (stepNumber >= 1) return { toolChoice: "none", activeTools: [] };
                 return { toolChoice: "auto" };
               }
             } : {
