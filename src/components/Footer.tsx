@@ -31,7 +31,7 @@ export default function Footer({ subPage = false }: { subPage?: boolean }) {
   return (
     <>
       <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
-      <footer className="relative border-t border-border/10 bg-background/50 backdrop-blur-xl pt-20 pb-10 overflow-hidden">
+      <footer className="relative border-t border-border/10 bg-background/95 backdrop-blur-xl pt-20 pb-10 overflow-hidden">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[300px] pointer-events-none flex justify-center opacity-20">
         <div className="absolute -top-[150px] w-[600px] h-[300px] rounded-[100%] bg-gradient-to-b from-primary/20 to-transparent blur-3xl" />
       </div>
@@ -126,7 +126,7 @@ export default function Footer({ subPage = false }: { subPage?: boolean }) {
           <div className="flex items-center gap-1.5">
             © {year || "2026"} Designed & Developed by Eduardo Cabral.
           </div>
-          <div className="font-mono text-xs text-muted-foreground/70 bg-muted/30 px-2 py-1 rounded">
+          <div className="font-mono text-xs text-muted-foreground bg-muted/30 px-2 py-1 rounded">
             v2.0.0
           </div>
         </div>

@@ -1,6 +1,5 @@
 import { Linkedin, ExternalLink } from "lucide-react";
-import { useEffect, useState, useRef } from "react";
-import { useReveal } from "./hooks/useReveal";
+import { useEffect, useState } from "react";
 import { useLanguage } from "./hooks/useLanguage";
 import { translations } from "../lib/translations";
 
@@ -48,8 +47,6 @@ const roles = [
 ];
 
 export default function Hero() {
-  const ref = useRef<HTMLElement>(null);
-  useReveal(ref);
   const { lang } = useLanguage();
   const t = translations[lang];
   const [currentRole, setCurrentRole] = useState(0);
@@ -81,7 +78,7 @@ export default function Hero() {
   }, [displayText, isDeleting, currentRole]);
 
   return (
-    <section ref={ref} id="top" className="relative min-h-screen flex items-center justify-center overflow-hidden w-full">
+    <section id="top" className="relative min-h-screen flex items-center justify-center overflow-hidden w-full">
       <LineGrid />
 
       <div className="absolute inset-0 pointer-events-none">
@@ -90,7 +87,7 @@ export default function Hero() {
       </div>
 
       <div className="container mx-auto px-6 pt-20 relative z-30">
-        <div className="max-w-4xl mx-auto text-center reveal">
+        <div className="max-w-4xl mx-auto text-center">
           <div className="flex justify-center mb-6">
             <div className="flex items-center gap-2 glass px-5 py-2.5 rounded-full text-sm border-primary/10 hover:border-primary/30 transition-colors duration-300">
               <span className="relative flex h-2.5 w-2.5">
