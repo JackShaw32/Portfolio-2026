@@ -14,6 +14,9 @@ export default defineConfig({
   site: 'https://jackshaw32.vercel.app',
   output: 'server',
   adapter: vercel(),
+  build: {
+    inlineStylesheets: 'always',
+  },
   integrations: [
     react(),
     sitemap({

@@ -115,6 +115,9 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
               <img
                 src="/20220924_233024.webp"
                 alt="Eduardo Cabral"
+                fetchPriority="high"
+                width={40}
+                height={40}
                 className="w-full h-full object-cover"
               />
             </span>

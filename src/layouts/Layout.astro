@@ -48,7 +48,6 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
 
     <!-- Font Preload (critical fonts for first render) -->
     <link rel="preload" href="/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/inter-latin-ext-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/general-sans-400.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/general-sans-600.woff2" as="font" type="font/woff2" crossorigin />
 
@@ -211,9 +210,9 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
     </script>
 
     <!-- Smooth scroll with hash cleanup -->
-    <script is:inline>
+    <script>
       document.addEventListener('click', function(e) {
-        var anchor = e.target.closest('a[href^="#"]');
+        var anchor = e.target instanceof Element ? e.target.closest('a[href^="#"]') : null;
         if (!anchor) return;
         var hash = anchor.getAttribute('href');
         if (!hash || hash === '#') return;
@@ -233,9 +232,9 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
     </script>
 
     <!-- Portfolio scroll restoration: section nav + back-to-project -->
-    <script is:inline>
+    <script>
       // On full page reload, clear skip-reveal so animations play normally
-      var navEntry = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+      var navEntry = performance.getEntriesByType && (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined);
       if (navEntry && navEntry.type === 'reload') {
         sessionStorage.removeItem('skip-reveal');
       }
