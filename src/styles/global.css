@@ -305,6 +305,25 @@
 }
 
 @layer components {
+  /* ── View Transition: old fades out, new appears immediately ──────
+     Prevents white flash in production (SSR latency gap).
+     Classic crossfade goes through transparency → shows white.
+     This variant keeps new page at full opacity at all times.       */
+  ::view-transition {
+    background-color: var(--background);
+  }
+  ::view-transition-old(root) {
+    animation: vt-fade-out 220ms ease forwards;
+  }
+  ::view-transition-new(root) {
+    animation: none;
+    opacity: 1;
+  }
+  @keyframes vt-fade-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+  }
+
   .glass {
     background: hsl(var(--glass-bg));
     backdrop-filter: blur(16px);

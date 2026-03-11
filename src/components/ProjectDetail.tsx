@@ -232,7 +232,7 @@ function ImageSlider({ images, title }: { images: readonly string[]; title: stri
       >
         {/* Mostrar un placeholder mientras no está listo */}
         {!isReady && (
-          <div className="aspect-[4/3] sm:aspect-video bg-gray-200 animate-pulse rounded-2xl" />
+          <div className="aspect-[4/3] sm:aspect-video bg-muted animate-pulse rounded-2xl" />
         )}
 
         {/* Track: gap entre slides = SLIDE_GAP */}
