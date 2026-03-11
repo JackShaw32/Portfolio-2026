@@ -90,7 +90,10 @@ export default function Footer({ subPage = false }: { subPage?: boolean }) {
               ))}
               <li className="pt-2">
                 <button
-                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  onClick={() => {
+                    const lenis = (window as any).lenis;
+                    if (lenis) { lenis.scrollTo(0, { duration: 1.2 }); } else { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+                  }}
                   aria-label="Volver arriba"
                   className="group flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors duration-300 w-fit"
                 >

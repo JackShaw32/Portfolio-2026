@@ -27,7 +27,7 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
 ---
 
 <!doctype html>
-<html lang="es" class="scroll-smooth">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -211,7 +211,60 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
       document.addEventListener('astro:after-swap', applyTheme);
     </script>
 
-    <!-- Smooth scroll with hash cleanup -->
+    <!-- Lenis smooth scroll initialization -->
+    <script>
+      import Lenis from 'lenis';
+      import gsap from 'gsap';
+      import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      let lenis: InstanceType<typeof Lenis> | null = null;
+      let tickerCallback: ((time: number) => void) | null = null;
+
+      function destroyLenis() {
+        if (tickerCallback) {
+          gsap.ticker.remove(tickerCallback);
+          tickerCallback = null;
+        }
+        if (lenis) {
+          lenis.destroy();
+          lenis = null;
+        }
+        (window as any).lenis = null;
+      }
+
+      function initLenis() {
+        destroyLenis();
+
+        lenis = new Lenis({
+          duration: 1.2,
+          easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          smoothWheel: true,
+          wheelMultiplier: 1,
+          touchMultiplier: 2,
+        });
+
+        (window as any).lenis = lenis;
+
+        // Drive Lenis with GSAP ticker for perfect sync with GSAP animations
+        tickerCallback = (time: number) => lenis!.raf(time * 1000);
+        gsap.ticker.add(tickerCallback);
+        gsap.ticker.lagSmoothing(0);
+
+        // Keep ScrollTrigger updated on every Lenis scroll tick
+        lenis.on('scroll', ScrollTrigger.update);
+      }
+
+      // Boot on first load
+      initLenis();
+
+      // Cleanup before every ViewTransition swap, reinit after
+      document.addEventListener('astro:before-swap', destroyLenis);
+      document.addEventListener('astro:after-swap', initLenis);
+    </script>
+
+    <!-- Smooth scroll for anchor links with hash cleanup -->
     <script>
       document.addEventListener('click', function(e) {
         var anchor = e.target instanceof Element ? e.target.closest('a[href^="#"]') : null;
@@ -221,7 +274,12 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
         var target = document.querySelector(hash);
         if (!target) return;
         e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        var l = (window as any).lenis;
+        if (l) {
+          l.scrollTo(target as HTMLElement, { duration: 1.2 });
+        } else {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
         history.replaceState(null, '', window.location.pathname);
       });
 
@@ -229,7 +287,14 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
         var id = window.location.hash;
         history.replaceState(null, '', window.location.pathname);
         var el = document.querySelector(id);
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (el) {
+          var l = (window as any).lenis;
+          if (l) {
+            l.scrollTo(el as HTMLElement, { duration: 1.2 });
+          } else {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
       }
     </script>
 
@@ -245,34 +310,32 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
       document.addEventListener('astro:before-preparation', function(e) {
         var match = location.pathname.match(/^\/projects\/([^\/]+)/);
         if (match && e.to) {
-          // Navigating FROM a project page → skip reveal animations on destination
           sessionStorage.setItem('skip-reveal', '1');
           if (!e.to.hash && !sessionStorage.getItem('scroll-to-section')) {
             sessionStorage.setItem('return-to-project', match[1]);
           }
         } else {
-          // Navigating FROM any non-project page → clear flag (fresh visit coming)
           sessionStorage.removeItem('skip-reveal');
         }
       });
 
       document.addEventListener('astro:after-swap', function() {
         if (location.pathname !== '/' && location.pathname !== '') return;
-        var html = document.documentElement;
+        var l = (window as any).lenis;
 
         // Section navigation (navbar links from a project page)
         var section = sessionStorage.getItem('scroll-to-section');
         if (section) {
           sessionStorage.removeItem('scroll-to-section');
           sessionStorage.removeItem('return-to-project');
-          html.style.scrollBehavior = 'auto';
           if (section === 'top') {
-            window.scrollTo(0, 0);
+            if (l) { l.scrollTo(0, { immediate: true }); } else { window.scrollTo(0, 0); }
           } else {
-            var el = document.getElementById(section);
-            if (el) el.scrollIntoView({ block: 'start' });
+            var sectionEl = document.getElementById(section);
+            if (sectionEl) {
+              if (l) { l.scrollTo(sectionEl, { immediate: true }); } else { sectionEl.scrollIntoView({ block: 'start' }); }
+            }
           }
-          requestAnimationFrame(function() { html.style.scrollBehavior = ''; });
           return;
         }
 
@@ -282,9 +345,12 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
           sessionStorage.removeItem('return-to-project');
           var card = document.querySelector('[data-project-slug="' + slug + '"]');
           if (card) {
-            html.style.scrollBehavior = 'auto';
-            card.scrollIntoView({ block: 'center' });
-            requestAnimationFrame(function() { html.style.scrollBehavior = ''; });
+            if (l) {
+              var offset = -(window.innerHeight / 2) + (card as HTMLElement).offsetHeight / 2;
+              l.scrollTo(card as HTMLElement, { immediate: true, offset: offset });
+            } else {
+              card.scrollIntoView({ block: 'center' });
+            }
           }
         }
       });

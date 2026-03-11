@@ -289,9 +289,19 @@
 
   * { @apply border-border; }
     html {
-      scroll-behavior: smooth;
       overflow-x: hidden;
       background-color: var(--background);
+    }
+
+    /* Firefox + Chrome 121+: standard scrollbar API as progressive enhancement */
+    @supports (scrollbar-width: thin) {
+      html {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(0, 0, 0, 0.35) rgba(0, 0, 0, 0.04);
+      }
+      html.dark {
+        scrollbar-color: rgba(255, 255, 255, 0.22) rgba(255, 255, 255, 0.04);
+      }
     }
   
     .theme-transitioning,
@@ -349,8 +359,8 @@
 
   .glass {
     background: hsl(var(--glass-bg));
-    backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
     border: 1px solid hsl(var(--glass-border));
     box-shadow: var(--shadow-card);
   }
@@ -404,16 +414,17 @@
     box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
   }
 
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar { width: 7px; }
+  ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.04); }
   ::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.35);
     border-radius: 10px;
   }
-  ::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.4); }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.55); }
 
-  .dark ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); }
-  .dark ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+  .dark ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.04); }
+  .dark ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.22); }
+  .dark ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.38); }
 
   /* Utility class to hide scrollbar but keep functionality */
   .scrollbar-none::-webkit-scrollbar {
@@ -421,7 +432,11 @@
   }
   .scrollbar-none {
     -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none;    /* Firefox */
+  }
+  @supports (scrollbar-width: none) {
+    .scrollbar-none {
+      scrollbar-width: none; /* Firefox + Chrome 121+ */
+    }
   }
 
   .reveal {
