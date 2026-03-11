@@ -268,6 +268,7 @@
     html {
       scroll-behavior: smooth;
       overflow-x: hidden;
+      background-color: var(--background);
     }
   
     .theme-transitioning,

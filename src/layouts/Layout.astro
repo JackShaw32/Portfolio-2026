@@ -191,6 +191,19 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
         }
       });
 
+      // Inyectar clase dark en el nuevo documento ANTES del swap → elimina el flash blanco
+      document.addEventListener('astro:before-swap', function(e) {
+        try {
+          const theme = localStorage.getItem('theme');
+          const isDark = theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (isDark) {
+            e.newDocument.documentElement.classList.add('dark');
+          } else {
+            e.newDocument.documentElement.classList.remove('dark');
+          }
+        } catch(e) {}
+      });
+
       // Para ViewTransitions de Astro: re-aplicar tema después de cada navegación
       document.addEventListener('astro:after-swap', applyTheme);
     </script>
