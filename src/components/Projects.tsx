@@ -105,7 +105,7 @@ export default function Projects() {
                       </div>
                     </div>
 
-                    <div className="w-full aspect-[16/10] pt-9 bg-foreground/5 relative overflow-hidden">
+                    <div className="w-full aspect-[4/3] sm:aspect-[16/10] pt-9 bg-foreground/5 relative overflow-hidden">
                       <img
                         src={project.images[0]}
                         alt={`Preview de ${project.title}`}

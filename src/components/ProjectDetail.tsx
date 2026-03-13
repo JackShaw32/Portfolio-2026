@@ -454,7 +454,7 @@ export default function ProjectDetail({ slug }: Props) {
               <div className="detail-section grid sm:grid-cols-2 gap-4">
 
                 {rich.architectureOverview && (
-                  <div className="glass rounded-2xl p-5 border border-border/40">
+                  <div className="bg-background dark:bg-foreground/[0.04] rounded-2xl p-5 border border-border/40">
                     <h2 className="text-xs uppercase tracking-widest font-black text-muted-foreground mb-4">
                       {pr.archOverview}
                     </h2>
@@ -473,7 +473,7 @@ export default function ProjectDetail({ slug }: Props) {
                 )}
 
                 {rich.systemDiagram && (
-                  <div className="glass rounded-2xl p-5 border border-border/40">
+                  <div className="bg-background dark:bg-foreground/[0.04] rounded-2xl p-5 border border-border/40">
                     <h2 className="text-xs uppercase tracking-widest font-black text-muted-foreground mb-4">
                       {pr.systemDiagramLabel}
                     </h2>
