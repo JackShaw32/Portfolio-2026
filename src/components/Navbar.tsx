@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Download, Moon, Sun, Menu, X, Github, Linkedin, Mail, MapPin } from "lucide-react";
+import { Download, Moon, Sun, Menu, X, Github, Linkedin, Mail, MapPin, Terminal } from "lucide-react";
 import ContactModal from "./ContactModal";
 import { useLanguage } from "./hooks/useLanguage";
 import { translations } from "../lib/translations";
@@ -108,9 +108,10 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
             : "bg-transparent"
         }`}
       >
-        <div className="container mx-auto w-full p-4 lg:px-8 flex flex-row items-center justify-between">
+        <div className="w-full px-4 lg:px-6 py-4 flex flex-row items-center justify-between">
 
           <a className="flex items-center gap-3 group" href={subPage ? "/" : "#top"} onClick={() => saveSectionAndClose('top')}>
+            {/* Mobile: circular photo (hidden on desktop) */}
             <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full block md:hidden bg-foreground/10 flex items-center justify-center group-hover:bg-foreground/20 transition-colors">
               <img
                 src="/20220924_233024.webp"
@@ -120,6 +121,10 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
                 height={40}
                 className="w-full h-full object-cover"
               />
+            </span>
+            {/* Desktop: Terminal icon as logo (hidden on mobile) */}
+            <span className="hidden md:flex relative h-10 w-10 shrink-0 rounded-xl bg-foreground/10 items-center justify-center group-hover:bg-foreground/15 transition-colors border border-foreground/[0.08] group-hover:border-foreground/20">
+              <Terminal className="w-4 h-4 text-foreground" />
             </span>
             <div className="flex flex-col gap-0">
               <div className="font-semibold text-base lg:text-xl text-foreground tracking-tight">Eduardo Cabral</div>

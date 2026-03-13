@@ -418,7 +418,7 @@ export default function ProjectDetail({ slug }: Props) {
       </div>
 
       {/* Image slider — full viewport width */}
-      <div className="w-full mb-0">
+      <div className="w-full mb-0" ref={(el) => { if (el) el.style.setProperty('view-transition-name', `project-card-${slug}`); }}>
         <div className="detail-image">
           <ImageSlider images={staticData.images} title={project.title} />
         </div>

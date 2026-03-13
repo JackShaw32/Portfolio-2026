@@ -3,42 +3,6 @@ import { useEffect, useState } from "react";
 import { useLanguage } from "./hooks/useLanguage";
 import { translations } from "../lib/translations";
 
-function LineGrid() {
-  const cell = 72;
-  const cols = 24;
-  const rows = 16;
-  const vw = cols * cell;
-  const vh = rows * cell;
-
-  return (
-    <svg
-      className="absolute inset-0 w-full h-full pointer-events-none"
-      viewBox={`0 0 ${vw} ${vh}`}
-      preserveAspectRatio="xMidYMid slice"
-      aria-hidden="true"
-    >
-      <defs>
-        <radialGradient id="grid-fade" cx="50%" cy="30%" r="70%">
-          <stop offset="0%" stopColor="white" stopOpacity="1" />
-          <stop offset="40%" stopColor="white" stopOpacity="0.5" />
-          <stop offset="100%" stopColor="white" stopOpacity="0" />
-        </radialGradient>
-        <mask id="grid-mask">
-          <rect width="100%" height="100%" fill="url(#grid-fade)" />
-        </mask>
-      </defs>
-      <g mask="url(#grid-mask)" stroke="currentColor" strokeWidth="0.5" opacity="0.15">
-        {Array.from({ length: cols + 1 }, (_, i) => (
-          <line key={`v${i}`} x1={i * cell} y1={0} x2={i * cell} y2={vh} />
-        ))}
-        {Array.from({ length: rows + 1 }, (_, i) => (
-          <line key={`h${i}`} x1={0} y1={i * cell} x2={vw} y2={i * cell} />
-        ))}
-      </g>
-    </svg>
-  );
-}
-
 const roles = [
   "Full-Stack Developer",
   "React & Next.js Specialist",
@@ -79,12 +43,31 @@ export default function Hero() {
 
   return (
     <section id="top" className="relative min-h-screen flex items-center justify-center overflow-hidden w-full">
-      <LineGrid />
-
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-[10%] -left-[10%] w-[600px] h-[500px] rounded-full bg-blue-600/[0.18] blur-[120px]" />
-        <div className="absolute top-[20%] -right-[10%] w-[550px] h-[450px] rounded-full bg-orange-500/[0.15] blur-[120px]" />
+      {/* Aurora color blobs — light mode only */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden dark:hidden">
+        <div className="absolute -top-[25%] left-1/2 -translate-x-1/2 w-[900px] h-[700px] rounded-full bg-violet-500/[0.10] dark:bg-violet-500/[0.13] blur-[160px]" />
+        <div className="absolute top-[5%] -right-[12%] w-[550px] h-[450px] rounded-full bg-pink-500/[0.07] dark:bg-pink-500/[0.09] blur-[140px]" />
+        <div className="absolute top-[15%] -left-[8%] w-[480px] h-[380px] rounded-full bg-indigo-500/[0.06] dark:bg-indigo-500/[0.08] blur-[130px]" />
       </div>
+
+      {/* Noise light mode — sparse dark speckles on white */}
+      <div
+        className="dark:hidden absolute inset-0 pointer-events-none opacity-[0.6]"
+        aria-hidden="true"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Cfilter id='n' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 9 0 0 0 -7'/%3E%3C/filter%3E%3Crect width='500' height='500' filter='url(%23n)'/%3E%3C/svg%3E")`,
+          backgroundSize: '400px 400px',
+        }}
+      />
+      {/* Noise dark mode — sparse white speckles on black */}
+      <div
+        className="hidden dark:block absolute inset-0 pointer-events-none opacity-[0.4]"
+        aria-hidden="true"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Cfilter id='n' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 9 0 0 0 -7'/%3E%3C/filter%3E%3Crect width='500' height='500' filter='url(%23n)'/%3E%3C/svg%3E")`,
+          backgroundSize: '400px 400px',
+        }}
+      />
 
       <div className="container mx-auto px-6 pt-20 relative z-30">
         <div className="max-w-4xl mx-auto text-center">

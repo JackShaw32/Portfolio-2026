@@ -216,7 +216,7 @@ export default function Skills() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8 reveal">
-            <div className="glass rounded-3xl p-8 border border-foreground/5 hover:border-foreground/10 transition-colors h-full">
+            <div className="bg-background hover:bg-foreground/5 dark:bg-white/[0.04] dark:backdrop-blur-xl rounded-3xl p-8 border border-foreground/5 hover:border-foreground/10 transition-all duration-300 h-full">
               <div className="flex items-center gap-3 mb-8">
                 <Briefcase className="w-5 h-5 text-primary" />
                 <h2 className="font-mono text-sm font-bold uppercase tracking-wider">{sk.workExperience}</h2>
@@ -272,7 +272,7 @@ export default function Skills() {
             </div>
 
             <div className="flex flex-col gap-6">
-              <div className="glass rounded-3xl p-8 border border-foreground/5 hover:border-foreground/10 transition-colors h-full">
+              <div className="bg-background hover:bg-foreground/5 dark:bg-white/[0.04] dark:backdrop-blur-xl rounded-3xl p-8 border border-foreground/5 hover:border-foreground/10 transition-all duration-300 h-full">
                 <div className="flex items-center gap-3 mb-8">
                   <GraduationCap className="w-5 h-5 text-primary" />
                   <h2 className="font-mono text-sm font-bold uppercase tracking-wider">{sk.education}</h2>
@@ -294,11 +294,11 @@ export default function Skills() {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="glass rounded-2xl p-6 flex flex-col justify-center items-center text-center border border-foreground/5 transition-colors hover:bg-primary/5">
+                <div className="bg-background hover:bg-foreground/5 dark:bg-white/[0.04] dark:backdrop-blur-xl rounded-2xl p-6 flex flex-col justify-center items-center text-center border border-foreground/5 transition-all duration-300 hover:bg-primary/5">
                   <span className="text-4xl font-black mb-1">3+</span>
                   <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">{sk.yearsExp}</span>
                 </div>
-                <div className="glass rounded-2xl p-6 flex flex-col justify-center items-center text-center border border-foreground/5 transition-colors hover:bg-primary/5">
+                <div className="bg-background hover:bg-foreground/5 dark:bg-white/[0.04] dark:backdrop-blur-xl rounded-2xl p-6 flex flex-col justify-center items-center text-center border border-foreground/5 transition-all duration-300 hover:bg-primary/5">
                   <Languages className="w-6 h-6 text-primary mb-2" />
                   <span className="text-xs text-muted-foreground leading-tight font-medium">{sk.languages}</span>
                 </div>
@@ -319,7 +319,7 @@ export default function Skills() {
             return (
             <div
               key={m.i}
-              className="relative rounded-xl sm:rounded-2xl overflow-hidden bg-foreground/[0.04] border border-foreground/[0.06] select-none"
+              className="relative rounded-xl sm:rounded-2xl overflow-hidden bg-background dark:bg-foreground/[0.04] border border-foreground/[0.06] select-none"
             >
               {m.i === 3 && (
                 <button

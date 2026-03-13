@@ -1,21 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <style>
-    .bg { fill: #0f172a; }
-    .fg { fill: #f8fafc; }
-    @media (prefers-color-scheme: light) {
-      .bg { fill: #f1f5f9; }
-      .fg { fill: #0f172a; }
-    }
-  </style>
-  <rect class="bg" width="32" height="32" rx="7"/>
-  <text
-    class="fg"
-    x="16"
-    y="22"
-    font-family="system-ui, -apple-system, sans-serif"
-    font-size="13"
-    font-weight="700"
-    text-anchor="middle"
-    letter-spacing="-0.5"
-  >EC</text>
+  <circle cx="16" cy="16" r="16" fill="#000000"/>
+  <polyline points="9.33,20.17 14.33,15.17 9.33,10.17" fill="none" stroke="#ffffff" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="16" y1="21.83" x2="22.67" y2="21.83" stroke="#ffffff" stroke-width="1.67" stroke-linecap="round"/>
 </svg>

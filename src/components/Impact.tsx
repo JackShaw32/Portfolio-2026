@@ -90,7 +90,7 @@ export default function Impact() {
               return (
                 <div
                   key={i}
-                  className={`glass rounded-3xl p-5 md:p-7 flex flex-col items-center text-center border ${color.border} hover:scale-[1.03] hover:shadow-lg transition-all duration-300 cursor-default`}
+                  className={`rounded-3xl p-5 md:p-7 flex flex-col items-center text-center border ${color.border} hover:scale-[1.03] hover:shadow-lg hover:bg-foreground/5 transition-all duration-300 cursor-default bg-background dark:bg-white/[0.04] dark:backdrop-blur-xl`}
                 >
                   {/* SVG ring with counter */}
                   <div className="relative w-24 h-24 mb-5">

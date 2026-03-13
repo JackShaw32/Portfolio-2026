@@ -17,6 +17,7 @@ El objetivo fue reemplazar un CV estático por una experiencia interactiva donde
 - [Frontend](#frontend)
   - [Smooth Scroll (Lenis)](#smooth-scroll-lenis)
   - [Animaciones de scroll (Reveal)](#animaciones-de-scroll-reveal)
+  - [View Transitions y Shared Element Transitions](#view-transitions-y-shared-element-transitions)
 - [Backend y API](#backend-y-api)
 - [Sistema de IA (EduBot)](#sistema-de-ia-edubot)
 - [Seguridad](#seguridad)
@@ -76,7 +77,7 @@ educcabral/
 ├── public/                          # Archivos estáticos
 │   ├── fonts/                       # General Sans (woff2, self-hosted)
 │   ├── projects/                    # Imágenes de proyectos (.webp)
-│   ├── favicon.svg / favicon.ico
+│   ├── favicon.svg / favicon.ico    # Ícono Terminal con fondo negro circular
 │   ├── site.webmanifest             # PWA manifest
 │   └── robots.txt
 │
@@ -163,9 +164,9 @@ educcabral/
 
 El sitio se compone de una sola página (`/`) con secciones continuas, más páginas de detalle por proyecto (`/projects/[slug]`).
 
-**Hero** — Primera impresión del sitio. Tiene un efecto typewriter que cicla entre 4 roles profesionales, un fondo con grilla SVG animada y orbes de blur, y botones de llamada a la acción (ver proyectos y LinkedIn). Incluye un badge de disponibilidad laboral.
+**Hero** — Primera impresión del sitio. Tiene un efecto typewriter que cicla entre 4 roles profesionales y botones de llamada a la acción (ver proyectos y LinkedIn). El fondo combina orbes aurora (violeta/rosa/índigo) con una textura de ruido/grano generada por SVG `feTurbulence + feColorMatrix` que simula partículas difuminadas. En modo oscuro los orbes se ocultan y las partículas se vuelven blancas sobre fondo negro puro, al estilo bun.com. Incluye un badge de disponibilidad laboral.
 
-**Navbar** — Barra fija con auto-ocultamiento al scrollear. Implementa toggle de tema oscuro/claro (guardado en `localStorage`), toggle de idioma ES/EN (sincronizado por `CustomEvent` entre todos los componentes), menú hamburguesa para mobile con panel deslizable, enlace de descarga de CV y botón que abre el `ContactModal`.
+**Navbar** — Barra fija con auto-ocultamiento al scrollear. Implementa toggle de tema oscuro/claro (guardado en `localStorage`), toggle de idioma ES/EN (sincronizado por `CustomEvent` entre todos los componentes), menú hamburguesa para mobile con panel deslizable, enlace de descarga de CV y botón que abre el `ContactModal`. En desktop muestra un ícono `Terminal` de Lucide como logo personal en la izquierda (en mobile muestra la foto de perfil circular).
 
 **Skills** — Línea de tiempo de experiencia laboral (Gearthlogic LLC, Freelance) con educación, stats (años de experiencia, idiomas) y botones de contacto rápido (WhatsApp, CV). Incluye tarjetas KPI con sparklines animados (RAF + ease-out cúbico): la línea SVG, los puntos y el contador numérico se sincronizan en el mismo loop de animación usando `pathLength="1000"` y distancias euclidianas acumuladas para el timing de cada punto. El botón "Contactame" abre el `ContactModal` directamente desde la sección.
 
@@ -173,7 +174,7 @@ El sitio se compone de una sola página (`/`) con secciones continuas, más pág
 
 **Optimizations** — Muestra los scores de Lighthouse del sitio (97 Performance, 98 SEO) con círculos SVG animados vía RAF. Los arcos, los números y los iconos arrancan en rojo y transicionan a naranja y luego a verde siguiendo la escala de colores oficial de Lighthouse (0–49 rojo, 50–89 naranja, 90+ verde), todo interpolado con `lerp()` RGB en sync con los contadores. Incluye un botón de replay junto al filename `lighthouse-report.json` que reinicia la animación completa. También contiene un grid visual de todas las tecnologías usadas con iconos de `react-icons`.
 
-**About** — Biografía bilingüe, foto de perfil con badges flotantes de ubicación y rol, y links a redes sociales.
+**About** — Biografía bilingüe, foto de perfil circular con zoom sutil al hover (`scale-[1.08]` interno, clippeado al círculo), badges flotantes de ubicación y rol, y links a redes sociales.
 
 **Contact** — Cards con datos de contacto (email, LinkedIn, GitHub, ubicación) y formulario completo que envía al endpoint `/api/contact`.
 
@@ -187,7 +188,7 @@ El hook `useLanguage` actúa como estado global sin necesitar un store externo. 
 
 ### Sistema de temas
 
-El tema se detecta al inicio con un script inline en el `<head>` (antes de que el DOM se pinte) para evitar el flash de tema incorrecto. El toggle guarda el valor en `localStorage` y coordina con las `ViewTransitions` de Astro para que el tema no se pierda al navegar.
+El tema se detecta al inicio con un script inline en el `<head>` (antes de que el DOM se pinte) para evitar el flash de tema incorrecto. El toggle guarda el valor en `localStorage` y coordina con el `ClientRouter` de Astro para que el tema no se pierda al navegar.
 
 ### Smooth Scroll (Lenis)
 
@@ -222,6 +223,18 @@ Generada dinámicamente desde el array estático en `src/config/projects.ts`. In
 - Sidebar sticky con metadata del proyecto
 - Datos estructurados JSON-LD de tipo `CreativeWork` para SEO
 - Navegación al siguiente proyecto
+
+### View Transitions y Shared Element Transitions
+
+El sitio usa `<ClientRouter />` de Astro (antes llamado `<ViewTransitions />`, renombrado en v5) combinado con la **View Transitions API** del browser para transitions fluidas entre páginas.
+
+**Shared Element Transition (portfolio → proyecto):**
+
+Al hacer click en el card de un proyecto, la imagen del card "vuela" y se expande hasta convertirse en el slider de imágenes del detalle. Se implementa asignando un `view-transition-name` único (usando el slug del proyecto) al `<a>` que contiene la imagen del card en `Projects.tsx` y al wrapper del `ImageSlider` en `ProjectDetail.tsx`. El browser interpola automáticamente posición, dimensiones y `border-radius` entre los dos elementos durante 400ms con easing material (`cubic-bezier(0.2, 0, 0, 1)`).
+
+**Navegación de vuelta (proyecto → portfolio):**
+
+Al volver al portfolio (desde cualquier vía: botón superior, botón inferior, o back del browser), la transición shared element se cancela completamente para evitar que la imagen "vuele" desde una posición fuera del viewport. Esto se resuelve en `astro:before-swap`: cuando se detecta que se sale de `/projects/...` hacia `/` (o que la dirección es `back`), se recorre el DOM de ambos documentos (saliente y entrante) y se elimina la propiedad `view-transition-name` de todos los elementos que la tienen, antes de que el browser capture los snapshots. El resultado es una transición limpia sin morph, con el card ya en su posición correcta tras la restauración de scroll.
 
 ---
 
@@ -495,5 +508,5 @@ Todos los comandos se ejecutan desde la raíz del proyecto:
 - **Open Graph** y **Twitter Card** en todas las páginas
 - **Fuentes self-hosted** (General Sans + Inter variable) con `font-display: swap` para evitar layout shifts
 - **Imágenes WebP** para todas las fotos del portfolio
-- **ViewTransitions** de Astro para navegación sin recarga completa (efecto SPA)
+- **`ClientRouter`** de Astro (View Transitions API) para navegación sin recarga y Shared Element Transitions en cards de proyectos
 - **PWA-ready**: `site.webmanifest`, iconos en múltiples tamaños, `apple-touch-icon`

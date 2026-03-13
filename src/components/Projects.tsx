@@ -91,6 +91,7 @@ export default function Projects() {
                 <div className={`project-img-wrap opacity-0 w-full xl:w-3/5 ${isEven ? "xl:order-2" : "xl:order-1"}`}>
                   <a
                     href={`/projects/${project.slug}`}
+                    ref={(el) => { if (el) el.style.setProperty('view-transition-name', `project-card-${project.slug}`); }}
                     className="group/img block relative rounded-3xl overflow-hidden border border-foreground/10 group-hover/img:border-primary/30 transition-all duration-500 shadow-2xl shadow-black/20"
                   >
                     <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-40 group-hover/img:opacity-80 transition-opacity duration-700 z-10`} />

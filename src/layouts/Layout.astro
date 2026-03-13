@@ -1,6 +1,6 @@
 ---
 import '@/styles/global.css';
-import { ViewTransitions } from 'astro:transitions';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title: string;
@@ -205,6 +205,20 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
             e.newDocument.documentElement.classList.remove('dark');
           }
         } catch(e) {}
+
+        // Returning to portfolio from any project page: strip view-transition-name from
+        // both documents so the shared-element morph is skipped entirely.
+        // This covers: browser back, top back-link, and bottom back-link (all navigate to "/").
+        const leavingProject = location.pathname.match(/^\/projects\//) && (e as any).to?.pathname === '/';
+        const isBack = (e as any).direction === 'back';
+        if (leavingProject || isBack) {
+          const strip = (doc: Document) =>
+            doc.querySelectorAll<HTMLElement>('[style*="view-transition-name"]').forEach(el =>
+              el.style.removeProperty('view-transition-name')
+            );
+          strip(document);
+          strip(e.newDocument);
+        }
       });
 
       // Para ViewTransitions de Astro: re-aplicar tema después de cada navegación
@@ -366,18 +380,20 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
           sessionStorage.removeItem('return-to-project');
           var card = document.querySelector('[data-project-slug="' + slug + '"]');
           if (card) {
+            var offset = -(window.innerHeight / 2) + (card as HTMLElement).offsetHeight / 2;
+            var targetY = (card as HTMLElement).getBoundingClientRect().top + window.scrollY + offset;
+            // Synchronous native scroll — guarantees position is set before
+            // the View Transition captures the "new" state snapshot
+            window.scrollTo(0, Math.max(0, targetY));
             if (l) {
-              var offset = -(window.innerHeight / 2) + (card as HTMLElement).offsetHeight / 2;
               l.scrollTo(card as HTMLElement, { immediate: true, offset: offset });
-            } else {
-              card.scrollIntoView({ block: 'center' });
             }
           }
         }
       });
     </script>
 
-    <ViewTransitions />
+    <ClientRouter />
   </head>
   <body class="min-h-screen bg-background font-sans antialiased selection:bg-primary/30 overflow-x-hidden">
     <slot />
