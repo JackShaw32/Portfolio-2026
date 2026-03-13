@@ -62,9 +62,9 @@ export const toolsDefinition = {
     execute: async () => ({
       linkedin:  'https://linkedin.com/in/raul-eduardo-cabral',
       email:     'jackshaw@live.com.ar',
-      cvEs:      'https://drive.google.com/file/d/1rowPwlyhJPDIUqs-4N_WmLW_LS1Y7Noz/view?usp=sharing',
-      cvEn:      'https://drive.google.com/file/d/1dPo1RNqasoNxXUjwk6nGuDBWIPoD2_mY/view?usp=sharing',
-      portfolio: 'https://educabral.site/',
+      cvEs:      'https://jackshaw32.vercel.app/Eduardo-Cabral-Full-Stack-Developer-ES.pdf',
+      cvEn:      'https://jackshaw32.vercel.app/Eduardo-Cabral-Full-Stack-Developer-EN.pdf',
+      portfolio: 'https://jackshaw32.vercel.app/',
       phone:     '+54 9 351 858-8034',
       github:    'https://github.com/JackShaw32',
     }),

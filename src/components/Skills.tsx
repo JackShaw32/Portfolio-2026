@@ -183,15 +183,14 @@ export default function Skills() {
               <FileText className="w-4 h-4 text-primary" />
             </div>
             <div className="flex flex-col flex-1">
-              <span className="font-bold text-sm text-foreground leading-tight">CV</span>
-              <span className="text-[10px] text-muted-foreground font-mono">2026</span>
+              <span className="font-bold text-sm text-foreground leading-tight">Download CV – Full Stack Developer</span>
+              <span className="text-[10px] text-muted-foreground font-mono">PDF · Updated 2026</span>
             </div>
             <div className="flex flex-col items-center gap-1">
               <span className="text-[9px] font-bold text-red-500 leading-none">ES</span>
               <a
-                href="https://drive.google.com/file/d/1rowPwlyhJPDIUqs-4N_WmLW_LS1Y7Noz/view?usp=sharing"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/Eduardo-Cabral-Full-Stack-Developer-ES.pdf"
+                download
                 className="w-8 h-8 rounded-xl flex items-center justify-center bg-foreground/5 hover:bg-foreground/15 border border-foreground/10 hover:border-foreground/30 transition-all duration-300"
                 title={sk.downloadCVSpanish}
                 aria-label={sk.downloadCVSpanish}
@@ -202,9 +201,8 @@ export default function Skills() {
             <div className="flex flex-col items-center gap-1">
               <span className="text-[9px] font-bold text-blue-500 leading-none">EN</span>
               <a
-                href="https://drive.google.com/file/d/1dPo1RNqasoNxXUjwk6nGuDBWIPoD2_mY/view?usp=sharing"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/Eduardo-Cabral-Full-Stack-Developer-EN.pdf"
+                download
                 className="w-8 h-8 rounded-xl flex items-center justify-center bg-foreground/5 hover:bg-foreground/15 border border-foreground/10 hover:border-foreground/30 transition-all duration-300"
                 title={sk.downloadCVEnglish}
                 aria-label={sk.downloadCVEnglish}

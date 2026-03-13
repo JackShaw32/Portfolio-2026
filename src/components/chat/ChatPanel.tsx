@@ -72,7 +72,7 @@ export default function ChatPanel({
                 </div>
               </div>
               <div className="flex items-center gap-1.5">
-                <div className="hidden sm:flex items-center gap-1 text-xs text-muted-foreground bg-muted/50 border border-border/50 px-2.5 py-1 rounded-full font-medium"><Lock className="w-3 h-3" /> Beta AI</div>
+                <div className="flex items-center gap-1 text-xs text-muted-foreground bg-muted/50 border border-border/50 px-2.5 py-1 rounded-full font-medium"><Lock className="w-3 h-3" /> Beta AI</div>
                 <button onClick={onClearChat} title={lang === 'en' ? 'Clear chat' : 'Limpiar chat'} className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:text-red-400 hover:bg-red-400/10 transition-colors"><Trash2 className="w-4 h-4" /></button>
                 <button onClick={onToggleExpand} aria-label={expanded ? (lang === 'en' ? 'Compress chat' : 'Contraer chat') : (lang === 'en' ? 'Expand chat' : 'Expandir chat')} className="hidden sm:flex w-8 h-8 rounded-full items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"><Maximize2 className="w-4 h-4" /></button>
                 <button onClick={onClose} aria-label={lang === 'en' ? 'Close chat' : 'Cerrar chat'} className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"><X className="w-5 h-5 sm:w-4 sm:h-4" /></button>

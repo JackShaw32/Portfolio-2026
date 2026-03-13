@@ -151,9 +151,8 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
 
           <div className="inline-flex gap-2 items-center">
             <a
-              href="https://drive.google.com/file/d/1rowPwlyhJPDIUqs-4N_WmLW_LS1Y7Noz/view?usp=sharing"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/Eduardo-Cabral-Full-Stack-Developer-EN.pdf"
+              download
               className="hidden md:flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors border border-border/50 bg-transparent hover:bg-foreground/5 text-foreground h-9 rounded-md px-4"
             >
               <Download className="mr-2 w-4 h-4" />

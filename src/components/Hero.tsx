@@ -52,21 +52,13 @@ export default function Hero() {
 
       {/* Noise light mode — sparse dark speckles on white */}
       <div
-        className="dark:hidden absolute inset-0 pointer-events-none opacity-[0.6]"
+        className="hero-noise-light dark:hidden absolute inset-0 pointer-events-none opacity-[0.6]"
         aria-hidden="true"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Cfilter id='n' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 9 0 0 0 -7'/%3E%3C/filter%3E%3Crect width='500' height='500' filter='url(%23n)'/%3E%3C/svg%3E")`,
-          backgroundSize: '400px 400px',
-        }}
       />
       {/* Noise dark mode — sparse white speckles on black */}
       <div
-        className="hidden dark:block absolute inset-0 pointer-events-none opacity-[0.4]"
+        className="hero-noise-dark hidden dark:block absolute inset-0 pointer-events-none opacity-[0.4]"
         aria-hidden="true"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Cfilter id='n' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 9 0 0 0 -7'/%3E%3C/filter%3E%3Crect width='500' height='500' filter='url(%23n)'/%3E%3C/svg%3E")`,
-          backgroundSize: '400px 400px',
-        }}
       />
 
       <div className="container mx-auto px-6 pt-20 relative z-30">

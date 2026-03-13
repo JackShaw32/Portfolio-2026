@@ -79,12 +79,12 @@ export default function ToolResultCard({ toolInvocation, lang }: ToolResultCardP
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const contact = toolInvocation.result as any;
     const contactLinks = [
-      { href: contact.linkedin, icon: <Linkedin className="w-3.5 h-3.5" />, key: 'LinkedIn', label: 'LinkedIn' },
-      { href: `mailto:${contact.email}`, icon: <Mail className="w-3.5 h-3.5" />, key: contact.email, label: contact.email },
-      { href: contact.github, icon: <Github className="w-3.5 h-3.5" />, key: 'GitHub', label: 'GitHub' },
-      { href: contact.cvEs, icon: <FileDown className="w-3.5 h-3.5" />, key: 'CV ES', label: <span>CV <span className="text-[10px]">ES</span></span> },
-      { href: contact.cvEn, icon: <FileDown className="w-3.5 h-3.5" />, key: 'CV EN', label: <span>CV <span className="text-[10px]">EN</span></span> },
-      { href: contact.portfolio, icon: <Globe className="w-3.5 h-3.5" />, key: 'Portfolio', label: 'Portfolio' },
+      { href: contact.linkedin, icon: <Linkedin className="w-3.5 h-3.5" />, key: 'LinkedIn', label: 'LinkedIn', download: false },
+      { href: `mailto:${contact.email}`, icon: <Mail className="w-3.5 h-3.5" />, key: contact.email, label: contact.email, download: false },
+      { href: contact.github, icon: <Github className="w-3.5 h-3.5" />, key: 'GitHub', label: 'GitHub', download: false },
+      { href: contact.cvEs, icon: <FileDown className="w-3.5 h-3.5" />, key: 'CV ES', label: <span>CV <span className="text-[10px]">ES</span></span>, download: true },
+      { href: contact.cvEn, icon: <FileDown className="w-3.5 h-3.5" />, key: 'CV EN', label: <span>CV <span className="text-[10px]">EN</span></span>, download: true },
+      { href: contact.portfolio, icon: <Globe className="w-3.5 h-3.5" />, key: 'Portfolio', label: 'Portfolio', download: false },
     ];
     return (
       <div key={toolInvocation.toolCallId} className="w-full sm:min-w-[260px] max-w-[300px] rounded-2xl border border-indigo-500/20 bg-background overflow-hidden shadow-lg animate-in fade-in slide-in-from-bottom-2 mt-1">
@@ -94,7 +94,7 @@ export default function ToolResultCard({ toolInvocation, lang }: ToolResultCardP
         </div>
         <div className="p-3 space-y-2">
           {contactLinks.map((link) => (
-            <a key={link.key} href={link.href} target="_blank" rel="noreferrer"
+            <a key={link.key} href={link.href} target="_blank" rel="noreferrer" {...(link.download ? { download: true } : {})}
               className="flex items-center gap-2.5 w-full bg-muted/40 hover:bg-foreground hover:text-background border border-border/40 rounded-xl px-3 py-2 text-xs font-medium transition-colors">
               {link.icon}
               {link.label}

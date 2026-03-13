@@ -135,9 +135,8 @@ export default function About() {
                   <Mail className="w-5 h-5" />
                 </button>
                 <a
-                  href="https://drive.google.com/file/d/1rowPwlyhJPDIUqs-4N_WmLW_LS1Y7Noz/view?usp=sharing"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/Eduardo-Cabral-Full-Stack-Developer-ES.pdf"
+                  download
                   title="Descargar CV en Español"
                   className="flex-1 glass hover:bg-foreground/5 text-muted-foreground hover:text-foreground h-12 rounded-2xl flex items-center justify-center gap-1 transition-all duration-300 border border-border/50 hover:border-foreground/30"
                 >
@@ -145,9 +144,8 @@ export default function About() {
                   <span className="text-[10px] font-semibold">ES</span>
                 </a>
                 <a
-                  href="https://drive.google.com/file/d/1dPo1RNqasoNxXUjwk6nGuDBWIPoD2_mY/view?usp=sharing"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/Eduardo-Cabral-Full-Stack-Developer-EN.pdf"
+                  download
                   title="Download CV in English"
                   className="flex-1 glass hover:bg-foreground/5 text-muted-foreground hover:text-foreground h-12 rounded-2xl flex items-center justify-center gap-1 transition-all duration-300 border border-border/50 hover:border-foreground/30"
                 >

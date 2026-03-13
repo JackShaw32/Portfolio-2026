@@ -61,7 +61,7 @@ English: Intermediate
 Methodologies: Scrum (Agile), Jira
 GitHub: github.com/JackShaw32
 LinkedIn: linkedin.com/in/raul-eduardo-cabral
-Portfolio: https://educabral.site/
+Portfolio: https://jackshaw32.vercel.app/
 Email: jackshaw@live.com.ar
 Phone: +54 9 351 858-8034
 
