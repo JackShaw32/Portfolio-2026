@@ -80,7 +80,7 @@ export default function ChatPanel({
             </div>
 
             {/* ── Messages ── */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin overflow-x-hidden">
+            <div data-lenis-prevent className="flex-1 overflow-y-auto overscroll-contain p-4 space-y-4 scrollbar-thin overflow-x-hidden">
               {messages.map((msg) => (
                 <div key={msg.id} className={`flex gap-2 sm:gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
                   <div className={`w-7 h-7 rounded-xl flex-shrink-0 flex items-center justify-center ${msg.role === "assistant" ? "bg-foreground text-background" : "bg-muted text-muted-foreground"}`}>
