@@ -1,8 +1,52 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useReveal } from "./hooks/useReveal";
-import { Briefcase, GraduationCap, Languages, Linkedin, Mail, FileText, Download, ChevronRight, ChevronDown } from "lucide-react";
+import { Briefcase, GraduationCap, Languages, Mail, FileText, Download, ChevronRight, ChevronDown, RotateCcw } from "lucide-react";
 import { useLanguage } from "./hooks/useLanguage";
 import { translations } from "../lib/translations";
+import ContactModal from "./ContactModal";
+
+const CHARTS = [
+  {
+    // Projects — irregular upward climb, more inflections
+    pts: [[0,34],[10,26],[18,32],[28,20],[36,28],[46,14],[56,22],[64,12],[74,20],[84,10],[100,8]] as [number,number][],
+    line: "M 0,34 L 10,26 L 18,32 L 28,20 L 36,28 L 46,14 L 56,22 L 64,12 L 74,20 L 84,10 L 100,8",
+    area: "M 0,34 L 10,26 L 18,32 L 28,20 L 36,28 L 46,14 L 56,22 L 64,12 L 74,20 L 84,10 L 100,8 L 100,44 L 0,44 Z",
+    color: "#a78bfa",
+  },
+  {
+    // Performance — dense rapid spikes
+    pts: [[0,36],[6,14],[11,32],[17,10],[23,30],[29,8],[35,28],[41,9],[47,28],[53,8],[60,24],[67,6],[75,18],[83,8],[100,6]] as [number,number][],
+    line: "M 0,36 L 6,14 L 11,32 L 17,10 L 23,30 L 29,8 L 35,28 L 41,9 L 47,28 L 53,8 L 60,24 L 67,6 L 75,18 L 83,8 L 100,6",
+    area: "M 0,36 L 6,14 L 11,32 L 17,10 L 23,30 L 29,8 L 35,28 L 41,9 L 47,28 L 53,8 L 60,24 L 67,6 L 75,18 L 83,8 L 100,6 L 100,44 L 0,44 Z",
+    color: "#fbbf24",
+  },
+  {
+    // Tech Debt — staircase with small fluctuations
+    pts: [[0,38],[8,40],[16,38],[18,30],[24,28],[36,30],[40,20],[48,18],[58,20],[62,12],[68,10],[80,12],[100,6]] as [number,number][],
+    line: "M 0,38 L 8,40 L 16,38 L 18,30 L 24,28 L 36,30 L 40,20 L 48,18 L 58,20 L 62,12 L 68,10 L 80,12 L 100,6",
+    area: "M 0,38 L 8,40 L 16,38 L 18,30 L 24,28 L 36,30 L 40,20 L 48,18 L 58,20 L 62,12 L 68,10 L 80,12 L 100,6 L 100,44 L 0,44 Z",
+    color: "#34d399",
+  },
+  {
+    // Uptime — nearly flat with small wobbles, one incident dip, then restored
+    pts: [[0,9],[12,8],[22,9],[28,38],[32,10],[40,8],[52,9],[65,8],[80,9],[100,8]] as [number,number][],
+    line: "M 0,9 L 12,8 L 22,9 L 28,38 L 32,10 L 40,8 L 52,9 L 65,8 L 80,9 L 100,8",
+    area: "M 0,9 L 12,8 L 22,9 L 28,38 L 32,10 L 40,8 L 52,9 L 65,8 L 80,9 L 100,8 L 100,44 L 0,44 Z",
+    color: "#38bdf8",
+  },
+];
+
+function pathThresholds(pts: [number, number][]): number[] {
+  const cum: number[] = [0];
+  for (let i = 1; i < pts.length; i++) {
+    const dx = pts[i][0] - pts[i-1][0];
+    const dy = pts[i][1] - pts[i-1][1];
+    cum.push(cum[i-1] + Math.sqrt(dx*dx + dy*dy));
+  }
+  const total = cum[cum.length - 1];
+  return cum.map(d => d / total);
+}
+const THRESHOLDS = CHARTS.map(c => pathThresholds(c.pts));
 
 export default function Skills() {
   const ref = useRef<HTMLElement>(null);
@@ -14,25 +58,110 @@ export default function Skills() {
   const sk = t.skills;
   const experience = sk.experience;
   const education = sk.educationItems;
+
+  const [ecgOn,        setEcgOn]        = useState(false);
+  const [hasTriggered, setHasTriggered] = useState(false);
+  const [spinning,     setSpinning]     = useState(false);
+  const [contactOpen,  setContactOpen]  = useState(false);
+  const countRefs    = useRef<(HTMLSpanElement | null)[]>([null, null, null, null]);
+  const lineRefs     = useRef<(SVGPathElement | null)[]>([null, null, null, null]);
+  const dotRefs      = useRef<(SVGCircleElement | null)[][]>([[], [], [], []]);
+  const animating    = useRef(false);
+  const rafRef       = useRef<number>(0);
+  const timeout1Ref  = useRef<number>(0);
+  const timeout2Ref  = useRef<number>(0);
+
+  const runAnimation = () => {
+    cancelAnimationFrame(rafRef.current);
+    setEcgOn(true);
+    const suffixes  = ['+', '%', '%', '%'];
+    const targets   = [10, 45, 30, 100];
+    const durations = [2800, 3400, 3200, 2400];
+    const delays    = [0, 150, 300, 450];
+    countRefs.current.forEach((el, i) => { if (el) el.textContent = `0${suffixes[i]}`; });
+    lineRefs.current.forEach(el => { if (el) el.style.strokeDashoffset = '1000'; });
+    dotRefs.current.forEach(dots => dots.forEach(el => { if (el) el.style.opacity = '0'; }));
+    const t0 = performance.now();
+    const tick = (now: number) => {
+      const elapsed = now - t0;
+      let running = false;
+      targets.forEach((target, i) => {
+        const started = elapsed - delays[i];
+        if (started < 0) { running = true; return; }
+        const p    = Math.min(started / durations[i], 1);
+        const ease = 1 - Math.pow(1 - p, 3);
+        const elCount = countRefs.current[i];
+        if (elCount) elCount.textContent = `${Math.round(target * ease)}${suffixes[i]}`;
+        const elLine = lineRefs.current[i];
+        if (elLine) elLine.style.strokeDashoffset = String(1000 * (1 - ease));
+        dotRefs.current[i].forEach((el, idx) => {
+          if (!el) return;
+          const threshold = THRESHOLDS[i][idx];
+          el.style.opacity = ease >= threshold ? '1' : '0';
+        });
+        if (p < 1) running = true;
+      });
+      if (running) rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+  };
+
+  const replayAnimation = () => {
+    if (animating.current) return;          // synchronous guard — blocks before React re-renders
+    animating.current = true;
+    setSpinning(true);
+    setEcgOn(false);
+    clearTimeout(timeout1Ref.current);
+    clearTimeout(timeout2Ref.current);
+    timeout1Ref.current = window.setTimeout(() => {
+      runAnimation();
+      timeout2Ref.current = window.setTimeout(() => {
+        setSpinning(false);
+        animating.current = false;
+      }, 3800);
+    }, 350);
+  };
+
+  useEffect(() => {
+    if (!ref.current || hasTriggered) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setHasTriggered(true);
+        obs.disconnect();
+        runAnimation();
+      },
+      { threshold: 0.3 }
+    );
+    obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, [hasTriggered]);
+
+  useEffect(() => () => {
+    cancelAnimationFrame(rafRef.current);
+    clearTimeout(timeout1Ref.current);
+    clearTimeout(timeout2Ref.current);
+  }, []);
   
   return (
+    <>
     <section ref={ref} id="skills" className="py-24 relative">
       <div className="container mx-auto px-6">
+
         <div className="grid grid-cols-1 gap-8">
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 reveal">
-          <a
-            href="https://www.linkedin.com/in/raul-eduardo-cabral/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="glass flex items-center gap-4 px-6 py-5 rounded-3xl border border-foreground/10 hover:border-foreground/30 hover:bg-foreground/5 transition-all duration-300 group"
+          <button
+            type="button"
+            onClick={() => setContactOpen(true)}
+            className="glass flex items-center gap-4 px-6 py-5 rounded-3xl border border-foreground/10 hover:border-foreground/30 hover:bg-foreground/5 transition-all duration-300 group text-left cursor-pointer"
           >
             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
-              <Linkedin className="w-4 h-4 text-primary" />
+              <Mail className="w-4 h-4 text-primary" />
             </div>
             <span className="font-medium text-sm text-foreground flex-1">{sk.contactMe}</span>
             <ChevronRight className="w-4 h-4 text-foreground/40 group-hover:text-foreground/80 group-hover:translate-x-1 transition-all duration-300 flex-shrink-0" />
-          </a>
+          </button>
 
           <a
             href="https://api.whatsapp.com/send/?phone=5493518588034&text&type=phone_number&app_absent=0"
@@ -116,6 +245,7 @@ export default function Skills() {
                         </div>
                       </div>
                       <button
+                        type="button"
                         onClick={() => toggleExpand(i)}
                         className="flex items-center gap-1 text-xs text-primary/80 hover:text-primary font-medium transition-colors mt-1"
                       >
@@ -176,7 +306,95 @@ export default function Skills() {
             </div>
           </div>
         </div>
+
+        {/* ── KPI Sparkline Cards ───────────────────────────── */}
+        <div id="impact" className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 reveal mt-8">
+          {([
+            { suffix: "+", label: lang === "es" ? "Proyectos" : "Projects",              text: "text-[#a78bfa]", i: 0 },
+            { suffix: "%", label: lang === "es" ? "Performance" : "Performance",          text: "text-[#fbbf24]", i: 1 },
+            { suffix: "%", label: lang === "es" ? "Reducción deuda tec." : "Tech Debt Reduction", text: "text-[#34d399]", i: 2 },
+            { suffix: "%", label: lang === "es" ? "Sistemas en Prod." : "Production Sys.", text: "text-[#38bdf8]", i: 3 },
+          ] as const).map((m) => {
+            const delay = m.i * 150;
+            return (
+            <div
+              key={m.i}
+              className="relative rounded-xl sm:rounded-2xl overflow-hidden bg-foreground/[0.04] border border-foreground/[0.06] select-none"
+            >
+              {m.i === 3 && (
+                <button
+                  type="button"
+                  onClick={replayAnimation}
+                  disabled={spinning}
+                  title={lang === "es" ? "Reproducir animación" : "Replay animation"}
+                  className="absolute top-2 right-2 z-10 w-6 h-6 rounded-lg flex items-center justify-center bg-foreground/[0.06] hover:bg-foreground/[0.14] border border-foreground/[0.08] hover:border-foreground/[0.18] transition-colors duration-200 group disabled:pointer-events-none"
+                >
+                  <RotateCcw className={`w-3 h-3 text-muted-foreground/40 group-hover:text-muted-foreground/80 transition-colors duration-200 ${spinning ? "animate-spin" : ""}`} />
+                </button>
+              )}
+              <div className="px-3 sm:px-4 pt-3 sm:pt-4 pb-2 sm:pb-3">
+                <p className="text-[9px] sm:text-[10px] text-muted-foreground/50 font-semibold uppercase tracking-widest mb-1.5 sm:mb-2">
+                  {m.label}
+                </p>
+                <span
+                  ref={el => { countRefs.current[m.i] = el; }}
+                  className={`text-xl sm:text-2xl md:text-3xl font-black tabular-nums leading-none ${m.text}`}
+                >
+                  0{m.suffix}
+                </span>
+              </div>
+              <svg
+                viewBox="0 0 100 44"
+                preserveAspectRatio="none"
+                className="w-full block"
+                style={{ height: 70, transform: "translateZ(0)" }}
+                aria-hidden="true"
+              >
+                {[11, 22, 33].map(y => (
+                  <line key={y} x1="0" y1={y} x2="100" y2={y} stroke="currentColor" strokeOpacity="0.07" strokeWidth="0.5" />
+                ))}
+                <defs>
+                  <linearGradient id={`kpi-grad-${m.i}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%"   stopColor={CHARTS[m.i].color} stopOpacity="0.08" />
+                    <stop offset="100%" stopColor={CHARTS[m.i].color} stopOpacity="0"    />
+                  </linearGradient>
+                </defs>
+                <path
+                  d={CHARTS[m.i].area}
+                  fill={`url(#kpi-grad-${m.i})`}
+                  style={{ opacity: ecgOn ? 1 : 0, transition: ecgOn ? `opacity 1200ms ease-out ${delay + 80}ms` : 'none' }}
+                />
+                <path
+                  ref={el => { lineRefs.current[m.i] = el; }}
+                  d={CHARTS[m.i].line}
+                  fill="none"
+                  pathLength="1000"
+                  strokeWidth="0.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  style={{
+                    stroke: CHARTS[m.i].color,
+                    strokeDasharray: 1000,
+                    strokeDashoffset: 1000,
+                  }}
+                />
+                {CHARTS[m.i].pts.map(([x, y], idx) => (
+                  <circle
+                    key={idx}
+                    ref={el => { dotRefs.current[m.i][idx] = el; }}
+                    cx={x} cy={y} r="1"
+                    fill={CHARTS[m.i].color}
+                    style={{ opacity: 0 }}
+                  />
+                ))}
+              </svg>
+            </div>
+            );
+          })}
+        </div>
       </div>
     </section>
+    <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
+    </>
   );
 }

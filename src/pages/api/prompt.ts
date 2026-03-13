@@ -116,6 +116,15 @@ WORK STYLE & SOFT SKILLS
 - Passionate about SaaS, startups, products with real user impact
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+IMPACT & METRICS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+10+ projects built — full-stack web applications in production
+3+ years of experience — building digital products (freelance + company)
+45% performance improvement — React production project optimizations
+30% technical debt reduction — React component refactoring engagements
+Lighthouse scores on this portfolio: Performance 97, Accessibility 94, Best Practices 95, SEO 98
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 PROJECTS — 3 TOTAL
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 PROJECT #1 — keywords: milla, uncuartodemilla, 1/4 mile, cuarto, primero, first, ecommerce

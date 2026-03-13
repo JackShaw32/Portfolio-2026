@@ -32,47 +32,65 @@ export default function About() {
               {lang === 'es' ? (
                 <>
                   <p>
-                    Me llamo <span className="text-foreground font-semibold">Eduardo Cabral</span> y soy{" "}
-                    <span className="text-foreground font-semibold">desarrollador de software en Argentina</span>.
-                    {" "}Empecé en programación por curiosidad: quería entender{" "}
-                    <span className="text-foreground font-medium">cómo funcionan las aplicaciones por dentro</span>{" "}
-                    y cómo se construyen los sistemas que usamos todos los días en internet.
+                    Soy desarrollador <span className="text-foreground font-semibold">Full Stack</span> especializado en{" "}
+                    <span className="text-foreground font-semibold">aplicaciones web escalables</span> y{" "}
+                    <span className="text-foreground font-semibold">plataformas e-commerce</span>.
+                    {" "}Trabajo con el ecosistema moderno de <span className="text-foreground font-semibold">JavaScript</span>{" "}
+                    (<span className="text-foreground font-medium">React</span>,{" "}
+                    <span className="text-foreground font-medium">Next.js</span>,{" "}
+                    <span className="text-foreground font-medium">Node.js</span>) para construir productos digitales completos,
+                    {" "}desde la interfaz hasta la infraestructura en la nube.
                   </p>
                   <p>
-                    Hoy trabajo principalmente con{" "}
-                    <span className="text-foreground font-semibold">JavaScript, React y Node.js</span>,
-                    {" "}desarrollando aplicaciones web completas y productos digitales. Entre mis proyectos destaca un{" "}
-                    <span className="text-foreground font-medium">e-commerce creado desde cero</span>{" "}
-                    con <span className="text-foreground font-medium">arquitectura full-stack, autenticación segura y pagos online</span>.
+                    He desarrollado múltiples aplicaciones full-stack y sistemas en producción, incluyendo{" "}
+                    <span className="text-foreground font-semibold">plataformas de comercio electrónico</span> con{" "}
+                    <span className="text-foreground font-medium">autenticación segura</span>,{" "}
+                    <span className="text-foreground font-medium">pagos online</span> y{" "}
+                    <span className="text-foreground font-medium">analítica integrada</span>.
                   </p>
                   <p>
-                    Cuando no estoy programando, suelo estar{" "}
-                    <span className="text-foreground font-medium">aprendiendo nuevas tecnologías</span>{" "}
-                    o construyendo proyectos propios. Mi objetivo es seguir creciendo como desarrollador y contribuir a proyectos que{" "}
-                    <span className="text-foreground font-medium">resuelvan problemas reales con tecnología</span>.
+                    Me interesa crear software que genere{" "}
+                    <span className="text-foreground font-semibold">impacto real</span>, explorando tecnologías como{" "}
+                    <span className="text-foreground font-semibold">IA</span>,{" "}
+                    <span className="text-foreground font-medium">cloud infrastructure</span> y arquitecturas modernas de aplicaciones web.
+                  </p>
+                  <p className="text-foreground/80">
+                    Actualmente estoy{" "}
+                    <span className="text-foreground font-semibold">disponible</span> para{" "}
+                    <span className="text-foreground font-semibold">proyectos freelance</span> y{" "}
+                    <span className="text-foreground font-semibold">oportunidades remotas</span>.
                   </p>
                 </>
               ) : (
                 <>
                   <p>
-                    My name is <span className="text-foreground font-semibold">Eduardo Cabral</span> and I'm a{" "}
-                    <span className="text-foreground font-semibold">software developer based in Argentina</span>.
-                    {" "}I got into programming out of curiosity: I wanted to understand{" "}
-                    <span className="text-foreground font-medium">how applications work under the hood</span>{" "}
-                    and how the systems we use every day on the internet are built.
+                    I'm a <span className="text-foreground font-semibold">Full Stack</span> developer specialized in{" "}
+                    <span className="text-foreground font-semibold">scalable web applications</span> and{" "}
+                    <span className="text-foreground font-semibold">e-commerce platforms</span>.
+                    {" "}I work with the modern <span className="text-foreground font-semibold">JavaScript</span> ecosystem{" "}
+                    (<span className="text-foreground font-medium">React</span>,{" "}
+                    <span className="text-foreground font-medium">Next.js</span>,{" "}
+                    <span className="text-foreground font-medium">Node.js</span>) to build complete digital products,
+                    {" "}from the interface to cloud infrastructure.
                   </p>
                   <p>
-                    Today I work mainly with{" "}
-                    <span className="text-foreground font-semibold">JavaScript, React and Node.js</span>,
-                    {" "}building full-stack web applications and digital products. One of my standout projects is an{" "}
-                    <span className="text-foreground font-medium">e-commerce platform built from scratch</span>{" "}
-                    with <span className="text-foreground font-medium">full-stack architecture, secure authentication and online payments</span>.
+                    I've developed multiple full-stack applications and production systems, including{" "}
+                    <span className="text-foreground font-semibold">e-commerce platforms</span> with{" "}
+                    <span className="text-foreground font-medium">secure authentication</span>,{" "}
+                    <span className="text-foreground font-medium">online payments</span> and{" "}
+                    <span className="text-foreground font-medium">integrated analytics</span>.
                   </p>
                   <p>
-                    When I'm not coding, I'm usually{" "}
-                    <span className="text-foreground font-medium">learning new technologies</span>{" "}
-                    or working on personal projects. My goal is to keep growing as a developer and contribute to projects that{" "}
-                    <span className="text-foreground font-medium">solve real problems with technology</span>.
+                    I'm interested in building software that generates{" "}
+                    <span className="text-foreground font-semibold">real impact</span>, exploring technologies like{" "}
+                    <span className="text-foreground font-semibold">AI</span>,{" "}
+                    <span className="text-foreground font-medium">cloud infrastructure</span> and modern web application architectures.
+                  </p>
+                  <p className="text-foreground/80">
+                    I'm currently{" "}
+                    <span className="text-foreground font-semibold">available</span> for{" "}
+                    <span className="text-foreground font-semibold">freelance projects</span> and{" "}
+                    <span className="text-foreground font-semibold">remote opportunities</span>.
                   </p>
                 </>
               )}

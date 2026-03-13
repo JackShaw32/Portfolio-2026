@@ -115,7 +115,18 @@ export default function Hero() {
           </div>
 
           <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-12 font-light text-balance">
-            {t.hero.description}</p>
+            {lang === 'es' ? <>
+              Full-Stack Developer construyendo{" "}
+              <span className="text-foreground/80 font-medium">aplicaciones web escalables</span>,{" "}
+              <span className="text-foreground/80 font-medium">plataformas e-commerce</span> y{" "}
+              <span className="text-foreground/80 font-medium">productos con IA</span>.
+            </> : <>
+              Full-Stack Developer building{" "}
+              <span className="text-foreground/80 font-medium">scalable web applications</span>,{" "}
+              <span className="text-foreground/80 font-medium">e-commerce platforms</span> and{" "}
+              <span className="text-foreground/80 font-medium">AI-powered products</span>.
+            </>}
+          </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
             <a

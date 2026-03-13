@@ -13,12 +13,14 @@ export const translations = {
       contactSection: "Contacto",
       switchLang: "EN",
       trajectory: "Experiencia",
+      impact: "Impacto",
+      hireMe: "Contrátame",
     },
     hero: {
       available: "Disponible para nuevos desafíos",
       heading: "Soluciones Web Escalables con Impacto",
       description:
-        "Full-Stack Developer especializado en soluciones e-commerce y arquitectura web moderna.",
+        "Full-Stack Developer construyendo aplicaciones web escalables, plataformas e-commerce y productos con IA.",
       viewProjects: "Ver mis proyectos",
       connectLinkedIn: "Conectar en LinkedIn",
     },
@@ -90,6 +92,9 @@ export const translations = {
       yearLabel: "Año",
       techStack: "Stack tecnológico",
       nextProject: "Siguiente proyecto",
+      archOverview: "Resumen de Arquitectura",
+      systemDiagramLabel: "Diagrama del Sistema",
+      externalIntegrations: "Integraciones Externas",
       projects: [
         {
           title: "1/4 de Milla E-Commerce",
@@ -217,6 +222,20 @@ export const translations = {
             "Implementación de marketing analytics",
             "Deployment e infraestructura",
           ],
+          architectureOverview: [
+            { layer: "Frontend",       tech: "React SPA + JavaScript + Bootstrap" },
+            { layer: "Backend",        tech: "Node.js + Express REST API" },
+            { layer: "Base de datos",  tech: "MongoDB + Mongoose" },
+            { layer: "Autenticación",  tech: "JWT" },
+            { layer: "Pagos",          tech: "MercadoPago API" },
+            { layer: "Multimedia",     tech: "Cloudinary" },
+            { layer: "Analítica",      tech: "Meta Pixel + Conversions API" },
+            { layer: "Deploy",         tech: "Netlify (frontend) + Render (backend)" },
+          ],
+          systemDiagram: {
+            flow: ["User Browser", "React SPA", "Node.js + Express", "MongoDB"],
+            integrations: ["MercadoPago API", "Cloudinary", "Meta Pixel + Conversions API"],
+          },
           highlight: "Proyecto Estrella",
         },
         {
@@ -321,6 +340,18 @@ export const translations = {
             "Integración de galerías multimedia",
             "Optimización de rendimiento",
           ],
+          architectureOverview: [
+            { layer: "Frontend",    tech: "React SPA + Bootstrap" },
+            { layer: "Routing",     tech: "React Router" },
+            { layer: "Animaciones", tech: "AOS + Canvas Confetti + Swiper.js" },
+            { layer: "Galería",     tech: "Yet Another React Lightbox" },
+            { layer: "Build",       tech: "Vite + PurgeCSS + Sharp" },
+            { layer: "Deploy",      tech: "Netlify" },
+          ],
+          systemDiagram: {
+            flow: ["User Browser", "React SPA", "Netlify CDN"],
+            integrations: [],
+          },
           highlight: "Interactive Event Landing",
         },
         {
@@ -427,6 +458,17 @@ export const translations = {
             "Implementación de UI responsive",
             "Optimización SEO y rendimiento",
           ],
+          architectureOverview: [
+            { layer: "Frontend",    tech: "HTML5 + CSS3 + Vanilla JavaScript" },
+            { layer: "CSS Framework", tech: "Bootstrap" },
+            { layer: "SEO",         tech: "HTML semántico + Meta tags" },
+            { layer: "Rendimiento", tech: "Optimización de assets + lazy loading" },
+            { layer: "Deploy",      tech: "Web Hosting" },
+          ],
+          systemDiagram: {
+            flow: ["User Browser", "HTML + CSS + JS", "Web Hosting / CDN"],
+            integrations: [],
+          },
           highlight: "Corporate & Performance",
         },
       ],
@@ -457,6 +499,18 @@ export const translations = {
           description:
             "Interfaces adaptables que mantienen consistencia y usabilidad en distintos tamaños de pantalla.",
         },
+      ],
+    },
+    impact: {
+      title: "Impacto",
+      titleHighlight: " Real",
+      subtitle: "Números que muestran el trabajo, no solo el código.",
+      cta: "Trabajar juntos",
+      metrics: [
+        { value: 10, suffix: "+", label: "Proyectos Construidos",    description: "Aplicaciones web full-stack en producción", ring: 80 },
+        { value: 3,  suffix: "+", label: "Años de Experiencia",      description: "Desarrollando productos digitales",          ring: 60 },
+        { value: 45, suffix: "%", label: "Mejora de Performance",    description: "Optimización en proyectos React en producción", ring: 45 },
+        { value: 30, suffix: "%", label: "Reducción de Deuda Técnica", description: "En refactorizaciones de componentes React",  ring: 30 },
       ],
     },
     footer: {
@@ -544,12 +598,14 @@ export const translations = {
       contactSection: "Contact",
       switchLang: "ES",
       trajectory: "Journey",
+      impact: "Impact",
+      hireMe: "Hire Me",
     },
     hero: {
       available: "Available for new challenges",
       heading: "Scalable web solutions with impact",
       description:
-        "Full-Stack Developer specialized in e-commerce solutions and modern web architecture.",
+        "Full-Stack Developer building scalable web applications, e-commerce platforms and AI-powered products.",
       viewProjects: "View my projects",
       connectLinkedIn: "Connect on LinkedIn",
     },
@@ -621,6 +677,9 @@ export const translations = {
       yearLabel: "Year",
       techStack: "Tech Stack",
       nextProject: "Next project",
+      archOverview: "Architecture Overview",
+      systemDiagramLabel: "System Diagram",
+      externalIntegrations: "External Integrations",
       projects: [
         {
           title: "1/4 Mile E-Commerce",
@@ -748,6 +807,20 @@ export const translations = {
             "Marketing analytics implementation",
             "Deployment and infrastructure",
           ],
+          architectureOverview: [
+            { layer: "Frontend",   tech: "React SPA + JavaScript + Bootstrap" },
+            { layer: "Backend",    tech: "Node.js + Express REST API" },
+            { layer: "Database",   tech: "MongoDB + Mongoose" },
+            { layer: "Auth",       tech: "JWT" },
+            { layer: "Payments",   tech: "MercadoPago API" },
+            { layer: "Media",      tech: "Cloudinary" },
+            { layer: "Analytics",  tech: "Meta Pixel + Conversions API" },
+            { layer: "Deployment", tech: "Netlify (frontend) + Render (backend)" },
+          ],
+          systemDiagram: {
+            flow: ["User Browser", "React SPA", "Node.js + Express", "MongoDB"],
+            integrations: ["MercadoPago API", "Cloudinary", "Meta Pixel + Conversions API"],
+          },
           highlight: "Star Project",
         },
         {
@@ -852,6 +925,18 @@ export const translations = {
             "Multimedia gallery integration",
             "Performance optimization",
           ],
+          architectureOverview: [
+            { layer: "Frontend",   tech: "React SPA + Bootstrap" },
+            { layer: "Routing",    tech: "React Router" },
+            { layer: "Animations", tech: "AOS + Canvas Confetti + Swiper.js" },
+            { layer: "Gallery",    tech: "Yet Another React Lightbox" },
+            { layer: "Build",      tech: "Vite + PurgeCSS + Sharp" },
+            { layer: "Deployment", tech: "Netlify" },
+          ],
+          systemDiagram: {
+            flow: ["User Browser", "React SPA", "Netlify CDN"],
+            integrations: [],
+          },
           highlight: "Interactive Event Landing",
         },
         {
@@ -958,6 +1043,17 @@ export const translations = {
             "Responsive UI implementation",
             "SEO and performance optimization",
           ],
+          architectureOverview: [
+            { layer: "Frontend",    tech: "HTML5 + CSS3 + Vanilla JavaScript" },
+            { layer: "CSS Framework", tech: "Bootstrap" },
+            { layer: "SEO",         tech: "Semantic HTML + Meta tags" },
+            { layer: "Performance", tech: "Asset optimization + lazy loading" },
+            { layer: "Deployment",  tech: "Web Hosting" },
+          ],
+          systemDiagram: {
+            flow: ["User Browser", "HTML + CSS + JS", "Web Hosting / CDN"],
+            integrations: [],
+          },
           highlight: "Corporate & Performance",
         },
       ],
@@ -988,6 +1084,18 @@ export const translations = {
           description:
             "Adaptive interfaces that maintain consistency and usability across different screen sizes.",
         },
+      ],
+    },
+    impact: {
+      title: "Real",
+      titleHighlight: " Impact",
+      subtitle: "Numbers that show the work, not just the code.",
+      cta: "Work with me",
+      metrics: [
+        { value: 10, suffix: "+", label: "Projects Built",          description: "Full-stack web applications in production", ring: 80 },
+        { value: 3,  suffix: "+", label: "Years of Experience",     description: "Building digital products",                ring: 60 },
+        { value: 45, suffix: "%", label: "Performance Improved",    description: "Optimization in React production projects", ring: 45 },
+        { value: 30, suffix: "%", label: "Technical Debt Reduced",  description: "In React component refactoring projects",   ring: 30 },
       ],
     },
     footer: {

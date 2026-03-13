@@ -343,6 +343,8 @@ type RichProjectT = {
   sections?: ProjectSection[];
   techCategories?: Array<{ label: string; items: string[] }>;
   responsibilities?: string[];
+  architectureOverview?: Array<{ layer: string; tech: string }>;
+  systemDiagram?: { flow: string[]; integrations: string[] };
 };
 
 interface Props {
@@ -435,7 +437,7 @@ export default function ProjectDetail({ slug }: Props) {
                 <span className="text-sm text-muted-foreground font-mono">{project.role}</span>
                 <span className="text-sm text-muted-foreground">{staticData.year}</span>
               </div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-foreground leading-[1] mb-4">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-foreground leading-[1] mb-4">
                 {project.title}
               </h1>
               <p className="text-foreground/60 text-base md:text-lg leading-relaxed">
@@ -447,6 +449,71 @@ export default function ProjectDetail({ slug }: Props) {
                 </p>
               )}
             </div>
+
+            {(rich.architectureOverview || rich.systemDiagram) && (
+              <div className="detail-section grid sm:grid-cols-2 gap-4">
+
+                {rich.architectureOverview && (
+                  <div className="glass rounded-2xl p-5 border border-border/40">
+                    <h2 className="text-xs uppercase tracking-widest font-black text-muted-foreground mb-4">
+                      {pr.archOverview}
+                    </h2>
+                    <div className="space-y-2.5">
+                      {rich.architectureOverview.map((row, i) => (
+                        <div key={i} className="flex items-start gap-2 text-sm">
+                          <span className="text-[10px] uppercase tracking-widest text-muted-foreground w-24 flex-shrink-0 pt-0.5 leading-tight">
+                            {row.layer}
+                          </span>
+                          <span className="text-foreground/25 flex-shrink-0 pt-0.5">→</span>
+                          <span className="text-foreground/70 font-medium text-xs leading-relaxed">{row.tech}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {rich.systemDiagram && (
+                  <div className="glass rounded-2xl p-5 border border-border/40">
+                    <h2 className="text-xs uppercase tracking-widest font-black text-muted-foreground mb-4">
+                      {pr.systemDiagramLabel}
+                    </h2>
+                    <div className="flex flex-col items-center gap-1">
+                      {rich.systemDiagram.flow.map((node, i) => (
+                        <div key={i} className="flex flex-col items-center gap-1 w-full">
+                          <div className={`text-[11px] font-semibold px-3 py-2 rounded-xl text-center w-full border ${
+                            i === 0
+                              ? "bg-foreground/5 border-border/40 text-foreground/50"
+                              : i === rich.systemDiagram!.flow.length - 1
+                              ? `${staticData.accent} bg-foreground/5`
+                              : "bg-foreground/5 border-border/40 text-foreground/70"
+                          }`}>
+                            {node}
+                          </div>
+                          {i < rich.systemDiagram!.flow.length - 1 && (
+                            <span className="text-foreground/25 text-xs">↓</span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    {rich.systemDiagram.integrations.length > 0 && (
+                      <div className="mt-4 pt-4 border-t border-border/30">
+                        <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
+                          {pr.externalIntegrations}
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {rich.systemDiagram.integrations.map((item, i) => (
+                            <span key={i} className="text-[10px] font-medium px-2.5 py-1 rounded-full border border-border/50 bg-foreground/5 text-foreground/60">
+                              {item}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+              </div>
+            )}
 
             <div className="detail-section">
               <h2 className="text-xs uppercase tracking-widest font-black text-muted-foreground mb-5">

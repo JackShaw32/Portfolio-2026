@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { useReveal } from "./hooks/useReveal";
-import { CheckCircle2, Zap, Search, Smartphone } from "lucide-react";
+import { CheckCircle2, Zap, Search, Smartphone, RotateCcw } from "lucide-react";
 import type { IconType } from "react-icons";
 import {
   SiJavascript, SiTypescript, SiReact, SiNextdotjs, SiAngular, SiTailwindcss,
@@ -39,6 +39,29 @@ const allTechs: TechItem[] = [
   { name: "Git",        icon: SiGit,                 color: "#F05032" },
 ];
 
+function lerp(a: [number,number,number], b: [number,number,number], t: number): string {
+  return `rgb(${Math.round(a[0]+(b[0]-a[0])*t)},${Math.round(a[1]+(b[1]-a[1])*t)},${Math.round(a[2]+(b[2]-a[2])*t)})`;
+}
+function lighthouseColor(val: number): string {
+  const R: [number,number,number] = [239, 68,  68];
+  const O: [number,number,number] = [249, 115, 22];
+  const G: [number,number,number] = [34,  197, 94];
+  if (val < 50) return lerp(R, O, val / 50);
+  if (val < 90) return lerp(O, G, (val - 50) / 40);
+  return lerp(O, G, 1);
+}
+
+const CIRC   = 283;
+const DUR    = 1600;
+const DELAYS = [0, 0, 0, 0];
+
+const metrics = [
+  { label: "Performance",    value: 97, icon: Zap },
+  { label: "Accessibility",  value: 94, icon: CheckCircle2 },
+  { label: "Best Practices", value: 95, icon: Smartphone },
+  { label: "SEO",            value: 98, icon: Search },
+];
+
 export default function Optimizations() {
   const ref = useRef<HTMLElement>(null);
   useReveal(ref);
@@ -46,28 +69,86 @@ export default function Optimizations() {
   const t = translations[lang];
   const op = t.optimizations;
 
-  const metrics = [
-    { label: "Performance",    value: 97,  color: "text-green-500",  stroke: "stroke-green-500",  icon: Zap },
-    { label: "Accessibility",  value: 94, color: "text-green-500",  stroke: "stroke-green-500",  icon: CheckCircle2 },
-    { label: "Best Practices", value: 95,  color: "text-green-500", stroke: "stroke-green-500", icon: Smartphone },
-    { label: "SEO",            value: 98, color: "text-green-500",  stroke: "stroke-green-500",  icon: Search },
-  ];
+  const [spinning,  setSpinning]  = useState(false);
+  const circleRefs  = useRef<(SVGCircleElement | null)[]>([null, null, null, null]);
+  const numRefs     = useRef<(HTMLSpanElement  | null)[]>([null, null, null, null]);
+  const iconRefs    = useRef<(HTMLSpanElement  | null)[]>([null, null, null, null]);
+  const animating   = useRef(false);
+  const rafRef      = useRef<number>(0);
+  const timeoutRef  = useRef<number>(0);
 
-  const [animated, setAnimated] = useState(false);
+  const runAnimation = () => {
+    cancelAnimationFrame(rafRef.current);
+    circleRefs.current.forEach(el => {
+      if (!el) return;
+      el.style.strokeDashoffset = String(CIRC);
+      el.style.stroke = lighthouseColor(0);
+    });
+    numRefs.current.forEach(el => {
+      if (!el) return;
+      el.textContent = '0';
+      el.style.color = lighthouseColor(0);
+    });
+    iconRefs.current.forEach(el => { if (el) el.style.color = lighthouseColor(0); });
+
+    const t0 = performance.now();
+    const tick = (now: number) => {
+      const elapsed = now - t0;
+      let running = false;
+      metrics.forEach((metric, i) => {
+        const started = elapsed - DELAYS[i];
+        if (started < 0) { running = true; return; }
+        const p   = Math.min(started / DUR, 1);
+        const ease = 1 - Math.pow(1 - p, 3);
+        const cur = Math.round(metric.value * ease);
+        const col = lighthouseColor(cur);
+
+        const circ = circleRefs.current[i];
+        if (circ) {
+          circ.style.strokeDashoffset = String(CIRC * (1 - cur / 100));
+          circ.style.stroke = col;
+        }
+        const num = numRefs.current[i];
+        if (num) { num.textContent = String(cur); num.style.color = col; }
+        const icon = iconRefs.current[i];
+        if (icon) icon.style.color = col;
+
+        if (p < 1) running = true;
+      });
+      if (running) rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+  };
+
+  const replayAnimation = () => {
+    if (animating.current) return;
+    animating.current = true;
+    setSpinning(true);
+    clearTimeout(timeoutRef.current);
+    timeoutRef.current = window.setTimeout(() => {
+      runAnimation();
+      timeoutRef.current = window.setTimeout(() => {
+        setSpinning(false);
+        animating.current = false;
+      }, DUR + DELAYS[3] + 300);
+    }, 350);
+  };
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setAnimated(true); observer.disconnect(); } },
+      ([entry]) => { if (entry.isIntersecting) { runAnimation(); observer.disconnect(); } },
       { threshold: 0.3 }
     );
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
-  const circumference = 283;
-  const delayClasses = ['delay-[0ms]', 'delay-[180ms]', 'delay-[360ms]', 'delay-[540ms]'];
+  useEffect(() => () => {
+    cancelAnimationFrame(rafRef.current);
+    clearTimeout(timeoutRef.current);
+  }, []);
 
   return (
     <section ref={ref} id="optimizations" className="py-24 relative overflow-hidden">
@@ -77,11 +158,9 @@ export default function Optimizations() {
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16 reveal flex flex-col items-center">
-
           <h2 className="text-[clamp(1.5rem,7vw,3rem)] md:text-5xl font-bold mb-4 md:mb-6 tracking-tight whitespace-nowrap">
             <span>{op.title}</span><span className="text-green-500">{op.titleHighlight}</span>
           </h2>
-
           <p className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-foreground to-green-500 max-w-2xl mx-auto font-medium text-sm sm:text-base md:text-lg drop-shadow-sm">
             {op.subtitle}
           </p>
@@ -92,15 +171,26 @@ export default function Optimizations() {
           <div className="flex flex-col gap-4 reveal delay-150">
             <div className="glass rounded-3xl p-5 relative overflow-hidden border-green-500/20 shadow-[0_0_40px_rgba(34,197,94,0.1)]">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-green-500 to-transparent opacity-50" />
-              
+
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-red-500" />
                   <div className="w-3 h-3 rounded-full bg-yellow-500" />
                   <div className="w-3 h-3 rounded-full bg-green-500" />
                 </div>
-                <div className="font-mono text-xs text-muted-foreground bg-background/50 px-3 py-1 rounded-full">
-                  lighthouse-report.json
+                <div className="flex items-center gap-2">
+                  <div className="font-mono text-xs text-muted-foreground bg-background/50 px-3 py-1 rounded-full">
+                    lighthouse-report.json
+                  </div>
+                  <button
+                    type="button"
+                    onClick={replayAnimation}
+                    disabled={spinning}
+                    title="Replay animation"
+                    className="w-6 h-6 rounded-lg flex items-center justify-center bg-foreground/[0.06] hover:bg-foreground/[0.14] border border-foreground/[0.08] hover:border-foreground/[0.18] transition-colors duration-200 group disabled:pointer-events-none cursor-pointer"
+                  >
+                    <RotateCcw className={`w-3 h-3 text-muted-foreground/40 group-hover:text-muted-foreground/80 transition-colors duration-200 ${spinning ? "animate-spin" : ""}`} />
+                  </button>
                 </div>
               </div>
 
@@ -111,18 +201,29 @@ export default function Optimizations() {
                       <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
                         <circle cx="50" cy="50" r="45" fill="none" className="stroke-muted/30" strokeWidth="8" />
                         <circle
+                          ref={el => { circleRefs.current[i] = el; }}
                           cx="50" cy="50" r="45" fill="none"
-                          className={`${metric.stroke} transition-[stroke-dashoffset] duration-[1200ms] ease-[cubic-bezier(0.4,0,0.2,1)] ${delayClasses[i]}`}
                           strokeWidth="8"
-                          strokeDasharray={circumference}
-                          strokeDashoffset={animated ? circumference * (1 - metric.value / 100) : circumference}
+                          strokeDasharray={CIRC}
+                          strokeDashoffset={CIRC}
                           strokeLinecap="round"
+                          style={{ stroke: lighthouseColor(0) }}
                         />
                       </svg>
-                      <span className={`text-base font-bold ${metric.color}`}>{metric.value}</span>
+                      <span
+                        ref={el => { numRefs.current[i] = el; }}
+                        className="text-base font-bold"
+                        style={{ color: lighthouseColor(0) }}
+                      >0</span>
                     </div>
                     <div className="text-center">
-                      <metric.icon className={`w-3.5 h-3.5 mx-auto mb-1 ${metric.color}`} />
+                      <span
+                        ref={el => { iconRefs.current[i] = el; }}
+                        className="block"
+                        style={{ color: lighthouseColor(0) }}
+                      >
+                        <metric.icon className="w-3.5 h-3.5 mx-auto mb-1" />
+                      </span>
                       <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{metric.label}</span>
                     </div>
                   </div>
@@ -139,7 +240,6 @@ export default function Optimizations() {
                     title={tech.name}
                     className="flex flex-col items-center gap-1.5 p-2 rounded-xl hover:bg-foreground/5 transition-colors cursor-default group"
                   >
-
                     {tech.icon2 ? (
                       <div className="flex items-center gap-0.5 [@media(hover:hover)]:opacity-40 [@media(hover:hover)]:grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-200 group-hover:scale-110">
                         <tech.icon className="w-4 h-4" style={{ color: tech.color }} />

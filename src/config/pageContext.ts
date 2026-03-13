@@ -3,6 +3,7 @@ export const SECTION_LABELS: Record<string, string> = {
   skills:             'Skills & Tech Stack section',
   projects:           'Projects section',
   optimizations:      'Optimizations & Performance section',
+  impact:             'Impact & Metrics section',
   about:              'About Eduardo section',
   contact:            'Contact section',
   uncuartodemilla:    'project detail page for "1/4 de Milla E-Commerce"',
