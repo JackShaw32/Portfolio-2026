@@ -27,7 +27,9 @@ export function useReveal(containerRef?: RefObject<HTMLElement | null>) {
 
     const observer = new IntersectionObserver((entries, obs) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
+        const navTarget = (window as any).__navTarget;
+        const isDestination = navTarget && navTarget.contains(entry.target);
+        if (entry.isIntersecting && (!(window as any).__navScrolling || isDestination)) {
           entry.target.classList.add('active');
           obs.unobserve(entry.target);
         }

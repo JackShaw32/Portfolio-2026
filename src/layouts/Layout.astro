@@ -276,7 +276,15 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
         e.preventDefault();
         var l = (window as any).lenis;
         if (l) {
-          l.scrollTo(target as HTMLElement, { duration: 1.2 });
+          (window as any).__navScrolling = true;
+          (window as any).__navTarget = target;
+          l.scrollTo(target as HTMLElement, {
+            duration: 1.2,
+            onComplete: () => {
+              (window as any).__navScrolling = false;
+              (window as any).__navTarget = null;
+            },
+          });
         } else {
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
