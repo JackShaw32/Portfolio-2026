@@ -1,7 +1,7 @@
 import {
   Sparkles, ExternalLink,
   Mail, Linkedin, FileDown, Globe, Phone, Github,
-  Briefcase, GraduationCap, CheckCircle2, XCircle, Clock, MapPin,
+  Briefcase, GraduationCap, CheckCircle2, XCircle, Clock, MapPin, TrendingUp,
 } from "lucide-react";
 import type { ToolInvocation } from "./types";
 
@@ -328,6 +328,59 @@ export default function ToolResultCard({ toolInvocation, lang }: ToolResultCardP
                 ? 'There was an error sending the message. Try contacting Eduardo directly.'
                 : 'Hubo un error al enviar el mensaje. Intentá contactar a Eduardo directamente.')}
           </p>
+        </div>
+      </div>
+    );
+  }
+
+  // ─── showImpact ───────────────────────────────────────────────────────
+  if (toolInvocation.toolName === 'showImpact') {
+    if (!toolInvocation.result) {
+      return (
+        <div key={toolInvocation.toolCallId} className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-lg animate-pulse mt-1">
+          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+          <span>{lang === 'en' ? 'Loading metrics...' : 'Cargando métricas...'}</span>
+        </div>
+      );
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const impact = toolInvocation.result as any;
+    const metricColors = ['text-violet-400', 'text-blue-400', 'text-amber-400', 'text-emerald-400', 'text-sky-400'];
+    const lhItems = [
+      { label: lang === 'en' ? 'Perf.' : 'Perf.',     value: impact.lighthouse?.performance },
+      { label: lang === 'en' ? 'Access.' : 'Access.',  value: impact.lighthouse?.accessibility },
+      { label: lang === 'en' ? 'Pract.' : 'Pract.',    value: impact.lighthouse?.bestPractices },
+      { label: 'SEO',                                   value: impact.lighthouse?.seo },
+    ];
+    return (
+      <div key={toolInvocation.toolCallId} className="w-full sm:min-w-[280px] max-w-[340px] rounded-2xl border border-indigo-500/20 bg-background overflow-hidden shadow-lg animate-in fade-in slide-in-from-bottom-2 mt-1">
+        <div className="bg-gradient-to-r from-violet-500/10 to-indigo-500/10 px-4 py-3 border-b border-border/50 flex items-center gap-2">
+          <TrendingUp className="w-4 h-4 text-violet-400" />
+          <h4 className="font-bold text-sm text-foreground">{lang === 'en' ? 'Real Impact' : 'Impacto Real'}</h4>
+        </div>
+        <div className="p-4 space-y-3">
+          <div className="space-y-1.5">
+            {impact.metrics?.map((m: { value: string; labelEs: string; labelEn: string; description: string }, i: number) => (
+              <div key={i} className="flex items-center gap-3 bg-foreground/[0.03] rounded-xl px-3 py-2 border border-border/30">
+                <span className={`text-lg font-black tabular-nums leading-none w-12 flex-shrink-0 ${metricColors[i] ?? 'text-foreground'}`}>{m.value}</span>
+                <div>
+                  <p className="text-[11px] font-semibold text-foreground leading-tight">{lang === 'en' ? m.labelEn : m.labelEs}</p>
+                  <p className="text-[10px] text-muted-foreground leading-tight">{m.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div>
+            <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Lighthouse Portfolio</p>
+            <div className="grid grid-cols-4 gap-1.5">
+              {lhItems.map(({ label, value }) => (
+                <div key={label} className="bg-green-500/10 border border-green-500/20 rounded-lg px-2 py-1.5 text-center">
+                  <p className="text-sm font-black text-green-400">{value}</p>
+                  <p className="text-[8px] text-muted-foreground font-medium uppercase tracking-wide leading-tight">{label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     );

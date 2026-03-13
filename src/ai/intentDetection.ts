@@ -21,10 +21,15 @@ const AVAILABILITY_OVERRIDE = /(?:disponib|available|busca trabajo|buscando trab
 // Phrases that indicate the user wants to SEND a message (data collection flow, no forced tool)
 const SEND_MESSAGE_PATTERN = /envi[aá](rle|le|r)?\s+un\s+mensaje|mandar(le)?\s+un\s+mensaje|escribir(le)?|send.*message|contact.*him|write.*to|quiero.*mensaje|mensaje.*a\s+edu/i;
 
+// Phrases about impact/metrics/KPI — must return plain text, never a tool card
+const TEXT_ONLY_PATTERN = /impacto|impactos|m[eé]trica[s]?|\bkpi\b|logros|achievements|n[uú]meros\s+(de|del)|cuántos\s+proyectos|how\s+many\s+projects|n[uú]mero\s+de\s+proyectos/i;
+
 // Detects when user explicitly wants ALL projects (both cards)
 const ALL_PROJECTS_PATTERN = /todos|all|ambos|both|los proyectos|the projects|show.*projects|projec.*all|ver todos|mostrame todos/i;
 
 export function detectForcedTool(msg: string): string | null {
+  // Impact/metrics intent → show impact card
+  if (TEXT_ONLY_PATTERN.test(msg)) return 'showImpact';
   // Send-message intent → data collection flow, never force a tool
   if (SEND_MESSAGE_PATTERN.test(msg)) return null;
   if (SKILLS_OVERRIDE.test(msg))       return 'showSkills';
@@ -49,4 +54,8 @@ export function wantsAllProjects(msg: string): boolean {
 
 export function isSendMessageIntent(msg: string): boolean {
   return SEND_MESSAGE_PATTERN.test(msg);
+}
+
+export function isTextOnlyIntent(msg: string): boolean {
+  return TEXT_ONLY_PATTERN.test(msg);
 }

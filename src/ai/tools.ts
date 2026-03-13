@@ -158,7 +158,26 @@ export const toolsDefinition = {
     },
   },
 
-  // -- 6. sendContactForm ------------------
+  // -- 6. showImpact ----------------------
+  showImpact: {
+    description: 'Muestra una tarjeta con las métricas de impacto, logros y Lighthouse scores de Eduardo. Llamar cuando preguntan por impacto, métricas, KPIs, logros, números o resultados profesionales.',
+    inputSchema: jsonSchema<Record<string, never>>({
+      type: 'object',
+      properties: {},
+    }),
+    execute: async () => ({
+      metrics: [
+        { value: '10+', labelEs: 'Proyectos construidos',   labelEn: 'Projects built',       description: 'Aplicaciones web full-stack en producción' },
+        { value: '3+',  labelEs: 'Años de experiencia',     labelEn: 'Years of experience',  description: 'Desarrollando productos digitales' },
+        { value: '45%', labelEs: 'Mejora de performance',   labelEn: 'Performance boost',    description: 'Optimizaciones React en producción' },
+        { value: '30%', labelEs: 'Reducción deuda técnica', labelEn: 'Tech debt cut',        description: 'Refactorizaciones de componentes React' },
+        { value: '100%',labelEs: 'Sistemas en producción',  labelEn: 'Production systems',   description: 'Proyectos desplegados y en vivo' },
+      ],
+      lighthouse: { performance: 97, accessibility: 94, bestPractices: 95, seo: 98 },
+    }),
+  },
+
+  // -- 7. sendContactForm ------------------
   sendContactForm: {
     description: 'Envía un formulario de contacto a Eduardo con nombre, email y mensaje del recruiter/cliente. Llamar SOLO cuando el usuario ya proporcionó explícitamente su nombre, email y mensaje.',
     inputSchema: jsonSchema<{ name: string; email: string; message: string }>({

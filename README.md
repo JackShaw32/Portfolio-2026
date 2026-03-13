@@ -167,11 +167,11 @@ El sitio se compone de una sola página (`/`) con secciones continuas, más pág
 
 **Navbar** — Barra fija con auto-ocultamiento al scrollear. Implementa toggle de tema oscuro/claro (guardado en `localStorage`), toggle de idioma ES/EN (sincronizado por `CustomEvent` entre todos los componentes), menú hamburguesa para mobile con panel deslizable, enlace de descarga de CV y botón que abre el `ContactModal`.
 
-**Skills** — Línea de tiempo de experiencia laboral (Gearthlogic LLC, Freelance) con educación, stats (años de experiencia, idiomas) y botones de contacto rápido (LinkedIn, WhatsApp, CV).
+**Skills** — Línea de tiempo de experiencia laboral (Gearthlogic LLC, Freelance) con educación, stats (años de experiencia, idiomas) y botones de contacto rápido (WhatsApp, CV). Incluye tarjetas KPI con sparklines animados (RAF + ease-out cúbico): la línea SVG, los puntos y el contador numérico se sincronizan en el mismo loop de animación usando `pathLength="1000"` y distancias euclidianas acumuladas para el timing de cada punto. El botón "Contactame" abre el `ContactModal` directamente desde la sección.
 
 **Projects** — Grid de tarjetas de proyectos con animaciones de entrada usando GSAP ScrollTrigger. Cada tarjeta tiene un mockup de browser con imagen interactiva al hover. Los botones llevan al detalle del proyecto o al sitio en producción.
 
-**Optimizations** — Muestra los scores de Lighthouse del sitio (97 Performance, 98 SEO) con círculos SVG animados. Incluye un grid visual de todas las tecnologías usadas con iconos de `react-icons`.
+**Optimizations** — Muestra los scores de Lighthouse del sitio (97 Performance, 98 SEO) con círculos SVG animados vía RAF. Los arcos, los números y los iconos arrancan en rojo y transicionan a naranja y luego a verde siguiendo la escala de colores oficial de Lighthouse (0–49 rojo, 50–89 naranja, 90+ verde), todo interpolado con `lerp()` RGB en sync con los contadores. Incluye un botón de replay junto al filename `lighthouse-report.json` que reinicia la animación completa. También contiene un grid visual de todas las tecnologías usadas con iconos de `react-icons`.
 
 **About** — Biografía bilingüe, foto de perfil con badges flotantes de ubicación y rol, y links a redes sociales.
 
@@ -318,7 +318,7 @@ Permite configurar hasta 20 API keys de Groq (`GROQ_API_KEY`, `GROQ_API_KEY_1` .
 
 ### Herramientas del chatbot (Tool Calling)
 
-EduBot tiene 6 herramientas que el LLM puede invocar. Los resultados se muestran como tarjetas visuales en el chat, no como texto plano.
+EduBot tiene 7 herramientas que el LLM puede invocar. Los resultados se muestran como tarjetas visuales en el chat, no como texto plano.
 
 | Herramienta | Qué hace |
 |---|---|
@@ -327,6 +327,7 @@ EduBot tiene 6 herramientas que el LLM puede invocar. Los resultados se muestran
 | `showSkills` | Muestra stack técnico categorizado (Frontend, Backend, DBs, Cloud, Pagos) |
 | `showExperience` | Muestra línea de tiempo de carrera (Freelance, Gearthlogic LLC, educación) |
 | `showAvailability` | Lee las env vars `EDUARDO_AVAILABLE` y `AVAILABLE_FROM` para mostrar estado en tiempo real |
+| `showImpact` | Muestra tarjeta con métricas de impacto (10+ proyectos, 3+ años, 45% performance, 30% deuda técnica, 100% en producción) y los 4 Lighthouse scores del portfolio |
 | `sendContactForm` | Recopila nombre/email/mensaje del usuario dentro del chat y envía el email |
 
 ### Detección de intenciones (`src/ai/intentDetection.ts`)
@@ -335,6 +336,7 @@ Antes de llamar al LLM, se analiza el mensaje con regex para detectar intencione
 
 - "mostrame tus skills" → fuerza `showSkills` en el primer step
 - "querés ver el proyecto omega?" → fuerza `showProject` con el slug correcto
+- "mostrame el impacto de edu" → fuerza `showImpact` (previene que el modelo invente tarjetas de proyecto)
 - "mandarte un mensaje" → no fuerza herramienta (flujo de recopilación de datos)
 - "todos los proyectos" → detecta que se quieren múltiples proyectos
 
