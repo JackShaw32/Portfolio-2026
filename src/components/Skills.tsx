@@ -327,7 +327,7 @@ export default function Skills() {
                   onClick={replayAnimation}
                   disabled={spinning}
                   title={lang === "es" ? "Reproducir animación" : "Replay animation"}
-                  className="absolute top-2 right-2 z-10 w-6 h-6 rounded-lg flex items-center justify-center bg-foreground/[0.06] hover:bg-foreground/[0.14] border border-foreground/[0.08] hover:border-foreground/[0.18] transition-colors duration-200 group disabled:pointer-events-none"
+                  className="absolute top-2 right-2 z-10 w-6 h-6 rounded-lg flex items-center justify-center bg-foreground/[0.06] hover:bg-foreground/[0.14] border border-foreground/[0.08] hover:border-foreground/[0.18] transition-colors duration-200 cursor-pointer group disabled:pointer-events-none"
                 >
                   <RotateCcw className={`w-3 h-3 text-muted-foreground/40 group-hover:text-muted-foreground/80 transition-colors duration-200 ${spinning ? "animate-spin" : ""}`} />
                 </button>

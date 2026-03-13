@@ -1,4 +1,4 @@
-import { Linkedin, ExternalLink } from "lucide-react";
+import { Linkedin, ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLanguage } from "./hooks/useLanguage";
 import { translations } from "../lib/translations";
@@ -131,18 +131,18 @@ export default function Hero() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
             <a
               href="#projects"
-              className="group/btn bg-foreground text-background hover:bg-foreground/90 font-bold px-8 py-4 rounded-2xl text-sm inline-flex items-center justify-center gap-2 transition-all duration-300"
+              className="group/btn bg-foreground text-background hover:opacity-85 font-bold px-8 py-4 rounded-2xl text-sm inline-flex items-center justify-center gap-2 transition-all duration-300 ease-out cursor-pointer"
             >
               {t.hero.viewProjects}
-              <ExternalLink className="w-4 h-4 group-hover/btn:-translate-y-0.5 group-hover/btn:translate-x-0.5 transition-transform" />
+              <ArrowRight className="w-4 h-4 transition-transform duration-300 ease-out group-hover/btn:translate-x-1" />
             </a>
             <a
               href="https://www.linkedin.com/in/raul-eduardo-cabral/"
               target="_blank"
               rel="noopener noreferrer"
-              className="glass hover:bg-foreground/5 text-foreground font-bold px-8 py-4 rounded-2xl text-sm inline-flex items-center justify-center transition-all duration-300 gap-2 border border-border/50 hover:border-foreground/30"
+              className="group/linkedin glass hover:bg-foreground/5 text-foreground font-bold px-8 py-4 rounded-2xl text-sm inline-flex items-center justify-center transition-all duration-300 ease-out gap-2 border border-border/50 hover:border-foreground/30 cursor-pointer"
             >
-              <Linkedin className="w-4 h-4" />
+              <Linkedin className="w-4 h-4 transition-transform duration-300 ease-out group-hover/linkedin:scale-110" />
               {t.hero.connectLinkedIn}
             </a>
           </div>

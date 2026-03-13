@@ -157,13 +157,13 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
             <button
               type="button"
               onClick={() => { setMenuOpen(false); setContactOpen(true); }}
-              className="hidden sm:inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors bg-foreground text-background hover:bg-foreground/90 h-9 rounded-md px-4"
+              className="hidden sm:inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all duration-300 ease-out bg-foreground text-background hover:opacity-85 h-9 rounded-md px-4 cursor-pointer"
             >
               {t.nav.contactBtn}
             </button>
             <button
               onClick={toggleLang}
-              className="inline-flex items-center justify-center whitespace-nowrap text-xs font-bold transition-colors border border-border/50 bg-transparent hover:bg-foreground/5 text-foreground h-9 w-9 rounded-full"
+              className="inline-flex items-center justify-center whitespace-nowrap text-xs font-bold transition-all duration-300 ease-out border border-border/50 bg-transparent hover:bg-foreground/10 text-foreground h-9 w-9 rounded-full cursor-pointer"
               type="button"
               aria-label="Toggle language"
               title={lang === "es" ? "Switch to English" : "Cambiar a Español"}
@@ -173,16 +173,19 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
 
             <button
               onClick={toggleTheme}
-              className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors border border-border/50 bg-transparent hover:bg-foreground/5 text-foreground h-9 w-9 rounded-full"
+              className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all duration-300 ease-out border border-border/50 bg-transparent hover:bg-foreground/10 text-foreground h-9 w-9 rounded-full cursor-pointer group"
               type="button"
               aria-label="Toggle theme"
             >
-              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {theme === "dark"
+                ? <Sun className="w-4 h-4 transition-transform duration-500 ease-out group-hover:rotate-45" />
+                : <Moon className="w-4 h-4 transition-transform duration-500 ease-out group-hover:-rotate-12" />
+              }
             </button>
 
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors border border-border/50 bg-foreground/5 hover:bg-foreground/10 text-foreground h-9 w-9 rounded-md ml-1 relative z-50"
+              className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all duration-300 ease-out border border-border/50 bg-foreground/5 hover:bg-foreground/10 text-foreground h-9 w-9 rounded-md ml-1 relative z-50 cursor-pointer"
               aria-label="Toggle menu"
             >
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
