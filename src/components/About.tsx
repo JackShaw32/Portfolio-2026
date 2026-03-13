@@ -21,7 +21,7 @@ export default function About() {
         <div className="container mx-auto px-6">
 
           <div className="max-w-6xl mx-auto mb-14 reveal">
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-center md:text-left">
               {ab.title} <span className="text-primary">{ab.titleHighlight}</span>
             </h2>
           </div>

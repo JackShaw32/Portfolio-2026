@@ -426,7 +426,7 @@ export default function ProjectDetail({ slug }: Props) {
 
       {/* Main content */}
       <div className="container mx-auto px-6 pt-5 pb-5">
-        <div className="max-w-5xl mx-auto grid md:grid-cols-[1fr_260px] gap-10 md:gap-14 items-start">
+        <div className="max-w-5xl mx-auto grid lg:grid-cols-[1fr_260px] gap-10 lg:gap-14 items-start">
 
           <div className="space-y-7">
             <div className="detail-header">
