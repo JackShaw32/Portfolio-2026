@@ -276,15 +276,28 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
         e.preventDefault();
         var l = (window as any).lenis;
         if (l) {
+          var isTouch = window.matchMedia('(hover: none)').matches;
           (window as any).__navScrolling = true;
           (window as any).__navTarget = target;
-          l.scrollTo(target as HTMLElement, {
-            duration: 1.2,
-            onComplete: () => {
-              (window as any).__navScrolling = false;
-              (window as any).__navTarget = null;
-            },
-          });
+          if (isTouch) {
+            l.scrollTo(target as HTMLElement, { immediate: true });
+            (window as any).__navScrolling = false;
+            (window as any).__navTarget = null;
+            document.querySelectorAll('.reveal:not(.active)').forEach(function(el) {
+              var rect = el.getBoundingClientRect();
+              if (rect.top < window.innerHeight && rect.bottom > 0) {
+                el.classList.add('active');
+              }
+            });
+          } else {
+            l.scrollTo(target as HTMLElement, {
+              duration: 1.2,
+              onComplete: () => {
+                (window as any).__navScrolling = false;
+                (window as any).__navTarget = null;
+              },
+            });
+          }
         } else {
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }

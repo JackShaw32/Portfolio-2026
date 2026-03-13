@@ -15,6 +15,8 @@ El objetivo fue reemplazar un CV estático por una experiencia interactiva donde
 - [Arquitectura general](#arquitectura-general)
 - [Estructura de carpetas](#estructura-de-carpetas)
 - [Frontend](#frontend)
+  - [Smooth Scroll (Lenis)](#smooth-scroll-lenis)
+  - [Animaciones de scroll (Reveal)](#animaciones-de-scroll-reveal)
 - [Backend y API](#backend-y-api)
 - [Sistema de IA (EduBot)](#sistema-de-ia-edubot)
 - [Seguridad](#seguridad)
@@ -108,12 +110,9 @@ educcabral/
 │   │   │   ├── ToolResultCard.tsx   # Tarjetas de respuesta de herramientas
 │   │   │   ├── useChatLogic.ts      # Estado y lógica del chat
 │   │   │   └── types.ts             # Tipos TypeScript del chat
-│   │   ├── hooks/
-│   │   │   ├── useLanguage.ts       # Estado de idioma ES/EN global
-│   │   │   ├── useReveal.ts         # Animaciones al hacer scroll
-│   │   │   ├── use-mobile.tsx       # Detección de dispositivo móvil
-│   │   │   └── use-toast.ts         # Notificaciones toast
-│   │   └── ui/                      # 40+ componentes shadcn/ui
+│   │   └── hooks/
+│   │       ├── useLanguage.ts       # Estado de idioma ES/EN global
+│   │       └── useReveal.ts         # Animaciones al hacer scroll con soporte de navegación
 │   │
 │   ├── config/
 │   │   ├── projects.ts              # Datos estáticos de los 3 proyectos
@@ -190,9 +189,23 @@ El hook `useLanguage` actúa como estado global sin necesitar un store externo. 
 
 El tema se detecta al inicio con un script inline en el `<head>` (antes de que el DOM se pinte) para evitar el flash de tema incorrecto. El toggle guarda el valor en `localStorage` y coordina con las `ViewTransitions` de Astro para que el tema no se pierda al navegar.
 
+### Smooth Scroll (Lenis)
+
+Integrado con `lenis` para reemplazar el scroll nativo del browser con un scroll suave con inercia controlada. Configurado con `duration: 1.2` y una curva de ease-out exponencial. Se conecta al ticker de GSAP (`gsap.ticker`) para sincronizarse perfectamente con las animaciones de `ScrollTrigger`. Se inicializa en el `<head>` de `Layout.astro` y se destruye/reinicializa en cada `ViewTransition` de Astro para evitar instancias huérfanas.
+
+El panel de mensajes del chatbot tiene `data-lenis-prevent` para que Lenis no intercepte el scroll interno del chat, y `overscroll-contain` como CSS de respaldo para que el scroll no se propague a la página al llegar al límite del panel.
+
 ### Animaciones de scroll (Reveal)
 
-El hook `useReveal` usa `IntersectionObserver` para agregar la clase `.active` a elementos con clase `.reveal` cuando entran al 15% del viewport. Cuando el usuario vuelve desde una página de detalle de proyecto, se omiten las animaciones (se lee `sessionStorage.skip-reveal`) para que el usuario regrese al estado visual que tenía en la página.
+El hook `useReveal` usa `IntersectionObserver` para agregar la clase `.active` a elementos con clase `.reveal` cuando entran al 15% del viewport, disparando la transición CSS `opacity 0→1 + translateY 30px→0` en `0.8s`.
+
+Cuando el usuario navega a una sección via menú o footer, se activan dos flags globales en `window`:
+- `__navScrolling` — indica que hay una navegación programática en curso
+- `__navTarget` — referencia al elemento destino de la navegación
+
+Mientras `__navScrolling` está activo, el observer ignora todas las intersecciones excepto las de elementos dentro de `__navTarget`. Así las secciones intermedias no disparan animaciones durante el scroll (evitando el lag), pero la sección destino sí anima normalmente mientras entra al viewport. Al completarse el scroll, ambas flags se limpian y el observer vuelve a su comportamiento normal.
+
+Cuando el usuario vuelve desde una página de detalle de proyecto, se omiten todas las animaciones leyendo `sessionStorage['skip-reveal']` para que regrese al estado visual que tenía.
 
 ### Restauración del scroll
 
@@ -404,15 +417,19 @@ Modo estricto en todo el proyecto. Los tipos permiten validar los schemas de las
 
 ### Tailwind CSS v4 — Estilos
 
-La nueva versión v4 (via plugin de Vite, sin `tailwind.config.js`) reduce la fricción de configuración. Combinado con shadcn/ui y Radix UI, permite construir componentes accesibles y consistentes rápidamente sin gestionar variables CSS manualmente.
+La nueva versión v4 (via plugin de Vite, sin `tailwind.config.js`) reduce la fricción de configuración. El sistema de variables CSS nativas de v4 permite gestionar el tema oscuro/claro sin configuración extra.
 
-### Groq + Vercel AI SDK — IA
+### Lenis — Smooth Scroll
 
-Groq provee inferencia de LLMs de código abierto (Llama) con latencia extremadamente baja (~80ms para el modelo pequeño), lo que hace que el chat se sienta instantáneo. El Vercel AI SDK abstrae el streaming, el tool calling y el manejo de fallbacks. Se eligió sobre OpenAI por costo cero en el tier gratuito de Groq y por la velocidad superior para casos de uso conversacionales simples.
+Librería ligera para reemplazar el scroll nativo con scroll suave controlado por inercia. Se eligió sobre alternativas (locomotive-scroll, custom wheel listeners) por su integración directa con GSAP ticker, su API simple, y la propiedad `data-lenis-prevent` que permite excluir elementos específicos (como el panel del chat) sin configuración adicional.
 
 ### GSAP + ScrollTrigger — Animaciones
 
 Usado para las animaciones de entrada de las tarjetas de proyectos y para el slider de imágenes en el detalle de proyecto. Se eligió GSAP sobre CSS animations puras porque permite control preciso del timeline (reverse, pausa, drag con momentum) y un slider custom sin dependencias de carrusel que no se podían personalizar completamente.
+
+### Groq + Vercel AI SDK — IA
+
+Groq provee inferencia de LLMs de código abierto (Llama) con latencia extremadamente baja (~80ms para el modelo pequeño), lo que hace que el chat se sienta instantáneo. El Vercel AI SDK abstrae el streaming, el tool calling y el manejo de fallbacks. Se eligió sobre OpenAI por costo cero en el tier gratuito de Groq y por la velocidad superior para casos de uso conversacionales simples.
 
 ### Resend — Emails transaccionales
 
@@ -422,13 +439,9 @@ API de emails moderna con buena deliverability y SDK/REST sencillo. Integrado di
 
 Genera imágenes PNG en el servidor (Edge Function) desde componentes React. Elimina la necesidad de pre-generar imágenes estáticas o mantener assets de OG separados. El resultado es una imagen de preview actualizable dinámicamente en redes sociales.
 
-### shadcn/ui + Radix UI — Componentes base
-
-Radix UI provee primitivos accesibles (gestión de foco, aria labels, portals para modales) sin imponer estilos. shadcn/ui agrega una capa de estilo sobre estos primitivos que vive en el propio proyecto, haciéndolos completamente personalizables sin depender de una librería externa que podría cambiar de API.
-
 ### pnpm — Gestor de paquetes
 
-Más rápido que npm/yarn en instalaciones gracias al store global con hard links. El flag `shamefully-hoist=true` en `.npmrc` garantiza compatibilidad con herramientas que esperan la estructura `node_modules` flat tradicional (como algunas dependencias de Radix y GSAP).
+Más rápido que npm/yarn en instalaciones gracias al store global con hard links. El flag `shamefully-hoist=true` en `.npmrc` garantiza compatibilidad con herramientas que esperan la estructura `node_modules` flat tradicional.
 
 ### Vercel — Despliegue
 

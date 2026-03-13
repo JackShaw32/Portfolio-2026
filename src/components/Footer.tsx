@@ -115,7 +115,7 @@ export default function Footer({ subPage = false }: { subPage?: boolean }) {
           <div>
             <h2 className="font-semibold text-foreground mb-6 uppercase tracking-wider text-sm">{ft.technologies}</h2>
             <ul className="space-y-4">
-              {["Astro v5", "React 19", "TypeScript", "Tailwind CSS v4", "Radix UI", "GSAP", "TanStack Query", "React Hook Form + Zod", "Vercel AI SDK + Groq LLM"].map((tech) => (
+              {["Astro v5", "React 19", "TypeScript", "Tailwind CSS v4", "Lenis", "GSAP", "Vercel AI SDK + Groq LLM"].map((tech) => (
                 <li key={tech} className="text-muted-foreground flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-primary/50" />
                   {tech}
