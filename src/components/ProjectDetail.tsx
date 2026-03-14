@@ -242,10 +242,6 @@ function ImageSlider({ images, title }: { images: readonly string[]; title: stri
 
   return (
     <>
-      <div className="hidden" aria-hidden="true">
-        {images.map((src, i) => <img key={i} src={src} alt="" />)}
-      </div>
-
       <div
         ref={containerRef}
         className="relative overflow-hidden select-none touch-none"
@@ -278,8 +274,9 @@ function ImageSlider({ images, title }: { images: readonly string[]; title: stri
                 src={src}
                 alt={`${title} - ${i}`}
                 draggable={false}
-                loading={i === activeIdx ? "eager" : "lazy"}
-                className="w-full h-full object-cover object-top"
+                loading="eager"
+                fetchPriority={i === 0 ? "high" : "auto"}
+                className="w-full h-full object-contain sm:object-cover sm:object-top"
               />
             </div>
           ))}
