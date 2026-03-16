@@ -203,13 +203,13 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
       />
 
       <div
-        className={`fixed top-0 right-0 bottom-0 w-full max-w-md bg-background border-l border-border/50 z-40 flex flex-col overflow-y-auto transition-transform duration-500 ease-in-out ${
+        className={`fixed top-0 right-0 bottom-0 w-full max-w-md bg-background border-l border-border/50 z-40 flex flex-col overflow-hidden transition-transform duration-500 ease-in-out ${
           menuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex-1 px-8 pt-28 pb-12 flex flex-col">
+        <div className="flex-1 px-8 pt-20 pb-8 flex flex-col">
 
-          <nav className="flex flex-col gap-6 mb-12">
+          <nav className="flex flex-col gap-4 mb-8">
             <span className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-2">
               {t.nav.navigation}
             </span>
@@ -218,7 +218,7 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
                 <button
                   key={link.sectionId}
                   onClick={() => { setMenuOpen(false); setContactOpen(true); }}
-                  className={`text-3xl font-semibold w-fit transition-all duration-300 text-left cursor-pointer ${
+                  className={`text-2xl font-semibold w-fit transition-all duration-300 text-left cursor-pointer ${
                     menuOpen ? `opacity-100 translate-x-0 nav-delay-${i}` : "opacity-0 translate-x-8 nav-delay-none"
                   }`}
                 >
@@ -231,7 +231,7 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
                   key={link.sectionId}
                   href={link.href}
                   onClick={() => saveSectionAndClose(link.sectionId)}
-                  className={`text-3xl font-semibold w-fit transition-all duration-300 ${
+                  className={`text-2xl font-semibold w-fit transition-all duration-300 ${
                     menuOpen ? `opacity-100 translate-x-0 nav-delay-${i}` : "opacity-0 translate-x-8 nav-delay-none"
                   }`}
                 >
@@ -244,9 +244,9 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
           </nav>
 
           <div className="mt-auto">
-            <div className="h-px w-full bg-border/50 mb-8" />
+            <div className="h-px w-full bg-border/50 mb-6" />
 
-            <div className="flex flex-col gap-4 mb-8">
+            <div className="flex flex-col gap-3 mb-6">
               <span className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
                 {t.nav.contactSection}
               </span>
@@ -263,14 +263,14 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <a
                 href="https://github.com/educcabral"
                 target="_blank"
                 rel="noopener noreferrer"
                 title="GitHub Profile"
                 aria-label="GitHub Profile"
-                className="w-10 h-10 rounded-full border border-border/50 flex items-center justify-center text-foreground/70 hover:text-foreground hover:bg-foreground/5 transition-all"
+                className="w-8 h-8 rounded-full border border-border/50 flex items-center justify-center text-foreground/70 hover:text-foreground hover:bg-foreground/5 transition-all"
               >
                 <Github className="w-5 h-5" />
               </a>
@@ -280,7 +280,7 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
                 rel="noopener noreferrer"
                 title="LinkedIn Profile"
                 aria-label="LinkedIn Profile"
-                className="w-10 h-10 rounded-full border border-border/50 flex items-center justify-center text-foreground/70 hover:text-foreground hover:bg-foreground/5 transition-all"
+                className="w-8 h-8 rounded-full border border-border/50 flex items-center justify-center text-foreground/70 hover:text-foreground hover:bg-foreground/5 transition-all"
               >
                 <Linkedin className="w-5 h-5" />
               </a>
