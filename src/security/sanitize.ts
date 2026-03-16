@@ -1,21 +1,17 @@
 import { INJECTION_PATTERNS } from './injectionPatterns';
 import { LIMITS } from './rateLimit';
 
-// INPUT SANITIZATION
 export function sanitizeInput(text: string): { safe: boolean; reason?: string } {
-  // Longitud mínima de 1 char
   if (!text || text.trim().length === 0) {
     return { safe: false, reason: 'Mensaje vacío' };
   }
 
-  // Detectar patrones de injection
   for (const pattern of INJECTION_PATTERNS) {
     if (pattern.test(text)) {
       return { safe: false, reason: 'INJECTION_ATTEMPT' };
     }
   }
 
-  // Detectar texto repetido anómalo (flood)
   const words = text.split(/\s+/);
   if (words.length > 10) {
     const uniqueWords = new Set(words.map(w => w.toLowerCase()));
@@ -37,7 +33,6 @@ export function validateMessages(messages: any[]): { valid: boolean; reason?: st
     if (!validRoles.has(msg?.role)) {
       return { valid: false, reason: 'Rol de mensaje inválido' };
     }
-    // Solo sanitizar mensajes de usuario — los de assistant pueden tener tool results
     if (msg.role === 'user') {
       const content = typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content);
       const check = sanitizeInput(content);

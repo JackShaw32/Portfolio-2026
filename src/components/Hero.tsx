@@ -43,19 +43,16 @@ export default function Hero() {
 
   return (
     <section id="top" className="relative min-h-screen flex items-center justify-center overflow-hidden w-full">
-      {/* Aurora color blobs — light mode only */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden dark:hidden">
         <div className="absolute -top-[25%] left-1/2 -translate-x-1/2 w-[900px] h-[700px] rounded-full bg-violet-500/[0.10] dark:bg-violet-500/[0.13] blur-[160px]" />
         <div className="absolute top-[5%] -right-[12%] w-[550px] h-[450px] rounded-full bg-pink-500/[0.07] dark:bg-pink-500/[0.09] blur-[140px]" />
         <div className="absolute top-[15%] -left-[8%] w-[480px] h-[380px] rounded-full bg-indigo-500/[0.06] dark:bg-indigo-500/[0.08] blur-[130px]" />
       </div>
 
-      {/* Noise light mode — sparse dark speckles on white */}
       <div
         className="hero-noise-light dark:hidden absolute inset-0 pointer-events-none opacity-[0.6]"
         aria-hidden="true"
       />
-      {/* Noise dark mode — sparse white speckles on black */}
       <div
         className="hero-noise-dark hidden dark:block absolute inset-0 pointer-events-none opacity-[0.4]"
         aria-hidden="true"

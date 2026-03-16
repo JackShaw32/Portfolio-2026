@@ -24,7 +24,6 @@ export default function Projects() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // When returning from a project detail page, skip animations (show final state instantly)
       if (sessionStorage.getItem('skip-reveal')) {
         gsap.set(".projects-heading", { opacity: 1, y: 0 });
         gsap.utils.toArray<HTMLElement>(".project-row").forEach((row) => {
@@ -87,7 +86,6 @@ export default function Projects() {
             return (
               <div key={project.slug} data-project-slug={project.slug} className="project-row flex flex-col xl:flex-row gap-10 lg:gap-16 items-center group">
 
-                {/* Image mockup */}
                 <div className={`project-img-wrap opacity-0 w-full xl:w-3/5 ${isEven ? "xl:order-2" : "xl:order-1"}`}>
                   <a
                     href={`/projects/${project.slug}`}
@@ -125,7 +123,6 @@ export default function Projects() {
                   </a>
                 </div>
 
-                {/* Content */}
                 <div className={`project-content opacity-0 w-full xl:w-2/5 flex flex-col justify-center ${isEven ? "xl:order-1 xl:pl-4" : "xl:order-2 xl:pr-4"}`}>
                   <div className="flex flex-wrap items-center gap-3 mb-4 md:mb-6">
                     <span className="font-mono text-5xl font-black text-foreground/8 select-none leading-none">{project.number}</span>

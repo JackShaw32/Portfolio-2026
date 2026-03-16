@@ -107,7 +107,7 @@ export default function Skills() {
   };
 
   const replayAnimation = () => {
-    if (animating.current) return;          // synchronous guard — blocks before React re-renders
+    if (animating.current) return;
     animating.current = true;
     setSpinning(true);
     setEcgOn(false);
@@ -305,7 +305,6 @@ export default function Skills() {
           </div>
         </div>
 
-        {/* ── KPI Sparkline Cards ───────────────────────────── */}
         <div id="impact" className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 reveal mt-8">
           {([
             { suffix: "+", label: lang === "es" ? "Proyectos" : "Projects",              text: "text-[#a78bfa]", i: 0 },

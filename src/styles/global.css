@@ -1,4 +1,3 @@
-/* Inter Variable — solo subsets Latin/Latin-Ext, paths estables para preload */
 @font-face {
   font-family: 'Inter';
   font-style: normal;
@@ -16,7 +15,6 @@
   unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
 }
 
-/* JetBrains Mono Variable — solo Latin, paths estables para preload */
 @font-face {
   font-family: 'JetBrains Mono';
   font-style: normal;
@@ -96,7 +94,6 @@
   
   --radius: 0.75rem;
 
-  /* Animaciones Básicas */
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
   --animate-typing-cursor: typing-cursor 1s step-end infinite;
@@ -105,7 +102,6 @@
   --animate-metallic-shine: metallic-shine 5s linear infinite;
   --animate-border-spin: border-spin 5s linear infinite;
 
-  /* Animaciones del Chat AI & Robot */
   --animate-siri-glow-pulse: siri-glow-pulse 1.8s ease-in-out infinite;
   --animate-robot-bob: robot-bob 3s ease-in-out infinite;
   --animate-robot-wave: robot-wave 1.8s ease-in-out infinite;
@@ -142,8 +138,6 @@
   @keyframes border-spin {
     to { transform: rotate(360deg); }
   }
-
-  /* Keyframes del Robot transferidos desde el componente */
   @keyframes siri-glow-pulse {
     0%, 100% { opacity: 0.7; }
     50% { opacity: 1; }
@@ -179,7 +173,6 @@
 
 @layer base {
   :root {
-    /* Light Mode Colors - ZegieWeb Style */
     --background: hsl(0 0% 98%);
     --foreground: hsl(0 0% 9%);
     
@@ -295,7 +288,6 @@
       background-color: var(--background);
     }
 
-    /* Firefox + Chrome 121+: standard scrollbar API as progressive enhancement */
     @supports (scrollbar-width: thin) {
       html {
         scrollbar-width: thin;
@@ -340,15 +332,9 @@
 }
 
 @layer components {
-  /* ── View Transition: old fades out, new appears immediately ──────
-     Prevents white flash in production (SSR latency gap).
-     Classic crossfade goes through transparency → shows white.
-     This variant keeps new page at full opacity at all times.       */
   ::view-transition {
     background-color: var(--background);
   }
-  /* Shared element transitions: project card → detail page
-     (*) matches all named groups; root override keeps page snap-in fast */
   ::view-transition-group(*) {
     animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
     animation-duration: 400ms;
@@ -446,16 +432,15 @@
   .dark ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.22); }
   .dark ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.38); }
 
-  /* Utility class to hide scrollbar but keep functionality */
   .scrollbar-none::-webkit-scrollbar {
     display: none;
   }
   .scrollbar-none {
-    -ms-overflow-style: none; /* IE and Edge */
+    -ms-overflow-style: none;
   }
   @supports (scrollbar-width: none) {
     .scrollbar-none {
-      scrollbar-width: none; /* Firefox + Chrome 121+ */
+      scrollbar-width: none;
     }
   }
 
@@ -497,25 +482,21 @@
   .anim-duration-10 { animation-duration: 10s; }
   .anim-duration-12 { animation-duration: 12s; }
 
-  /* Siri-style glow border for AI chat loading state */
   .siri-glow-border {
     box-shadow: 0 0 0 2px rgba(99,102,241,0.5), 0 0 18px 4px rgba(139,92,246,0.35), 0 0 32px 8px rgba(236,72,153,0.18);
     z-index: -1;
   }
 
-  /* Hero noise texture — light mode (dark speckles on white) */
   .hero-noise-light {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Cfilter id='n' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 9 0 0 0 -7'/%3E%3C/filter%3E%3Crect width='500' height='500' filter='url(%23n)'/%3E%3C/svg%3E");
     background-size: 400px 400px;
   }
 
-  /* Hero noise texture — dark mode (white speckles on black) */
   .hero-noise-dark {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Cfilter id='n' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 9 0 0 0 -7'/%3E%3C/filter%3E%3Crect width='500' height='500' filter='url(%23n)'/%3E%3C/svg%3E");
     background-size: 400px 400px;
   }
 
-  /* Contact Modal & AI Chat spinning border */
   .modal-border-conic {
     width: 300%;
     height: 300%;

@@ -13,7 +13,7 @@ const RING_COLORS = [
 
 const DELAY_CLASSES = ["delay-[0ms]", "delay-[150ms]", "delay-[300ms]", "delay-[450ms]"];
 
-const CIRCUMFERENCE = 283; // 2π × r (r = 45)
+const CIRCUMFERENCE = 283;
 
 export default function Impact() {
   const ref = useRef<HTMLElement>(null);
@@ -26,7 +26,6 @@ export default function Impact() {
   const [counts, setCounts] = useState([0, 0, 0, 0]);
   const [contactOpen, setContactOpen] = useState(false);
 
-  // Trigger counter animation when section enters viewport
   useEffect(() => {
     const el = ref.current;
     if (!el || animated) return;
@@ -38,7 +37,6 @@ export default function Impact() {
     return () => observer.disconnect();
   }, [animated]);
 
-  // Count up animation
   useEffect(() => {
     if (!animated) return;
     const targets = im.metrics.map((m) => m.value);
@@ -62,14 +60,12 @@ export default function Impact() {
     <>
       <section ref={ref} id="impact" className="py-24 relative overflow-hidden">
 
-        {/* Ambient background */}
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
           <div className="w-[700px] h-[400px] bg-gradient-to-r from-indigo-500/8 via-blue-500/8 to-green-500/8 blur-3xl mix-blend-normal dark:mix-blend-screen" />
         </div>
 
         <div className="container mx-auto px-6 relative z-10">
 
-          {/* Header */}
           <div className="text-center mb-16 reveal flex flex-col items-center">
             <h2 className="text-4xl md:text-5xl font-bold mb-4 md:mb-6 tracking-tight">
               <span>{im.title}</span>
@@ -80,7 +76,6 @@ export default function Impact() {
             </p>
           </div>
 
-          {/* Metrics grid */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 reveal delay-150">
             {im.metrics.map((metric, i) => {
               const color = RING_COLORS[i];
@@ -92,7 +87,6 @@ export default function Impact() {
                   key={i}
                   className={`rounded-3xl p-5 md:p-7 flex flex-col items-center text-center border ${color.border} hover:scale-[1.03] hover:shadow-lg hover:bg-foreground/5 transition-all duration-300 cursor-default bg-background dark:bg-white/[0.04] dark:backdrop-blur-xl`}
                 >
-                  {/* SVG ring with counter */}
                   <div className="relative w-24 h-24 mb-5">
                     <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
                       <circle
@@ -118,12 +112,10 @@ export default function Impact() {
                     </div>
                   </div>
 
-                  {/* Label */}
                   <div className="font-bold text-foreground text-sm md:text-base leading-tight mb-1.5">
                     {metric.label}
                   </div>
 
-                  {/* Description */}
                   <div className="text-[11px] md:text-xs text-muted-foreground leading-relaxed">
                     {metric.description}
                   </div>
@@ -132,7 +124,6 @@ export default function Impact() {
             })}
           </div>
 
-          {/* CTA */}
           <div className="flex justify-center mt-12 reveal delay-300">
             <button
               type="button"

@@ -1,4 +1,3 @@
-// Patrones de prompt injection conocidos
 export const INJECTION_PATTERNS = [
   /ignore\s+(previous|all|above|prior)\s+instructions?/i,
   /forget\s+(your|the|all)\s+(instructions?|prompt|rules?|context)/i,

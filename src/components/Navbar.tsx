@@ -10,8 +10,6 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
 
-  // Start with "dark" to match the server render, then sync the real value
-  // on the client to avoid SSR/hydration mismatch.
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   useEffect(() => {
     setTheme(document.documentElement.classList.contains("dark") ? "dark" : "light");
@@ -111,7 +109,6 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
         <div className="w-full px-4 lg:px-6 py-4 flex flex-row items-center justify-between">
 
           <a className="flex items-center gap-3 group" href={subPage ? "/" : "#top"} onClick={() => saveSectionAndClose('top')}>
-            {/* Mobile: circular photo (hidden on desktop) */}
             <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full block md:hidden bg-foreground/10 flex items-center justify-center group-hover:bg-foreground/20 transition-colors">
               <img
                 src="/20220924_233024.webp"
@@ -122,7 +119,6 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
                 className="w-full h-full object-cover"
               />
             </span>
-            {/* Desktop: Terminal icon as logo (hidden on mobile) */}
             <span className="hidden md:flex relative h-10 w-10 shrink-0 rounded-xl bg-foreground/10 items-center justify-center group-hover:bg-foreground/15 transition-colors border border-foreground/[0.08] group-hover:border-foreground/20">
               <Terminal className="w-4 h-4 text-foreground" />
             </span>

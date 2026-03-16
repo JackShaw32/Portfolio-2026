@@ -11,7 +11,7 @@ interface ToolResultCardProps {
 }
 
 export default function ToolResultCard({ toolInvocation, lang }: ToolResultCardProps) {
-  // ─── showProject ─────────────────────────────────────────────────────
+  // showProject
   if (toolInvocation.toolName === 'showProject') {
     if (!toolInvocation.result) {
       return (
@@ -66,7 +66,7 @@ export default function ToolResultCard({ toolInvocation, lang }: ToolResultCardP
     );
   }
 
-  // ─── showContact ─────────────────────────────────────────────────────
+  // showContact
   if (toolInvocation.toolName === 'showContact') {
     if (!toolInvocation.result) {
       return (
@@ -110,7 +110,7 @@ export default function ToolResultCard({ toolInvocation, lang }: ToolResultCardP
     );
   }
 
-  // ─── showSkills ───────────────────────────────────────────────────────
+  // showSkills
   if (toolInvocation.toolName === 'showSkills') {
     if (!toolInvocation.result) {
       return (
@@ -152,7 +152,7 @@ export default function ToolResultCard({ toolInvocation, lang }: ToolResultCardP
     );
   }
 
-  // ─── showExperience ───────────────────────────────────────────────────
+  // showExperience
   if (toolInvocation.toolName === 'showExperience') {
     if (!toolInvocation.result) {
       return (
@@ -236,7 +236,7 @@ export default function ToolResultCard({ toolInvocation, lang }: ToolResultCardP
     );
   }
 
-  // ─── showAvailability ─────────────────────────────────────────────────
+  // showAvailability
   if (toolInvocation.toolName === 'showAvailability') {
     if (!toolInvocation.result) {
       return (
@@ -296,7 +296,7 @@ export default function ToolResultCard({ toolInvocation, lang }: ToolResultCardP
     );
   }
 
-  // ─── sendContactForm ──────────────────────────────────────────────────
+  // sendContactForm
   if (toolInvocation.toolName === 'sendContactForm') {
     if (!toolInvocation.result) {
       return (
@@ -333,7 +333,7 @@ export default function ToolResultCard({ toolInvocation, lang }: ToolResultCardP
     );
   }
 
-  // ─── showImpact ───────────────────────────────────────────────────────
+  // showImpact
   if (toolInvocation.toolName === 'showImpact') {
     if (!toolInvocation.result) {
       return (

@@ -1,4 +1,3 @@
-// RATE LIMITING
 export const LIMITS = {
   PER_MINUTE:     5,
   PER_HOUR:       20,
@@ -22,7 +21,6 @@ setInterval(() => {
 }, 60 * 60 * 1000);
 
 export function checkRateLimit(ip: string): { allowed: boolean; reason?: string } {
-  // 🔓 En desarrollo, saltea el rate limit completamente
   if (import.meta.env.DEV) return { allowed: true };
 
   const now = Date.now();

@@ -1,4 +1,3 @@
-// ANALYTICS
 export interface InteractionLog {
   ip:       string;
   question: string;
@@ -6,7 +5,6 @@ export interface InteractionLog {
   date:     string;
 }
 
-// In-memory log (last 100 entries) — replace with a real DB for persistence
 const interactionLogs: InteractionLog[] = [];
 
 export async function logInteraction(data: InteractionLog) {

@@ -14,12 +14,11 @@ export function useChatLogic(lang: string, defaultWelcomeMsg: string, pageSlug?:
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const didLoadStorage = useRef(false);
-  // If we're on a project page, start with the slug; otherwise track via IntersectionObserver
+
   const currentSectionRef = useRef<string>(pageSlug ?? 'top');
   const idCounterRef = useRef(0);
   const genId = () => `${Date.now()}-${++idCounterRef.current}`;
 
-  // ── Load from localStorage after mount ──
   useEffect(() => {
     if (didLoadStorage.current) return;
     didLoadStorage.current = true;
@@ -37,7 +36,6 @@ export function useChatLogic(lang: string, defaultWelcomeMsg: string, pageSlug?:
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── Update welcome msg on language change ──
   useEffect(() => {
     setMessages((prev) => {
       if (prev.length === 1 && prev[0].role === "assistant") {
@@ -47,7 +45,6 @@ export function useChatLogic(lang: string, defaultWelcomeMsg: string, pageSlug?:
     });
   }, [lang, defaultWelcomeMsg]);
 
-  // ── Save conversation to localStorage (keep last 30 messages) ──
   useEffect(() => {
     try {
       if (messages.length > 1) {
@@ -56,13 +53,11 @@ export function useChatLogic(lang: string, defaultWelcomeMsg: string, pageSlug?:
     } catch { /* storage full or private mode */ }
   }, [messages]);
 
-  // ── Hide label after 6 seconds ──
   useEffect(() => {
     const timer = setTimeout(() => setShowLabel(false), 6000);
     return () => clearTimeout(timer);
   }, []);
 
-  // ── Track visible section for page context ──
   useEffect(() => {
     const sectionIds = ['top', 'skills', 'projects', 'optimizations', 'about', 'contact'];
     const observers: IntersectionObserver[] = [];
@@ -79,7 +74,6 @@ export function useChatLogic(lang: string, defaultWelcomeMsg: string, pageSlug?:
     return () => { observers.forEach(obs => obs.disconnect()); };
   }, []);
 
-  // ── Scroll to bottom when chat opens or messages change ──
   useEffect(() => {
     if (open) {
       setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }), 150);

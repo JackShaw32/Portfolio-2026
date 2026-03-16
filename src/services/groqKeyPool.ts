@@ -1,7 +1,5 @@
 import { createGroq } from '@ai-sdk/groq';
 
-// GROQ KEY POOL
-// Multiple free-tier keys rotate automatically on 429.
 function buildKeyPool(): string[] {
   const keys: string[] = [];
   const single = import.meta.env.GROQ_API_KEY as string | undefined;

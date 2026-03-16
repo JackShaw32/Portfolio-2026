@@ -32,8 +32,6 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
-
-    <!-- Primary Meta Tags -->
     <title>{pageTitle}</title>
     <meta name="title" content={pageTitle} />
     <meta name="description" content={description} />
@@ -42,24 +40,16 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
     <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"} />
     <meta name="theme-color" content="#0f172a" />
     <meta name="color-scheme" content="dark light" />
-
-    <!-- Canonical URL (prevents duplicate content) -->
     <link rel="canonical" href={canonicalURL} />
-
-    <!-- Font Preload (critical fonts for first render) -->
     <link rel="preload" href="/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/general-sans-700.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/jetbrains-mono-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
-
-    <!-- Favicons -->
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="Eduardo Cabral" />
     <link rel="manifest" href="/site.webmanifest" />
-
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content={type} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:site_name" content="Eduardo Cabral" />
@@ -72,8 +62,6 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
     <meta property="og:image:alt" content={`${title} — Eduardo Cabral`} />
     <meta property="og:locale" content="es_AR" />
     <meta property="og:locale:alternate" content="en_US" />
-
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content={canonicalURL} />
     <meta name="twitter:title" content={pageTitle} />
@@ -83,7 +71,6 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
     <meta name="twitter:creator" content="@educcabral" />
     <meta name="twitter:site" content="@educcabral" />
 
-    <!-- JSON-LD Structured Data -->
     <script type="application/ld+json" is:inline>
       {
         "@context": "https://schema.org",
@@ -154,7 +141,6 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
       }
     </script>
 
-    <!-- Theme detection (before render to prevent flash) - EJECUTADO SIEMPRE -->
     <script is:inline>
       (function() {
         try {
@@ -168,9 +154,7 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
       })();
     </script>
 
-    <!-- Theme persistence durante navegación con ViewTransitions -->
     <script>
-      // Esta función asegura que el tema se mantenga después de cada transición
       function applyTheme() {
         try {
           const theme = localStorage.getItem('theme');
@@ -182,17 +166,14 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
         } catch(e) {}
       }
 
-      // Aplicar tema inmediatamente
       applyTheme();
 
-      // Escuchar cambios en localStorage (por si se cambia el tema en otra pestaña)
       window.addEventListener('storage', function(e) {
         if (e.key === 'theme') {
           applyTheme();
         }
       });
 
-      // Inyectar clase dark en el nuevo documento ANTES del swap → elimina el flash blanco
       document.addEventListener('astro:before-swap', function(e) {
         try {
           const theme = localStorage.getItem('theme');
@@ -204,9 +185,6 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
           }
         } catch(e) {}
 
-        // Returning to portfolio from any project page: strip view-transition-name from
-        // both documents so the shared-element morph is skipped entirely.
-        // This covers: browser back, top back-link, and bottom back-link (all navigate to "/").
         const leavingProject = location.pathname.match(/^\/projects\//) && (e as any).to?.pathname === '/';
         const isBack = (e as any).direction === 'back';
         if (leavingProject || isBack) {
@@ -219,11 +197,9 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
         }
       });
 
-      // Para ViewTransitions de Astro: re-aplicar tema después de cada navegación
       document.addEventListener('astro:after-swap', applyTheme);
     </script>
 
-    <!-- Lenis smooth scroll initialization -->
     <script>
       import Lenis from 'lenis';
       import gsap from 'gsap';
@@ -259,24 +235,19 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
 
         (window as any).lenis = lenis;
 
-        // Drive Lenis with GSAP ticker for perfect sync with GSAP animations
         tickerCallback = (time: number) => lenis!.raf(time * 1000);
         gsap.ticker.add(tickerCallback);
         gsap.ticker.lagSmoothing(0);
 
-        // Keep ScrollTrigger updated on every Lenis scroll tick
         lenis.on('scroll', ScrollTrigger.update);
       }
 
-      // Boot on first load
       initLenis();
 
-      // Cleanup before every ViewTransition swap, reinit after
       document.addEventListener('astro:before-swap', destroyLenis);
       document.addEventListener('astro:after-swap', initLenis);
     </script>
 
-    <!-- Smooth scroll for anchor links with hash cleanup -->
     <script>
       document.addEventListener('click', function(e) {
         var anchor = e.target instanceof Element ? e.target.closest('a[href^="#"]') : null;
@@ -331,15 +302,12 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
       }
     </script>
 
-    <!-- Portfolio scroll restoration: section nav + back-to-project -->
     <script>
-      // On full page reload, clear skip-reveal so animations play normally
       var navEntry = performance.getEntriesByType && (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined);
       if (navEntry && navEntry.type === 'reload') {
         sessionStorage.removeItem('skip-reveal');
       }
 
-      // When leaving a project page toward "/" with no hash and no section target → it's the back button
       document.addEventListener('astro:before-preparation', function(e) {
         var match = location.pathname.match(/^\/projects\/([^\/]+)/);
         if (match && e.to) {
@@ -356,7 +324,6 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
         if (location.pathname !== '/' && location.pathname !== '') return;
         var l = (window as any).lenis;
 
-        // Section navigation (navbar links from a project page)
         var section = sessionStorage.getItem('scroll-to-section');
         if (section) {
           sessionStorage.removeItem('scroll-to-section');
@@ -372,7 +339,6 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
           return;
         }
 
-        // Back-to-portfolio button: scroll to the project card
         var slug = sessionStorage.getItem('return-to-project');
         if (slug) {
           sessionStorage.removeItem('return-to-project');
@@ -380,8 +346,6 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
           if (card) {
             var offset = -(window.innerHeight / 2) + (card as HTMLElement).offsetHeight / 2;
             var targetY = (card as HTMLElement).getBoundingClientRect().top + window.scrollY + offset;
-            // Synchronous native scroll — guarantees position is set before
-            // the View Transition captures the "new" state snapshot
             window.scrollTo(0, Math.max(0, targetY));
             if (l) {
               l.scrollTo(card as HTMLElement, { immediate: true, offset: offset });

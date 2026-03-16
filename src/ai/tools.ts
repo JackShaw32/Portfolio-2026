@@ -5,7 +5,7 @@ const sanitizeStr = (s: string) =>
   s.replace(/<[^>]*>/g, '').replace(/[<>"'`]/g, '').slice(0, 300);
 
 export const toolsDefinition = {
-  // -- 1. showProject ----------------------
+  // showProject
   showProject: {
     description: 'Muestra una tarjeta visual interactiva de un proyecto de Eduardo. Llamar SOLO cuando el usuario pide explícitamente VER un proyecto. Para mostrar TODOS los proyectos, llamar esta función UNA VEZ POR CADA proyecto.',
     inputSchema: jsonSchema<{
@@ -52,7 +52,7 @@ export const toolsDefinition = {
     },
   },
 
-  // -- 2. showContact ----------------------
+  // showContact
   showContact: {
     description: 'Muestra una tarjeta interactiva con todos los medios para contactar a Eduardo: LinkedIn, email, CV y portfolio. Llamar cuando alguien pregunta cómo contactar o contratar a Eduardo.',
     inputSchema: jsonSchema<Record<string, never>>({
@@ -70,7 +70,7 @@ export const toolsDefinition = {
     }),
   },
 
-  // -- 3. showSkills -----------------------
+  // showSkills
   showSkills: {
     description: 'Muestra una visualización del tech stack de Eduardo con badges organizados por categoría. Llamar cuando preguntan por tecnologías, habilidades o conocimientos técnicos.',
     inputSchema: jsonSchema<Record<string, never>>({
@@ -88,7 +88,7 @@ export const toolsDefinition = {
     }),
   },
 
-  // -- 4. showExperience -------------------
+  // showExperience
   showExperience: {
     description: 'Muestra un timeline visual con la experiencia profesional y educación de Eduardo. Llamar cuando preguntan por experiencia, trayectoria, o historial laboral.',
     inputSchema: jsonSchema<Record<string, never>>({
@@ -138,7 +138,7 @@ export const toolsDefinition = {
     }),
   },
 
-  // -- 5. showAvailability -----------------
+  // showAvailability
   showAvailability: {
     description: 'Muestra el estado actual de disponibilidad de Eduardo para nuevas oportunidades laborales. Llamar cuando preguntan si está disponible, buscando trabajo, o cuándo puede empezar.',
     inputSchema: jsonSchema<Record<string, never>>({
@@ -158,7 +158,7 @@ export const toolsDefinition = {
     },
   },
 
-  // -- 6. showImpact ----------------------
+  // showImpact
   showImpact: {
     description: 'Muestra una tarjeta con las métricas de impacto, logros y Lighthouse scores de Eduardo. Llamar cuando preguntan por impacto, métricas, KPIs, logros, números o resultados profesionales.',
     inputSchema: jsonSchema<Record<string, never>>({
@@ -177,7 +177,7 @@ export const toolsDefinition = {
     }),
   },
 
-  // -- 7. sendContactForm ------------------
+  // sendContactForm
   sendContactForm: {
     description: 'Envía un formulario de contacto a Eduardo con nombre, email y mensaje del recruiter/cliente. Llamar SOLO cuando el usuario ya proporcionó explícitamente su nombre, email y mensaje.',
     inputSchema: jsonSchema<{ name: string; email: string; message: string }>({
@@ -198,7 +198,6 @@ export const toolsDefinition = {
         return { success: false, reason: 'invalid_email' };
       }
 
-      // Require a real message — not empty, not an email address, not too short.
       if (safeMessage.length < 10 || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(safeMessage)) {
         return { success: false, reason: 'missing_message' };
       }

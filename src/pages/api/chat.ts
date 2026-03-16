@@ -12,13 +12,11 @@ import { toolsDefinition }                             from '../../ai/tools';
 import { pipeStreamToController }                      from '../../ai/streamPipeline';
 import { PRIMARY_MODEL, FALLBACK_MODEL }               from '../../ai/model';
 
-// Prevents Vercel from killing long streams
 export const maxDuration = 30;
 export const POST: APIRoute = async ({ request }) => {
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
              request.headers.get('x-real-ip') || '0.0.0.0';
 
-  // -- Rate limit --
   const rateCheck = checkRateLimit(ip);
   if (!rateCheck.allowed) {
     return new Response(JSON.stringify({ error: rateCheck.reason }), {
@@ -26,14 +24,12 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  // ── API key pool ──
   if (groqKeyPool.length === 0) {
     return new Response(JSON.stringify({ error: 'API key not configured' }), {
       status: 500, headers: { 'Content-Type': 'application/json' }
     });
   }
 
-  // -- Parse body --
   let messages: any[], language: string, pageContext: unknown;
   try {
     ({ messages, language, pageContext } = await request.json());
@@ -43,10 +39,8 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  // -- Validar idioma --
   const safeLang = language === 'en' ? 'en' : 'es';
 
-  // -- Validar y sanitizar mensajes --
   const msgCheck = validateMessages(messages);
   if (!msgCheck.valid) {
     return new Response(JSON.stringify({ error: 'Mensaje inválido.' }), {
@@ -54,9 +48,6 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  // -- Solo roles user/assistant � filtrar cualquier otra cosa --
-  // IMPORTANT: do NOT filter out empty assistant messages � they represent tool-only
-  // turns and removing them creates consecutive user messages that Groq rejects.
   const rawMessages = messages
     .filter(m => m.role === 'user' || m.role === 'assistant')
     .slice(-LIMITS.MAX_HISTORY)
@@ -67,12 +58,9 @@ export const POST: APIRoute = async ({ request }) => {
         : String(m.content).slice(0, LIMITS.MAX_MSG_LENGTH),
     }));
 
-  // Deduplicate: collapse consecutive same-role messages by keeping the last one.
-  // This is a safety net in case the frontend sends malformed history.
   const trimmedMessages: { role: 'user' | 'assistant'; content: string }[] = [];
   for (const msg of rawMessages) {
     if (trimmedMessages.length > 0 && trimmedMessages[trimmedMessages.length - 1].role === msg.role) {
-      // Replace the previous same-role message with the current (more recent) one
       trimmedMessages[trimmedMessages.length - 1] = msg;
     } else {
       trimmedMessages.push(msg);
@@ -83,13 +71,10 @@ export const POST: APIRoute = async ({ request }) => {
   const rateLimitMessage = safeLang === 'en'
     ? '⚠️ The assistant is temporarily busy. Please wait a few seconds and try again.'
     : '⚠️ El asistente está ocupado en este momento. Esperá unos segundos y volvé a intentarlo.';
-  // Hard language lock — appended after LANG_INSTRUCTION so the model has no ambiguity.
-  // LANG_INSTRUCTION handles auto-detect as a base; this overrides with the UI setting.
   const langLock = safeLang === 'en'
     ? '\n\n⚡ LANGUAGE LOCK: This session is in ENGLISH. Every single response MUST be in English. No Spanish. No exceptions.'
     : '\n\n⚡ IDIOMA LOCK: Esta sesión es en ESPAÑOL RIOPLATENSE. Respondé TODO en español con "vos". Sin excepciones.';
 
-  // -- Page context injection (optional, whitelist-validated) --
   const safeSection  = typeof pageContext === 'string' && VALID_SECTIONS.has(pageContext) ? pageContext : null;
   const isProjectPage = safeSection && ['uncuartodemilla', 'expresoomega', 'alfyvivi'].includes(safeSection);
   const pageContextStr = safeSection
@@ -98,7 +83,6 @@ export const POST: APIRoute = async ({ request }) => {
       : `\nUSER CONTEXT: The user is currently viewing the "${SECTION_LABELS[safeSection]}" of the portfolio.\n`
     : '';
 
-  // -- Analytics --
   const lastQuestion = trimmedMessages.at(-1)?.content;
   if (lastQuestion) {
     logInteraction({
@@ -109,23 +93,16 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  // -- Detect show intent to force tool usage --
   const forcedTool     = lastQuestion ? detectForcedTool(lastQuestion) : null;
   const multiProject   = forcedTool === 'showProject' && !!lastQuestion && wantsAllProjects(lastQuestion);
-  // When user opens the contact flow ("I want to send a message"), block ALL tools on step 0
-  // so the model cannot call sendContactForm with invented placeholder data.
-  // On subsequent turns the message won't match this pattern and tools re-enable normally.
   const isSendMsg      = lastQuestion ? isSendMessageIntent(lastQuestion) : false;
-  // If the user's last message looks like just an email address or a short name (1-2 words, < 30 chars)
-  // it means we're mid-way through data collection — force text-only so the model asks for the next field.
+
   const isDataCollectionTurn =
     !!lastQuestion &&
     !isSendMsg &&
     !forcedTool &&
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lastQuestion.trim());  // just an email address
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lastQuestion.trim());
 
-  // -- Guard: if sendContactForm already succeeded in this conversation, remove it
-  // from the available tools so the LLM cannot call it again.
   const contactFormAlreadySent = trimmedMessages.some(
     m => m.role === 'assistant' && m.content.includes('sendContactForm was already called and succeeded')
   );
@@ -135,9 +112,6 @@ export const POST: APIRoute = async ({ request }) => {
         .reduce((acc, k) => ({ ...acc, [k]: toolsDefinition[k] }), {} as Partial<typeof toolsDefinition>)
     : toolsDefinition;
 
-  // Detect the final "message" step of contact data collection.
-  // At this point the user has provided name + email in prior turns and is now sending the message body.
-  // Force sendContactForm so the 8b model doesn't silently return empty text.
   const prevUserMsgs = trimmedMessages.slice(0, -1).filter(m => m.role === 'user');
   const isContactMessageStep =
     !isSendMsg &&
@@ -152,16 +126,13 @@ export const POST: APIRoute = async ({ request }) => {
 
   const encoder = new TextEncoder();
 
-  // Pick an available key from the pool (skips rate-limited keys)
   const primaryKeySlot = getAvailableGroq();
   const groq = primaryKeySlot?.groq ?? createGroq({ apiKey: groqKeyPool[0] });
   let   currentKeyIndex = primaryKeySlot?.index ?? 0;
 
-  // Helper: try to get a fresh key when current one is rate-limited
   function rotateKey(): boolean {
     const slot = getAvailableGroq();
     if (!slot) return false;
-    // reassign via closure mutation isn’t possible, so we use a wrapper object
     Object.assign(groqRef, { groq: slot.groq, index: slot.index });
     currentKeyIndex = slot.index;
     return true;
@@ -179,8 +150,6 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  // 1?? PRIMARIO — llama-3.1-8b-instant (fast ~80-200ms)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let primaryResult: Awaited<ReturnType<typeof streamText<any>>> | null = null;
   let useFallback = false;
 
@@ -200,20 +169,14 @@ export const POST: APIRoute = async ({ request }) => {
     return { toolChoice: 'auto' };
   }
 
-  // Block all tools on step 0 for send-message intent — model must ask for name first.
-  // Note: keep tool schemas in context (no activeTools: []) so the model doesn't get
-  // confused and return an empty response on some LLM backends (e.g. Groq/8b + English).
   if (stepNumber === 0 && isSendMsg) {
     return { toolChoice: 'none' as const };
   }
 
-  // Block tools when the user just provided an email address (mid data-collection).
-  // The model must ask for the next field (message) instead of jumping to sendContactForm.
   if (stepNumber === 0 && isDataCollectionTurn) {
     return { toolChoice: 'none' as const };
   }
 
-  // Force sendContactForm when all three fields (name, email, message) are now available.
   if (stepNumber === 0 && isContactMessageStep) {
     return {
       toolChoice: { type: 'tool', toolName: 'sendContactForm' } as any,
@@ -221,9 +184,6 @@ export const POST: APIRoute = async ({ request }) => {
     };
   }
 
-  // -- Step 0: force whichever tool was detected --
-  // This guarantees the card always appears for explicit show-intents,
-  // and prevents the model from replacing a tool call with plain text.
   if (stepNumber === 0 && forcedTool) {
     return {
       toolChoice: { type: 'tool', toolName: forcedTool } as any,
@@ -231,12 +191,8 @@ export const POST: APIRoute = async ({ request }) => {
     };
   }
 
-  // -- Step 1+: text-only follow-up, no more tool calls --
-  // activeTools:[] removes tool schemas from the prompt, saving ~500-1000 tokens
-  // (tool_choice:'none' alone still sends all tool definitions to the API)
   if (stepNumber >= 1) return { toolChoice: 'none', activeTools: [] as any };
 
-  // -- No forced tool: model decides freely (text or tool) --
   return { toolChoice: 'auto' };
 },
     });
@@ -253,7 +209,6 @@ export const POST: APIRoute = async ({ request }) => {
     markKeyCooldown(getKeyIdx(), primaryErr);
     const rotated = rotateKey();
     if (rotated) {
-      // Key rotada disponible — reintentar con 8b (rápido, sin degradar a 70b)
       console.warn('[EduBot] 8b rate limited → rotated key, retrying 8b');
       try {
         primaryResult = await streamText({
@@ -298,7 +253,6 @@ export const POST: APIRoute = async ({ request }) => {
       useFallback = true;
     }
   } else if (isFunctionFail) {
-    // Reintent� sin forzar tool � modelo m�s capaz para recuperar tool calling
     console.warn('[EduBot] Function call failed, retrying with 70b...');
     try {
       primaryResult = await streamText({
@@ -334,7 +288,6 @@ export const POST: APIRoute = async ({ request }) => {
   }
 }
 
-  // 2?? FALLBACK � llama-3.3-70b-versatile (m�s capaz cuando 8b falla)
   if (useFallback) {
     try {
       const fallbackResult = await streamText({
@@ -376,7 +329,6 @@ export const POST: APIRoute = async ({ request }) => {
 
   const captured = primaryResult;
 
-  // ?? STREAM AL CLIENTE
   const stream = new ReadableStream({
     async start(controller) {
       let toolCallsEmitted = 0;
@@ -390,9 +342,7 @@ export const POST: APIRoute = async ({ request }) => {
         const isRateLimit = (streamErr as any)?.statusCode === 429 ||
                             String((streamErr as any)?.message).includes('Rate limit') ||
                             String((streamErr as any)?.message).includes('rate_limit');
-        // Always use 70b for non-rate-limit errors (reliability > speed).
-        // For rate limits: if a fresh key is available, 8b is faster; otherwise 70b
-        // has a separate TPM bucket and might still respond.
+
         let emergencyModel = FALLBACK_MODEL;
         if (isRateLimit) {
           markKeyCooldown(getKeyIdx(), streamErr);
@@ -406,9 +356,7 @@ export const POST: APIRoute = async ({ request }) => {
         } else {
           console.warn('[EduBot] Stream error → emergency 70b');
         }
-        // Can only show tools in emergency if:
-        // 1. No cards were emitted yet (avoid duplicates)
-        // 2. A specific tool was forced (text-only intents like send-message must stay text-only)
+
         const emergencyCanShowTools = toolCallsEmitted === 0 && forcedTool !== null;
         try {
           const emergency = await streamText({
@@ -419,7 +367,6 @@ export const POST: APIRoute = async ({ request }) => {
             ...(emergencyCanShowTools ? {
               tools:    activeTools as typeof toolsDefinition,
               stopWhen: stepCountIs(multiProject ? 4 : 2),
-              // Mirror primary prepareStep: force tool on step 0 only, then text-only
               prepareStep: ({ stepNumber }: { stepNumber: number }) => {
                 if (multiProject) {
                   if (stepNumber >= 3) return { toolChoice: 'none', activeTools: [] as any };

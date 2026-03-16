@@ -11,7 +11,6 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-/* ── Peek image slider ──────────────────────────────────────────── */
 const SLIDE_GAP = 20;
 const PEEK_DESKTOP = 270;
 const PEEK_MOBILE  = 5;
@@ -41,7 +40,6 @@ function ImageSlider({ images, title }: { images: readonly string[]; title: stri
   }, []);
 
   const getSlideHeight = useCallback((slideW: number): number => {
-    // 4:3 on mobile, 16:9 on sm+  (matches aspect-[4/3] sm:aspect-video)
     return window.innerWidth < 640
       ? Math.round(slideW * 3 / 4)
       : Math.round(slideW * 9 / 16);
@@ -56,14 +54,12 @@ function ImageSlider({ images, title }: { images: readonly string[]; title: stri
     return peek - extIdx * stride;
   }, [getSlideWidth]);
 
-  // Observar cambios en el tamaño del contenedor
   useEffect(() => {
     if (!containerRef.current) return;
 
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         if (entry.contentRect.width > 0) {
-          // Actualizar tamaños cuando el contenedor tenga dimensiones reales
           const slideW = getSlideWidth();
           if (slideW > 0 && trackRef.current) {
             const slideH = getSlideHeight(slideW);
@@ -86,8 +82,7 @@ function ImageSlider({ images, title }: { images: readonly string[]; title: stri
     });
 
     resizeObserver.observe(containerRef.current);
-    
-    // Forzar una medición inicial después de un pequeño delay
+
     const initTimer = setTimeout(() => {
       if (containerRef.current) {
         const slideW = getSlideWidth();
@@ -116,7 +111,6 @@ function ImageSlider({ images, title }: { images: readonly string[]; title: stri
     };
   }, [getX, getSlideWidth, getSlideHeight]);
 
-  // Recalcular en resize de ventana
   useEffect(() => {
     const onResize = () => {
       if (!trackRef.current || !containerRef.current) return;
@@ -233,7 +227,6 @@ function ImageSlider({ images, title }: { images: readonly string[]; title: stri
       if (delta < 0) moveTo(idxRef.current + 1);
       else moveTo(idxRef.current - 1);
     } else {
-      // snap back si el swipe fue muy corto
       gsap.to(trackRef.current, { x: getX(idxRef.current), duration: 0.25, ease: "power2.out" });
     }
   };
@@ -249,12 +242,10 @@ function ImageSlider({ images, title }: { images: readonly string[]; title: stri
         onPointerMove={onDragMove}
         onPointerUp={onDragUp}
       >
-        {/* Mostrar un placeholder mientras no está listo */}
         {!isReady && (
           <div className="aspect-[4/3] sm:aspect-video bg-muted animate-pulse rounded-2xl" />
         )}
 
-        {/* Track: gap entre slides = SLIDE_GAP */}
         <div
           ref={trackRef}
           className="flex items-stretch"
@@ -403,7 +394,6 @@ export default function ProjectDetail({ slug }: Props) {
   return (
     <div ref={ref} className="min-h-screen">
 
-      {/* Back button */}
       <div className="pt-24 pb-4 px-6 container mx-auto">
         <a
           href="/"
@@ -414,14 +404,12 @@ export default function ProjectDetail({ slug }: Props) {
         </a>
       </div>
 
-      {/* Image slider — full viewport width */}
       <div className="w-full mb-0" ref={(el) => { if (el) el.style.setProperty('view-transition-name', `project-card-${slug}`); }}>
         <div className="detail-image">
           <ImageSlider images={staticData.images} title={project.title} />
         </div>
       </div>
 
-      {/* Main content */}
       <div className="container mx-auto px-6 pt-5 pb-5">
         <div className="max-w-5xl mx-auto grid lg:grid-cols-[1fr_260px] gap-10 lg:gap-14 items-start">
 
@@ -661,7 +649,6 @@ export default function ProjectDetail({ slug }: Props) {
         </div>
       </div>
 
-      {/* Project navigation */}
       <div className="detail-section border-t border-border/30">
         <div className="container mx-auto px-6 py-10 max-w-5xl flex items-center justify-between gap-4">
           <a

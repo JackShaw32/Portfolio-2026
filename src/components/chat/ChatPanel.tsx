@@ -54,7 +54,6 @@ export default function ChatPanel({
           <div className="absolute inset-[1.5px] rounded-[23px] bg-background" />
 
           <div className="glass rounded-[23px] overflow-hidden flex flex-col relative z-10 h-full w-full">
-            {/* ── Header ── */}
             <div className="flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 border-b border-border/50 bg-muted/30 flex-shrink-0">
               <div className="flex items-center gap-3">
                 <div className="relative">
@@ -79,7 +78,6 @@ export default function ChatPanel({
               </div>
             </div>
 
-            {/* ── Messages ── */}
             <div data-lenis-prevent className="flex-1 overflow-y-auto overscroll-contain p-4 space-y-4 scrollbar-thin overflow-x-hidden">
               {messages.map((msg) => (
                 <div key={msg.id} className={`flex gap-2 sm:gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
@@ -87,7 +85,6 @@ export default function ChatPanel({
                     {msg.role === "assistant" ? <Bot className="w-3.5 h-3.5" /> : <User className="w-3.5 h-3.5" />}
                   </div>
                   <div className={`max-w-[85%] flex flex-col gap-2 ${msg.role === "user" ? "items-end" : "items-start"}`}>
-                    {/* Cards first, then follow-up text */}
                     {msg.toolInvocations?.map((toolInvocation) => (
                       <ToolResultCard
                         key={toolInvocation.toolCallId}
@@ -95,7 +92,6 @@ export default function ChatPanel({
                         lang={lang}
                       />
                     ))}
-                    {/* Text always after cards */}
                     {msg.content
                       && !/<?function[=(\/]/.test(msg.content)
                       && !/^\s*(sendContactForm|showProject|showContact|showSkills|showExperience|showAvailability)\b/.test(msg.content)
@@ -128,7 +124,6 @@ export default function ChatPanel({
               <div ref={messagesEndRef} />
             </div>
 
-            {/* ── Suggestions ── */}
             {messages.length === 1 && (
               <div className="px-4 pb-3 flex overflow-x-auto gap-2 flex-shrink-0 scrollbar-none snap-x">
                 {ch.suggestions.map((s) => (
@@ -137,7 +132,6 @@ export default function ChatPanel({
               </div>
             )}
 
-            {/* ── Input form ── */}
             <div className="p-3 sm:p-4 border-t border-border/50 bg-muted/10 flex-shrink-0 w-full">
               <form onSubmit={(e) => onSend(e)} className="flex gap-2 w-full">
                 <input type="text" value={input} onChange={(e) => onInputChange(e.target.value)} placeholder={ch.placeholder} className="flex-1 min-w-0 bg-muted/50 border border-border/50 rounded-xl px-4 py-3 text-[13px] sm:text-sm text-foreground focus:outline-none focus:border-foreground/40 transition-all" />
