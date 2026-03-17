@@ -207,7 +207,7 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
           menuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex-1 px-8 pt-20 pb-8 flex flex-col">
+        <div className="flex-1 px-6 pt-20 pb-8 flex flex-col">
 
           <nav className="flex flex-col gap-4 mb-8">
             <span className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-2">
@@ -218,7 +218,7 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
                 <button
                   key={link.sectionId}
                   onClick={() => { setMenuOpen(false); setContactOpen(true); }}
-                  className={`text-2xl font-semibold w-fit transition-all duration-300 text-left cursor-pointer ${
+                  className={`text-3xl font-semibold w-fit transition-all duration-300 text-left cursor-pointer ${
                     menuOpen ? `opacity-100 translate-x-0 nav-delay-${i}` : "opacity-0 translate-x-8 nav-delay-none"
                   }`}
                 >
@@ -231,7 +231,7 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
                   key={link.sectionId}
                   href={link.href}
                   onClick={() => saveSectionAndClose(link.sectionId)}
-                  className={`text-2xl font-semibold w-fit transition-all duration-300 ${
+                  className={`text-3xl font-semibold w-fit transition-all duration-300 ${
                     menuOpen ? `opacity-100 translate-x-0 nav-delay-${i}` : "opacity-0 translate-x-8 nav-delay-none"
                   }`}
                 >
@@ -252,12 +252,12 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
               </span>
               <a
                 href="mailto:jackshaw@live.com.ar"
-                className="flex items-center gap-3 text-foreground/70 hover:text-foreground transition-colors"
+                className="flex items-center gap-2 text-foreground/70 hover:text-foreground transition-colors"
               >
                 <Mail className="w-5 h-5" />
                 <span>jackshaw@live.com.ar</span>
               </a>
-              <div className="flex items-center gap-3 text-foreground/70">
+              <div className="flex items-center gap-2 text-foreground/70">
                 <MapPin className="w-5 h-5" />
                 <span>Córdoba, Argentina</span>
               </div>
