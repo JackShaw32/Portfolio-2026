@@ -1,9 +1,9 @@
 import { ExternalLink, Github, ArrowRight } from "lucide-react";
 import { useEffect, useRef } from "react";
-import { useLanguage } from "./hooks/useLanguage";
-import { translations } from "../lib/translations";
-import { projectsStaticData } from "../config/projects";
-import { renderBold } from "../lib/renderBold";
+import { useLanguage } from "@/hooks/useLanguage";
+import { translations } from "@/lib/translations";
+import { projectsStaticData } from "@/config/projects";
+import { renderBold } from "@/lib/renderBold";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -80,11 +80,11 @@ export default function Projects() {
           </p>
         </div>
 
-        <div className="flex flex-col gap-20 md:gap-32 xl:gap-40">
+        <div className="flex md:flex-col gap-6 md:gap-20 xl:gap-40 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none scroll-pl-6 md:scroll-pl-0 pb-4 md:pb-0 [&::-webkit-scrollbar]:hidden">
           {projects.map((project, index) => {
             const isEven = index % 2 !== 0;
             return (
-              <div key={project.slug} data-project-slug={project.slug} className="project-row flex flex-col xl:flex-row gap-10 lg:gap-16 items-center group">
+              <div key={project.slug} data-project-slug={project.slug} className="project-row min-w-[85vw] md:min-w-0 snap-start md:snap-none flex flex-col xl:flex-row gap-10 lg:gap-16 items-center group">
 
                 <div className={`project-img-wrap opacity-0 w-full xl:w-3/5 ${isEven ? "xl:order-2" : "xl:order-1"}`}>
                   <a

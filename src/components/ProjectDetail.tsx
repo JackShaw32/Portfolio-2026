@@ -1,9 +1,9 @@
 ﻿import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { ExternalLink, Github, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
-import { useLanguage } from "./hooks/useLanguage";
-import { translations } from "../lib/translations";
-import { projectsStaticData } from "../config/projects";
-import { renderBold } from "../lib/renderBold";
+import { useLanguage } from "@/hooks/useLanguage";
+import { translations } from "@/lib/translations";
+import { projectsStaticData } from "@/config/projects";
+import { renderBold } from "@/lib/renderBold";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 

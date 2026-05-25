@@ -1,8 +1,8 @@
 import { useState, useRef } from "react";
 import { Send, Mail, Linkedin, Github, MapPin, CheckCircle, Lock } from "lucide-react";
-import { useReveal } from "./hooks/useReveal";
-import { useLanguage } from "./hooks/useLanguage";
-import { translations } from "../lib/translations";
+import { useReveal } from "@/hooks/useReveal";
+import { useLanguage } from "@/hooks/useLanguage";
+import { translations } from "@/lib/translations";
 
 export default function Contact() {
   const ref = useRef<HTMLElement>(null);

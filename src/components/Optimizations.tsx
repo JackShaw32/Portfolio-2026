@@ -1,14 +1,10 @@
 import { useRef, useState, useEffect } from "react";
-import { useReveal } from "./hooks/useReveal";
-import { CheckCircle2, Zap, Search, Smartphone, RotateCcw } from "lucide-react";
+import { useReveal } from "@/hooks/useReveal";
+import { useLanguage } from "@/hooks/useLanguage";
+import { translations } from "@/lib/translations";
+import { Zap, Search, CheckCircle2, Smartphone, RotateCcw } from "lucide-react";
+import { SiTypescript, SiJavascript, SiReact, SiNextdotjs, SiAstro, SiAngular, SiTailwindcss, SiNodedotjs, SiNestjs, SiExpress, SiMongodb, SiPostgresql, SiFirebase, SiAmazonwebservices, SiDocker, SiGit } from "react-icons/si";
 import type { IconType } from "react-icons";
-import {
-  SiJavascript, SiTypescript, SiReact, SiNextdotjs, SiAngular, SiTailwindcss,
-  SiNodedotjs, SiNestjs, SiExpress, SiMongodb, SiPostgresql,
-  SiAmazonwebservices, SiDocker, SiFirebase, SiGit, SiAstro
-} from "react-icons/si";
-import { useLanguage } from "./hooks/useLanguage";
-import { translations } from "../lib/translations";
 
 const featureIcons = [Zap, Search, CheckCircle2, Smartphone];
 

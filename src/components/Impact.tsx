@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
-import { useReveal } from "./hooks/useReveal";
-import { useLanguage } from "./hooks/useLanguage";
-import { translations } from "../lib/translations";
+import { useReveal } from "@/hooks/useReveal";
+import { useLanguage } from "@/hooks/useLanguage";
+import { translations } from "@/lib/translations";
 import ContactModal from "./ContactModal";
 
 const RING_COLORS = [

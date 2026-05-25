@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Download, Moon, Sun, Menu, X, Github, Linkedin, Mail, MapPin, Terminal } from "lucide-react";
 import ContactModal from "./ContactModal";
-import { useLanguage } from "./hooks/useLanguage";
-import { translations } from "../lib/translations";
+import { useLanguage } from "@/hooks/useLanguage";
+import { translations } from "@/lib/translations";
 
 export default function Navbar({ subPage = false }: { subPage?: boolean }) {
   const [hidden, setHidden] = useState(false);
@@ -124,7 +124,7 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
             </span>
             <div className="flex flex-col gap-0">
               <div className="font-semibold text-base lg:text-xl text-foreground tracking-tight">Eduardo Cabral</div>
-              <p className="text-xs text-muted-foreground font-medium">Full-Stack JavaScript Dev</p>
+              <p className="text-xs text-muted-foreground font-medium">Full Stack Software Engineer</p>
             </div>
           </a>
 
@@ -135,7 +135,7 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
             onClick={() => saveSectionAndClose('top')}
             title="Go to top"
           >
-            <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full bg-foreground/10 flex items-center justify-center group-hover:scale-105 group-hover:bg-foreground/20 transition-all duration-300">
+            <span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full bg-foreground/10 flex items-center justify-center group-hover:scale-105 group-hover:bg-foreground/20 transition-all duration-300">
               <img
                 src="/20220924_233024.webp"
                 alt="Eduardo Cabral"
@@ -203,13 +203,13 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
       />
 
       <div
-        className={`fixed top-0 right-0 bottom-0 w-full max-w-md bg-background border-l border-border/50 z-40 flex flex-col overflow-hidden transition-transform duration-500 ease-in-out ${
+        className={`fixed top-0 right-0 bottom-0 w-full max-w-md bg-background border-l border-border/50 z-40 flex flex-col overflow-y-auto transition-transform duration-500 ease-in-out ${
           menuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex-1 px-6 pt-20 pb-8 flex flex-col">
+        <div className="flex-1 px-6 pt-20 pb-8 flex flex-col overflow-y-auto">
 
-          <nav className="flex flex-col gap-4 mb-8">
+          <nav aria-label={t.nav.navigation} className="flex flex-col gap-4 mb-8">
             <span className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-2">
               {t.nav.navigation}
             </span>
@@ -265,7 +265,7 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
 
             <div className="flex items-center gap-3">
               <a
-                href="https://github.com/educcabral"
+                href="https://github.com/JackShaw32"
                 target="_blank"
                 rel="noopener noreferrer"
                 title="GitHub Profile"
@@ -275,7 +275,7 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
                 <Github className="w-5 h-5" />
               </a>
               <a
-                href="https://www.linkedin.com/in/eduardo-cabral-211199201/"
+                href="https://www.linkedin.com/in/raul-eduardo-cabral/"
                 target="_blank"
                 rel="noopener noreferrer"
                 title="LinkedIn Profile"

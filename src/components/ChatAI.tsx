@@ -1,5 +1,5 @@
-import { useLanguage } from "./hooks/useLanguage";
-import { translations } from "../lib/translations";
+import { useLanguage } from "@/hooks/useLanguage";
+import { translations } from "@/lib/translations";
 import { useChatLogic } from "./chat/useChatLogic";
 import RobotButton from "./chat/RobotButton";
 import ChatPanel from "./chat/ChatPanel";

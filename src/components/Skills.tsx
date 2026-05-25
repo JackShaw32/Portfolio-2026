@@ -1,8 +1,8 @@
 import { useRef, useState, useEffect } from "react";
-import { useReveal } from "./hooks/useReveal";
-import { Briefcase, GraduationCap, Languages, Mail, FileText, Download, ChevronRight, ChevronDown, RotateCcw } from "lucide-react";
-import { useLanguage } from "./hooks/useLanguage";
-import { translations } from "../lib/translations";
+import { useReveal } from "@/hooks/useReveal";
+import { useLanguage } from "@/hooks/useLanguage";
+import { translations } from "@/lib/translations";
+import { Mail, ChevronRight, FileText, Download, Briefcase, ChevronDown, GraduationCap, Languages, RotateCcw } from "lucide-react";
 import ContactModal from "./ContactModal";
 
 const CHARTS = [

@@ -18,7 +18,7 @@ export function OGImage() {
 
         <div tw="flex items-center gap-2.5 text-[28px]">
           <span tw="text-white font-mono">{'>'}</span>
-          <span tw="text-white/70">Full-Stack JavaScript Developer</span>
+          <span tw="text-white/70">Software Engineer · Full Stack Developer</span>
         </div>
 
         <div tw="flex text-3xl text-white/50 leading-relaxed max-w-[760px]">

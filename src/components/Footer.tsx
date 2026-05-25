@@ -1,7 +1,7 @@
 import { Terminal, Github, Linkedin, Mail, Twitter, ArrowUpRight } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useLanguage } from "./hooks/useLanguage";
-import { translations } from "../lib/translations";
+import { useLanguage } from "@/hooks/useLanguage";
+import { translations } from "@/lib/translations";
 import ContactModal from "./ContactModal";
 
 export default function Footer({ subPage = false }: { subPage?: boolean }) {
@@ -19,6 +19,7 @@ export default function Footer({ subPage = false }: { subPage?: boolean }) {
   const links = ft.links.map((l) => ({
     ...l,
     href: l.href.startsWith("#") ? `${base}${l.href}` : l.href,
+    isContact: l.href === '#contact',
   }));
 
   const socials = [
@@ -31,13 +32,13 @@ export default function Footer({ subPage = false }: { subPage?: boolean }) {
   return (
     <>
       <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
-      <footer className="relative border-t border-border/10 bg-background/95 backdrop-blur-xl pt-20 pb-10 overflow-hidden">
+      <footer className="relative border-t border-border/10 bg-background/95 backdrop-blur-xl pt-12 md:pt-20 pb-10 overflow-hidden">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[300px] pointer-events-none flex justify-center opacity-20">
         <div className="absolute -top-[150px] w-[600px] h-[300px] rounded-[100%] bg-gradient-to-b from-primary/20 to-transparent blur-3xl" />
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 mb-16">
           <div className="lg:col-span-2 space-y-6">
             <div className="flex items-center gap-2">
               <Terminal className="w-6 h-6 text-primary" />
@@ -64,12 +65,12 @@ export default function Footer({ subPage = false }: { subPage?: boolean }) {
             </div>
           </div>
 
-          <div>
+          <nav aria-label={ft.navigation}>
             <h2 className="font-semibold text-foreground mb-6 uppercase tracking-wider text-sm">{ft.navigation}</h2>
             <ul className="space-y-4">
               {links.map((link) => (
                 <li key={link.name}>
-                  {link.href === '#contact' ? (
+                  {link.isContact ? (
                     <button
                       onClick={() => setContactOpen(true)}
                       className="text-muted-foreground hover:text-primary transition-colors duration-300 flex items-center gap-1 group w-fit cursor-pointer"
@@ -110,7 +111,7 @@ export default function Footer({ subPage = false }: { subPage?: boolean }) {
                 </button>
               </li>
             </ul>
-          </div>
+          </nav>
 
           <div>
             <h2 className="font-semibold text-foreground mb-6 uppercase tracking-wider text-sm">{ft.technologies}</h2>

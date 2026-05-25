@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { X, Send, Mail, Linkedin, Github, CheckCircle, Lock } from "lucide-react";
-import { useLanguage } from "./hooks/useLanguage";
-import { translations } from "../lib/translations";
+import { useLanguage } from "@/hooks/useLanguage";
+import { translations } from "@/lib/translations";
 
 interface ContactModalProps {
   open: boolean;

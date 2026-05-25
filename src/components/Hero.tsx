@@ -1,12 +1,13 @@
 import { Linkedin, ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useLanguage } from "./hooks/useLanguage";
-import { translations } from "../lib/translations";
+import { useLanguage } from "@/hooks/useLanguage";
+import { translations } from "@/lib/translations";
 
 const roles = [
-  "Full-Stack Developer",
-  "React & Next.js Specialist",
-  "Node.js & Nest.js Backend",
+  "Software Engineer",
+  "Full Stack Developer",
+  "React & Next.js Developer",
+  "Node.js Backend Developer",
   "E-commerce Developer"
 ];
 
@@ -88,15 +89,15 @@ export default function Hero() {
 
           <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-12 font-light text-balance">
             {lang === 'es' ? <>
-              Full-Stack Developer construyendo{" "}
-              <span className="text-foreground/80 font-medium">aplicaciones web escalables</span>,{" "}
-              <span className="text-foreground/80 font-medium">plataformas e-commerce</span> y{" "}
-              <span className="text-foreground/80 font-medium">productos con IA</span>.
+              <span className="text-foreground/80 font-medium">Software Engineer</span> especializado en{" "}
+              <span className="text-foreground/80 font-medium">Full Stack Development</span>,{" "}
+              <span className="text-foreground/80 font-medium">e-commerce</span> y{" "}
+              <span className="text-foreground/80 font-medium">productos web modernos</span>.
             </> : <>
-              Full-Stack Developer building{" "}
-              <span className="text-foreground/80 font-medium">scalable web applications</span>,{" "}
-              <span className="text-foreground/80 font-medium">e-commerce platforms</span> and{" "}
-              <span className="text-foreground/80 font-medium">AI-powered products</span>.
+              <span className="text-foreground/80 font-medium">Software Engineer</span> specialized in{" "}
+              <span className="text-foreground/80 font-medium">Full Stack Development</span>,{" "}
+              <span className="text-foreground/80 font-medium">e-commerce</span> and{" "}
+              <span className="text-foreground/80 font-medium">modern web products</span>.
             </>}
           </p>
 
