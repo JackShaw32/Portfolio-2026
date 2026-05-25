@@ -13,7 +13,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   site: 'https://jackshaw32.vercel.app',
   output: 'server',
-  adapter: vercel(),
+  adapter: vercel({
+    isr: {
+      expiration: 600,
+    },
+    imageService: true,
+  }),
   build: {
     inlineStylesheets: 'always',
   },

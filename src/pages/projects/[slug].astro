@@ -7,6 +7,13 @@ import ChatAI from "@/components/ChatAI";
 import { projectsStaticData } from "@/config/projects";
 import { translations } from "@/lib/translations";
 
+export const prerender = true;
+export async function getStaticPaths() {
+  return projectsStaticData.map(project => ({
+    params: { slug: project.slug }
+  }));
+}
+
 const { slug } = Astro.params;
 
 if (!slug) {
@@ -23,9 +30,9 @@ if (!staticData) {
 
 const siteURL = "https://jackshaw32.vercel.app";
 const projectTitle = projectT?.title ?? slug;
-const projectDescription = projectT?.description ?? "Proyecto en el portfolio de Eduardo Cabral — Full-Stack JavaScript Developer.";
+const projectDescription = projectT?.description ?? "Proyecto en el portfolio de Eduardo Cabral — Software Engineer & Full Stack Developer.";
 const projectImage = staticData.images[0];
-const projectKeywords = `${staticData.tags.join(", ")}, Eduardo Cabral, Full Stack Developer, portfolio`;
+const projectKeywords = `${staticData.tags.join(", ")}, Eduardo Cabral, Software Engineer, Full Stack Developer, portfolio`;
 
 const jsonLd = {
   "@context": "https://schema.org",
