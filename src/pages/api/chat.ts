@@ -76,7 +76,7 @@ export const POST: APIRoute = async ({ request }) => {
     : '\n\n⚡ IDIOMA LOCK: Esta sesión es en ESPAÑOL RIOPLATENSE. Respondé TODO en español con "vos". Sin excepciones.';
 
   const safeSection  = typeof pageContext === 'string' && VALID_SECTIONS.has(pageContext) ? pageContext : null;
-  const isProjectPage = safeSection && ['uncuartodemilla', 'expresoomega', 'alfyvivi'].includes(safeSection);
+  const isProjectPage = safeSection && ['uncuartodemilla', 'expresoomega'].includes(safeSection);
   const pageContextStr = safeSection
     ? isProjectPage
       ? `\nUSER CONTEXT: The user is currently on the ${SECTION_LABELS[safeSection]}. When they say "mostrame el proyecto" / "show me the project" without specifying which one, they mean THIS project (${safeSection}). Show ONLY this project's card.\n`
@@ -155,7 +155,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   try {
     primaryResult = await streamText({
-      model:      getGroq()(PRIMARY_MODEL),
+      model:      getGroq()(forcedTool || multiProject ? FALLBACK_MODEL : PRIMARY_MODEL),
       system:     BASE_PROMPT + pageContextStr + LANG_INSTRUCTION + langLock,
       messages:   trimmedMessages,
       tools:      activeTools as typeof toolsDefinition,
@@ -163,10 +163,11 @@ export const POST: APIRoute = async ({ request }) => {
       stopWhen:   stepCountIs(5),
       maxOutputTokens:  600,
       maxRetries: 0,
+      temperature: 0.3,
       prepareStep: ({ stepNumber }) => {
   if (multiProject) {
     if (stepNumber >= 3) return { toolChoice: 'none', activeTools: [] as any };
-    return { toolChoice: 'auto' };
+    return { model: getGroq()(FALLBACK_MODEL), toolChoice: 'auto' as const };
   }
 
   if (stepNumber === 0 && isSendMsg) {
@@ -179,6 +180,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   if (stepNumber === 0 && isContactMessageStep) {
     return {
+      model: getGroq()(FALLBACK_MODEL),
       toolChoice: { type: 'tool', toolName: 'sendContactForm' } as any,
       activeTools: ['sendContactForm'] as any,
     };
@@ -186,6 +188,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   if (stepNumber === 0 && forcedTool) {
     return {
+      model: getGroq()(FALLBACK_MODEL),
       toolChoice: { type: 'tool', toolName: forcedTool } as any,
       activeTools: [forcedTool] as any,
     };
@@ -193,7 +196,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   if (stepNumber >= 1) return { toolChoice: 'none', activeTools: [] as any };
 
-  return { toolChoice: 'auto' };
+  return { toolChoice: 'none' };
 },
     });
   } catch (primaryErr: any) {
@@ -209,7 +212,7 @@ export const POST: APIRoute = async ({ request }) => {
     markKeyCooldown(getKeyIdx(), primaryErr);
     const rotated = rotateKey();
     if (rotated) {
-      console.warn('[EduBot] 8b rate limited → rotated key, retrying 8b');
+      console.warn('[EduBot] Rate limited → rotated key, retrying with 8b');
       try {
         primaryResult = await streamText({
           model:      getGroq()(PRIMARY_MODEL),
@@ -245,11 +248,11 @@ export const POST: APIRoute = async ({ request }) => {
         const retryIsRL = retryErr?.statusCode === 429 ||
           String(retryErr?.message).includes('Rate limit') || String(retryErr?.message).includes('rate_limit');
         if (retryIsRL) markKeyCooldown(getKeyIdx(), retryErr);
-        console.warn('[EduBot] Rotated key also failed → fallback 70b');
+        console.warn(`[EduBot] Rotated key also failed → fallback 70b`);
         useFallback = true;
       }
     } else {
-      console.warn('[EduBot] 8b rate limited, no keys available → fallback 70b');
+      console.warn('[EduBot] Rate limited, no keys available → fallback 70b');
       useFallback = true;
     }
   } else if (isFunctionFail) {

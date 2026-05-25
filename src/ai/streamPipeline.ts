@@ -1,10 +1,10 @@
 import { streamText } from 'ai';
 import { toolsDefinition } from './tools';
-import { TEXT_TOOL_CALL_RE, parseAndExecuteTextToolCalls } from './textToolParser';
+import { parseAndExecuteTextToolCalls } from './textToolParser';
 import { TOOL_LEAK_RE } from './leakPatterns';
 
 const HTML_TAG_RE = /<\/?[a-z][a-z0-9-]*(\s[^>]*)?\/?>/gi;
-const FUNC_CALL_STRIP_RE = /<?function[=/](?:sendContactForm|showProject|showContact|showSkills|showExperience|showAvailability)>[\s\S]*/g;
+const FUNC_CALL_STRIP_RE = /<?function[=/](?:sendContactForm|showProject|showContact|showSkills|showProfile|showRecommendation|showArchitecture|showExperience|showAvailability)>[\s\S]*/g;
 const stripHtml = (s: string) =>
   s.replace(HTML_TAG_RE, '').replace(FUNC_CALL_STRIP_RE, '').replace(/\s+/g, ' ').trim();
 
@@ -73,11 +73,13 @@ export async function pipeStreamToController(
 
   if (!hadToolCall && textBuffer.length > 0) {
     const full = textBuffer.join('');
-    if (tools && (TEXT_TOOL_CALL_RE.lastIndex = 0, TEXT_TOOL_CALL_RE.test(full))) {
+    if (tools && /(?:sendContactForm|showProject|showContact|showSkills|showProfile|showRecommendation|showArchitecture|showExperience|showAvailability)\(/.test(full)) {
       await parseAndExecuteTextToolCalls(full, tools, controller, encoder);
     } else {
       const clean = stripHtml(full);
-      if (clean) controller.enqueue(encoder.encode(`0:${JSON.stringify(clean)}\n`));
+      if (clean && !TOOL_LEAK_RE.test(clean)) {
+        controller.enqueue(encoder.encode(`0:${JSON.stringify(clean)}\n`));
+      }
     }
   }
 

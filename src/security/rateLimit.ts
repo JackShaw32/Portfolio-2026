@@ -3,7 +3,7 @@ export const LIMITS = {
   PER_HOUR:       20,
   PER_DAY:        50,
   MAX_MSG_LENGTH: 400,
-  MAX_HISTORY:    6,
+  MAX_HISTORY:    10,
 };
 
 export interface IPRecord {

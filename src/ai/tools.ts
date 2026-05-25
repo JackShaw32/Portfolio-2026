@@ -29,15 +29,13 @@ export const toolsDefinition = {
       title: string; description: string; tech: string;
       url: string; image: string;
     }) => {
-      if (!args?.title) return null;
+      if (!args?.title) return { title: 'Proyecto', description: '', tech: [], url: '#', image: '' };
       const ALLOWED_URLS = [
         'https://uncuartodemilla.com/',
         'https://www.expresoomega.com/',
-        'https://alfyvivi.com/',
       ];
       const ALLOWED_IMAGES = [
         '/projects/14milla.webp',
-        '/projects/alfyvivi.webp',
         '/projects/omega.webp',
       ];
       const safeUrl   = ALLOWED_URLS.includes(args.url)     ? args.url   : '#';
@@ -45,7 +43,7 @@ export const toolsDefinition = {
       return {
         title:       sanitizeStr(args.title),
         description: sanitizeStr(args.description),
-        tech:        args.tech.split(',').map((t: string) => sanitizeStr(t.trim())).filter(Boolean),
+        tech:        (args.tech ?? '').split(',').map((t: string) => sanitizeStr(t.trim())).filter(Boolean),
         url:         safeUrl,
         image:       safeImage,
       };
@@ -136,6 +134,123 @@ export const toolsDefinition = {
         },
       ],
     }),
+  },
+
+  // showRecommendation
+  showRecommendation: {
+    description: 'Muestra una tarjeta de recomendación profesional explicando por qué contratar a Eduardo, para qué tipo de proyectos es ideal, y qué lo hace destacar. Llamar cuando preguntan "por qué contratarlo", "recomiéndame", "would you recommend him", "why should I hire", "es bueno para", "is he a good fit", o evaluaciones de su perfil.',
+    inputSchema: jsonSchema<Record<string, never>>({
+      type: 'object',
+      properties: {},
+    }),
+    execute: async () => ({
+      strengths: [
+        'Arquitectura full-stack completa: diseña y construye desde la DB hasta el frontend',
+        'E-commerce end-to-end: pagos, tracking, auth, CMS, testing, deploy — todo hecho por él',
+        'Seguridad y robustez: rate limiting, sanitización, JWT httpOnly, inyección NoSQL, CSRF',
+        'Testing real: 119 unit tests + 11 E2E + Lighthouse audits automáticas',
+        'Product mindset: entiende el negocio, no solo el código',
+        'Autodidacta y rápido: de bootcamp a e-commerce en producción en menos de 2 años',
+      ],
+      idealFor: [
+        'E-commerce y plataformas B2C con pagos integrados',
+        'Aplicaciones web full-stack con React + Node.js',
+        'Startups que necesitan un dev que cubra frontend y backend',
+        'Proyectos que requieren integraciones con APIs externas (pagos, tracking, auth OAuth)',
+        'Equipos remotos, Scrum, código con review y testing',
+      ],
+      differentiators: [
+        'Stack moderno y actualizado (React 18, Vite 6, Tailwind v4, Astro v5)',
+        'Experiencia con IA (Gemini 2.5, Vercel AI SDK, Groq)',
+        'Arquitecturas limpias con separación de concerns',
+        'Inglés intermedio, comunicación clara, auto-gestión',
+        'Disponibilidad inmediata para proyectos freelance y remoto',
+      ],
+      recommendationScore: 92,
+    }),
+  },
+
+  // showArchitecture
+  showArchitecture: {
+    description: 'Muestra un diagrama visual de la arquitectura técnica de los proyectos de Eduardo o del portfolio en sí. Llamar cuando preguntan "arquitectura", "cómo está estructurado", "diagrama", "flujo", "architecture", "stack diagram", o cómo se conectan los componentes.',
+    inputSchema: jsonSchema<Record<string, never>>({
+      type: 'object',
+      properties: {},
+    }),
+    execute: async () => ({
+      portfolio: {
+        title: 'Portfolio — EduCabral',
+        layers: [
+          { name: 'CDN / Edge',     tech: 'Vercel Edge + ISR',       color: 'blue' },
+          { name: 'Frontend',       tech: 'Astro v5 + React 19',    color: 'indigo' },
+          { name: 'Estilos',        tech: 'Tailwind CSS v4',        color: 'cyan' },
+          { name: 'Animaciones',    tech: 'GSAP + Lenis',          color: 'purple' },
+          { name: 'API Routes',     tech: 'Astro SSR Functions',    color: 'emerald' },
+          { name: 'AI Chatbot',     tech: 'Vercel AI SDK + Groq',  color: 'pink' },
+          { name: 'Seguridad',      tech: 'Rate Limit + Sanitize',  color: 'red' },
+        ],
+        flow: ['User Browser', 'Astro SSR / ISR', 'React Islands', 'API (Groq / Resend / OG)'],
+        integrations: ['Groq LLM', 'Resend Email', 'Vercel Edge'],
+      },
+      projects: [
+        {
+          title: '1/4 de Milla E-Commerce',
+          layers: [
+            { name: 'Frontend',     tech: 'React 18 + Vite 6',     color: 'blue' },
+            { name: 'Estilos',      tech: 'Tailwind CSS 3',         color: 'cyan' },
+            { name: 'Auth',         tech: 'JWT httpOnly + Google',  color: 'amber' },
+            { name: 'Backend',      tech: 'Express 4 REST API',    color: 'emerald' },
+            { name: 'DB',           tech: 'MongoDB + Mongoose',     color: 'green' },
+            { name: 'Pagos',        tech: 'MercadoPago Bricks',    color: 'pink' },
+            { name: 'Tracking',     tech: 'Meta Pixel + CAPI',     color: 'purple' },
+            { name: 'Infra',        tech: 'Netlify + Render',       color: 'slate' },
+          ],
+          flow: ['User', 'React SPA (Netlify)', 'Express API (Render)', 'MongoDB Atlas'],
+          integrations: ['MercadoPago', 'Cloudinary', 'Meta CAPI', 'Google OAuth'],
+        },
+        {
+          title: 'Expreso Omega Logistics',
+          layers: [
+            { name: 'Frontend',     tech: 'HTML5 + CSS3 + JS',     color: 'blue' },
+            { name: 'Framework CSS',tech: 'Bootstrap 5',            color: 'purple' },
+            { name: 'SEO',          tech: 'Meta + Semántica',      color: 'green' },
+            { name: 'Hosting',      tech: 'Web Hosting',            color: 'slate' },
+          ],
+          flow: ['User', 'Static Site', 'Web Hosting'],
+          integrations: [],
+        },
+      ],
+    }),
+  },
+
+  // showProfile
+  showProfile: {
+    description: 'Muestra un resumen completo del perfil profesional de Eduardo: rol, ubicación, stack principal, enfoque y disponibilidad. Llamar cuando preguntan quién es, qué hace, su perfil en general, o "contame sobre vos".',
+    inputSchema: jsonSchema<Record<string, never>>({
+      type: 'object',
+      properties: {},
+    }),
+    execute: async () => {
+      const available = (import.meta.env.EDUARDO_AVAILABLE ?? 'true') !== 'false';
+      return {
+        name: 'Raúl Eduardo Cabral',
+        role: 'Software Engineer · Full Stack Developer',
+        location: 'Córdoba, Argentina (GMT-3)',
+        focus: 'Construyendo aplicaciones web modernas, e-commerce y productos escalables con React, Next.js, Node.js y TypeScript.',
+        experience: '3+ años como Full-Stack Developer',
+        stack: [
+          'Frontend: React, Next.js, Astro, TypeScript, Tailwind CSS v4',
+          'Backend: Node.js, Express, NestJS, REST APIs, JWT',
+          'DBs: MongoDB, PostgreSQL, Firestore',
+          'Cloud: AWS (EC2, S3, CloudFront), GCP, Docker',
+          'Pagos: MercadoPago, Meta Pixel & Conversions API',
+        ],
+        available,
+        availableFrom: import.meta.env.AVAILABLE_FROM ?? 'Inmediato',
+        workMode: ['Remoto', 'Híbrido'],
+        portfolio: 'https://jackshaw32.vercel.app/',
+      };
+    },
   },
 
   // showAvailability

@@ -19,4 +19,5 @@ export const INJECTION_PATTERNS = [
   /reveal\s+(your\s+)?(system\s+)?prompt/i,
   /show\s+(me\s+)?(your\s+)?(system\s+)?instructions?/i,
   /what\s+(are\s+)?(your\s+)?(system\s+)?(prompt|instructions?)/i,
+  /show\s+(me\s+)?(your\s+)?(system\s+)?(prompt|instructions?)/i,
 ];
