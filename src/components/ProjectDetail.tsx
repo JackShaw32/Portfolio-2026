@@ -394,7 +394,7 @@ export default function ProjectDetail({ slug }: Props) {
   return (
     <div ref={ref} className="min-h-screen">
 
-      <div className="pt-24 pb-4 px-6 container mx-auto">
+      <div className="pt-16 md:pt-24 pb-4 px-6 container mx-auto">
         <a
           href="/"
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group"
@@ -410,40 +410,40 @@ export default function ProjectDetail({ slug }: Props) {
         </div>
       </div>
 
-      <div className="container mx-auto px-6 pt-5 pb-5">
-        <div className="max-w-5xl mx-auto grid lg:grid-cols-[1fr_260px] gap-10 lg:gap-14 items-start">
+      <div className="container mx-auto px-4 md:px-6 pt-4 md:pt-5 pb-5">
+        <div className="max-w-5xl mx-auto grid lg:grid-cols-[1fr_260px] gap-6 md:gap-10 lg:gap-14 items-start">
 
-          <div className="space-y-7">
+          <div className="space-y-4 md:space-y-7">
             <div className="detail-header">
-              <div className="flex flex-wrap items-center gap-2 mb-4">
+              <div className="flex flex-wrap items-center gap-1.5 mb-3">
                 <span className={`text-[11px] uppercase tracking-widest font-black px-3 py-1 rounded-full border ${staticData.accent}`}>
                   {project.highlight}
                 </span>
                 <span className="text-sm text-muted-foreground font-mono">{project.role}</span>
                 <span className="text-sm text-muted-foreground">{staticData.year}</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-foreground leading-[1] mb-4">
+              <h1 className="text-xl sm:text-3xl md:text-4xl font-black tracking-tight text-foreground leading-[1] mb-3">
                 {project.title}
               </h1>
-              <p className="text-foreground/60 text-base md:text-lg leading-relaxed">
+              <p className="text-foreground/60 text-sm md:text-lg leading-relaxed">
                 {renderBold(project.description)}
               </p>
               {rich.intro && (
-                <p className="text-foreground/60 text-base md:text-lg leading-relaxed mt-3">
+                <p className="text-foreground/60 text-sm md:text-lg leading-relaxed mt-2">
                   {renderBold(rich.intro)}
                 </p>
               )}
             </div>
 
             {(rich.architectureOverview || rich.systemDiagram) && (
-              <div className="detail-section grid sm:grid-cols-2 gap-4">
+              <div className="detail-section grid sm:grid-cols-2 gap-3 md:gap-4">
 
                 {rich.architectureOverview && (
-                  <div className="bg-background dark:bg-foreground/[0.04] rounded-2xl p-5 border border-border/40">
+                  <div className="bg-background dark:bg-foreground/[0.04] rounded-2xl p-4 md:p-5 border border-border/40">
                     <h2 className="text-xs uppercase tracking-widest font-black text-muted-foreground mb-4">
                       {pr.archOverview}
                     </h2>
-                    <div className="space-y-2.5">
+                    <div className="space-y-2 md:space-y-2.5">
                       {rich.architectureOverview.map((row, i) => (
                         <div key={i} className="flex items-start gap-2 text-sm">
                           <span className="text-[10px] uppercase tracking-widest text-muted-foreground w-24 flex-shrink-0 pt-0.5 leading-tight">
@@ -458,7 +458,7 @@ export default function ProjectDetail({ slug }: Props) {
                 )}
 
                 {rich.systemDiagram && (
-                  <div className="bg-background dark:bg-foreground/[0.04] rounded-2xl p-5 border border-border/40">
+                  <div className="bg-background dark:bg-foreground/[0.04] rounded-2xl p-4 md:p-5 border border-border/40">
                     <h2 className="text-xs uppercase tracking-widest font-black text-muted-foreground mb-4">
                       {pr.systemDiagramLabel}
                     </h2>
@@ -501,29 +501,28 @@ export default function ProjectDetail({ slug }: Props) {
             )}
 
             <div className="detail-section">
-              <h2 className="text-xs uppercase tracking-widest font-black text-muted-foreground mb-5">
+              <h2 className="text-xs uppercase tracking-widest font-black text-muted-foreground mb-2 md:mb-5">
                 {pr.keyFeatures}
               </h2>
               {rich.sections ? (
-                <div className="space-y-8">
+                <div className="space-y-3 md:space-y-6">
                   {rich.sections.map((section, i) => (
-                    <div key={i} className="space-y-3">
+                    <div key={i} className="space-y-1 md:space-y-2">
                       <h3 className="text-sm font-bold text-foreground">{section.title}</h3>
                       {section.description && (
-                        <p className="text-foreground/60 text-sm leading-relaxed">{renderBold(section.description)}</p>
+                        <p className="text-foreground/60 text-xs md:text-sm leading-relaxed">{renderBold(section.description)}</p>
                       )}
                       {section.items && section.items.length > 0 && (
-                        <ul className="space-y-2 ml-1">
+                        <ul className="list-disc pl-4 md:pl-5 space-y-0.5 md:space-y-1.5 marker:text-foreground/40">
                           {section.items.map((item, j) => (
-                            <li key={j} className="flex items-start gap-3 text-foreground/70 text-sm leading-relaxed">
-                              <span className="mt-2 w-1 h-1 rounded-full bg-foreground/50 flex-shrink-0" />
+                            <li key={j} className="text-foreground/70 text-xs md:text-sm leading-relaxed pl-0">
                               {renderBold(item)}
                             </li>
                           ))}
                         </ul>
                       )}
                       {section.subsections?.map((sub, k) => (
-                        <div key={k} className="mt-4 ml-4 space-y-2 border-l border-border/30 pl-4">
+                        <div key={k} className="mt-1.5 md:mt-3 ml-2 md:ml-4 space-y-0.5 border-l border-border/30 pl-2 md:pl-4">
                           <span className="text-xs font-bold text-foreground/80 uppercase tracking-wider block">{sub.title}</span>
                           {sub.description && (
                             <p className="text-foreground/60 text-sm leading-relaxed">{renderBold(sub.description)}</p>
@@ -556,7 +555,7 @@ export default function ProjectDetail({ slug }: Props) {
             </div>
 
             <div className="detail-section">
-              <h2 className="text-xs uppercase tracking-widest font-black text-muted-foreground mb-5">
+              <h2 className="text-xs uppercase tracking-widest font-black text-muted-foreground mb-3 md:mb-5">
                 {pr.techStack}
               </h2>
               {rich.techCategories ? (
@@ -593,7 +592,7 @@ export default function ProjectDetail({ slug }: Props) {
           </div>
 
           <aside className="detail-section">
-            <div className="sticky top-20 border border-border/40 rounded-2xl p-5 space-y-4 bg-foreground/[0.02]">
+            <div className="sticky top-20 border border-border/40 rounded-2xl p-4 md:p-5 space-y-3 md:space-y-4 bg-foreground/[0.02]">
               <div>
                 <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Tipo</span>
                 <p className="mt-1">

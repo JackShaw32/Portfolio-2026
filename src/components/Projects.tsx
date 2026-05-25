@@ -1,5 +1,5 @@
-import { ExternalLink, Github, ArrowRight } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { ExternalLink, Github, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { translations } from "@/lib/translations";
 import { projectsStaticData } from "@/config/projects";
@@ -13,14 +13,38 @@ if (typeof window !== "undefined") {
 
 export default function Projects() {
   const sectionRef = useRef<HTMLElement>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
   const { lang } = useLanguage();
   const t = translations[lang];
   const pr = t.projects;
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const projects = pr.projects.map((proj, i) => ({
     ...projectsStaticData[i],
     ...proj,
   }));
+
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const handleScroll = () => {
+      const cardWidth = el.querySelector<HTMLElement>('.project-row')?.offsetWidth ?? 1;
+      const gap = 24; // gap-6
+      const scrollPos = el.scrollLeft;
+      const idx = Math.round(scrollPos / (cardWidth + gap));
+      setActiveIndex(Math.min(idx, projects.length - 1));
+    };
+    el.addEventListener('scroll', handleScroll, { passive: true });
+    return () => el.removeEventListener('scroll', handleScroll);
+  }, [projects.length]);
+
+  const scrollTo = (index: number) => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const cardWidth = el.querySelector<HTMLElement>('.project-row')?.offsetWidth ?? 0;
+    const gap = 24;
+    el.scrollTo({ left: index * (cardWidth + gap), behavior: 'smooth' });
+  };
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -80,11 +104,12 @@ export default function Projects() {
           </p>
         </div>
 
-        <div className="flex md:flex-col gap-6 md:gap-20 xl:gap-40 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none scroll-pl-6 md:scroll-pl-0 pb-4 md:pb-0 [&::-webkit-scrollbar]:hidden">
+        <div className="relative">
+          <div ref={carouselRef} className="flex md:flex-col gap-6 md:gap-20 xl:gap-40 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none scroll-pl-6 md:scroll-pl-0 pb-4 md:pb-0 [&::-webkit-scrollbar]:hidden">
           {projects.map((project, index) => {
             const isEven = index % 2 !== 0;
             return (
-              <div key={project.slug} data-project-slug={project.slug} className="project-row min-w-[85vw] md:min-w-0 snap-start md:snap-none flex flex-col xl:flex-row gap-10 lg:gap-16 items-center group">
+              <div key={project.slug} data-project-slug={project.slug} className="project-row min-w-[85vw] md:min-w-0 snap-start md:snap-none flex flex-col xl:flex-row gap-6 lg:gap-16 items-center group">
 
                 <div className={`project-img-wrap opacity-0 w-full xl:w-3/5 ${isEven ? "xl:order-2" : "xl:order-1"}`}>
                   <a
@@ -124,50 +149,50 @@ export default function Projects() {
                 </div>
 
                 <div className={`project-content opacity-0 w-full xl:w-2/5 flex flex-col justify-center ${isEven ? "xl:order-1 xl:pl-4" : "xl:order-2 xl:pr-4"}`}>
-                  <div className="flex flex-wrap items-center gap-3 mb-4 md:mb-6">
+                  <div className="flex flex-wrap items-center gap-3 mb-3 md:mb-6">
                     <span className="font-mono text-5xl font-black text-foreground/8 select-none leading-none">{project.number}</span>
                     <span className={`text-xs uppercase tracking-widest font-black px-4 py-1.5 rounded-full border ${project.accent}`}>
                       {project.highlight}
                     </span>
                   </div>
 
-                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-foreground mb-2 leading-tight group-hover:text-primary transition-colors duration-300">
+                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-foreground mb-1 md:mb-2 leading-tight">
                     {project.title}
                   </h3>
-                  <p className="text-sm font-mono text-muted-foreground mb-5 md:mb-6">{project.role}</p>
+                  <p className="text-xs sm:text-sm font-mono text-muted-foreground mb-2 md:mb-6">{project.role}</p>
 
-                  <p className="text-muted-foreground text-sm sm:text-base leading-relaxed mb-7 font-light">
+                  <p className="text-muted-foreground text-xs sm:text-base leading-relaxed mb-3 md:mb-7 font-light line-clamp-3 md:line-clamp-none">
                     {renderBold(project.description)}
                   </p>
 
-                  <div className="flex flex-wrap gap-2 mb-8">
-                    {project.tags.slice(0, 6).map((tag) => (
-                      <span key={tag} className="text-[11px] sm:text-xs font-semibold text-foreground/80 bg-foreground/5 border border-border/50 px-3 py-1.5 rounded-xl">
+                  <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3 md:mb-8">
+                    {project.tags.slice(0, 3).map((tag) => (
+                      <span key={tag} className="text-[10px] sm:text-xs font-semibold text-foreground/80 bg-foreground/5 border border-border/50 px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl">
                         {tag}
                       </span>
                     ))}
-                    {project.tags.length > 6 && (
-                      <span className="text-[11px] sm:text-xs font-semibold text-muted-foreground bg-foreground/5 border border-border/50 px-3 py-1.5 rounded-xl">
-                        +{project.tags.length - 6}
+                    {project.tags.length > 3 && (
+                      <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground bg-foreground/5 border border-border/50 px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl">
+                        +{project.tags.length - 3}
                       </span>
                     )}
                   </div>
 
-                  <div className="flex flex-col sm:flex-row items-center gap-4">
+                  <div className="flex flex-row items-center gap-2">
                     <a
                       href={`/projects/${project.slug}`}
-                      className="w-full sm:w-auto flex items-center justify-center gap-2 bg-foreground text-background hover:bg-foreground/90 px-6 py-3.5 rounded-2xl text-sm font-bold transition-all duration-300 shadow-xl shadow-foreground/10 group/btn"
+                      className="flex-1 flex items-center justify-center gap-2 bg-foreground text-background hover:bg-foreground/90 px-4 py-2.5 sm:px-6 sm:py-3.5 rounded-2xl text-xs sm:text-sm font-bold transition-all duration-300 shadow-xl shadow-foreground/10 group/btn"
                     >
                       {pr.viewDetails}
-                      <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover/btn:translate-x-1 transition-transform" />
                     </a>
                     <a
                       href={project.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full sm:w-auto flex items-center justify-center gap-2 glass hover:bg-foreground/5 text-foreground border border-border/50 hover:border-foreground/30 px-6 py-3.5 rounded-2xl text-sm font-bold transition-all duration-300"
+                      className="flex-1 flex items-center justify-center gap-2 glass hover:bg-foreground/5 text-foreground border border-border/50 hover:border-foreground/30 px-4 py-2.5 sm:px-6 sm:py-3.5 rounded-2xl text-xs sm:text-sm font-bold transition-all duration-300"
                     >
-                      <ExternalLink className="w-4 h-4" />
+                      <ExternalLink className="w-3.5 h-3.5" />
                       {pr.visitSite}
                     </a>
                   </div>
@@ -176,6 +201,27 @@ export default function Projects() {
               </div>
             );
           })}
+          </div>
+
+          {/* Mobile carousel dots */}
+          <div className="flex md:hidden items-center justify-center gap-2 mt-4">
+            {projects.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => scrollTo(i)}
+                className={`rounded-full transition-all duration-300 ${
+                  i === activeIndex
+                    ? 'w-6 h-2 bg-foreground'
+                    : 'w-2 h-2 bg-foreground/30 hover:bg-foreground/50'
+                }`}
+                aria-label={`Ir al proyecto ${i + 1}`}
+              />
+            ))}
+          </div>
+
+          {/* Mobile fade hint at edges */}
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-background to-transparent md:hidden" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background to-transparent md:hidden" />
         </div>
       </div>
     </section>

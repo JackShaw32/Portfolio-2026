@@ -83,7 +83,7 @@ export const es = {
       subtitle:
         "Cada proyecto es un desafío, mi enfoque una solución sólida y escalable.",
       keyFeatures: "Características Clave:",
-      visitSite: "Visitar sitio web en vivo",
+      visitSite: "Ver sitio",
       viewProject: "Ver Proyecto",
       viewDetails: "Ver detalle",
       repository: "Repositorio",
