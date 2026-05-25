@@ -358,6 +358,23 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
     <ClientRouter />
   </head>
   <body class="min-h-screen bg-background font-sans antialiased selection:bg-primary/30 overflow-x-hidden">
+    <!-- Reading progress bar -->
+    <div id="reading-progress" class="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 z-[100] transition-[width] duration-150 ease-out" style="width:0%" />
+    <script>
+      function initProgressBar() {
+        const bar = document.getElementById('reading-progress');
+        if (!bar) return;
+        const update = () => {
+          const scrollTop = window.scrollY;
+          const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+          bar.style.width = docHeight > 0 ? Math.min((scrollTop / docHeight) * 100, 100) + '%' : '0%';
+        };
+        window.addEventListener('scroll', update, { passive: true });
+        update();
+      }
+      initProgressBar();
+      document.addEventListener('astro:page-load', initProgressBar);
+    </script>
     <slot />
   </body>
 </html>

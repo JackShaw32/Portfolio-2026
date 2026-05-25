@@ -44,7 +44,7 @@ export default function Hero() {
 
   return (
     <section id="top" className="relative min-h-screen flex items-center justify-center overflow-hidden w-full">
-      <div className="absolute inset-0 pointer-events-none overflow-hidden dark:hidden">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden dark:hidden" aria-hidden="true">
         <div className="absolute -top-[25%] left-1/2 -translate-x-1/2 w-[900px] h-[700px] rounded-full bg-violet-500/[0.10] dark:bg-violet-500/[0.13] blur-[160px]" />
         <div className="absolute top-[5%] -right-[12%] w-[550px] h-[450px] rounded-full bg-pink-500/[0.07] dark:bg-pink-500/[0.09] blur-[140px]" />
         <div className="absolute top-[15%] -left-[8%] w-[480px] h-[380px] rounded-full bg-indigo-500/[0.06] dark:bg-indigo-500/[0.08] blur-[130px]" />

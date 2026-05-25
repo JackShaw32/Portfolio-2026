@@ -1,4 +1,4 @@
-import { ExternalLink, Github, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ExternalLink, Github, ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { translations } from "@/lib/translations";
@@ -136,7 +136,7 @@ export default function Projects() {
                         height={500}
                         loading="lazy"
                         decoding="async"
-                        className="w-full h-full object-contain sm:object-cover sm:object-top transform group-hover/img:scale-[1.03] transition-transform duration-700 ease-out"
+                        className="w-full h-full object-contain sm:object-cover sm:object-top transform group-hover:scale-[1.03] transition-transform duration-700 ease-out"
                       />
                     </div>
 
