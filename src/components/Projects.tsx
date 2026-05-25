@@ -97,7 +97,7 @@ export default function Projects() {
 
         <div className="projects-heading opacity-0 text-center mb-16 md:mb-28 flex flex-col items-center">
           <h2 className="text-[clamp(1.2rem,6vw,2rem)] sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-foreground mb-4 md:mb-6 whitespace-nowrap">
-            {pr.title}<span className="text-primary">{pr.titleHighlight}</span>
+              {pr.title}<span className="text-primary">{pr.titleHighlight}</span>
           </h2>
           <p className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-foreground to-pink-500 text-sm sm:text-base md:text-lg max-w-2xl mx-auto font-medium leading-relaxed">
             {pr.subtitle}

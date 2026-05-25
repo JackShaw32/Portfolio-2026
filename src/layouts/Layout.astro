@@ -365,13 +365,13 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
     <div id="reading-progress" class="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 z-[100]" style="width:0%" />
     <script>
       function initProgressBar() {
-        var bar = document.getElementById('reading-progress');
-        if (!bar) return;
         var update = function() {
+          var el = document.getElementById('reading-progress');
+          if (!el) return;
           var pct = document.documentElement.scrollHeight > window.innerHeight
             ? Math.min(window.scrollY / (document.documentElement.scrollHeight - window.innerHeight), 1)
             : 0;
-          bar.style.width = (pct * 100) + '%';
+          el.style.width = (pct * 100) + '%';
         };
         window.addEventListener('scroll', update, { passive: true });
         update();
