@@ -1,8 +1,4 @@
-import {
-  Sparkles, ExternalLink,
-  Mail, Linkedin, FileDown, Globe, Phone, Github,
-  Briefcase, GraduationCap, CheckCircle2, XCircle, Clock, MapPin, TrendingUp,
-} from "lucide-react";
+import { Sparkles, ExternalLink, Mail, Linkedin, FileDown, Globe, Phone, Github, Briefcase, GraduationCap, CheckCircle2, XCircle, Clock, MapPin, TrendingUp } from "lucide-react";
 import type { ToolInvocation } from "./types";
 
 interface ToolResultCardProps {
@@ -381,6 +377,161 @@ export default function ToolResultCard({ toolInvocation, lang }: ToolResultCardP
               ))}
             </div>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  // showRecommendation
+  if (toolInvocation.toolName === 'showRecommendation') {
+    if (!toolInvocation.result) {
+      return (
+        <div key={toolInvocation.toolCallId} className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-lg animate-pulse mt-1">
+          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+          <span>{lang === 'en' ? 'Analyzing profile...' : 'Analizando perfil...'}</span>
+        </div>
+      );
+    }
+    const rec = toolInvocation.result as any;
+    return (
+      <div key={toolInvocation.toolCallId} className="w-full sm:min-w-[300px] max-w-[350px] rounded-2xl border border-emerald-500/20 bg-background overflow-hidden shadow-lg animate-in fade-in slide-in-from-bottom-2 mt-1">
+        <div className="bg-gradient-to-r from-emerald-500/10 to-teal-500/10 px-4 py-3 border-b border-border/50 flex items-center gap-2">
+          <TrendingUp className="w-4 h-4 text-emerald-400" />
+          <h4 className="font-bold text-sm text-foreground">{lang === 'en' ? 'Why Hire Eduardo' : 'Por qué contratar a Eduardo'}</h4>
+          <span className="ml-auto text-[10px] font-black text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">{rec.recommendationScore}/100</span>
+        </div>
+        <div className="p-4 space-y-4">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-400 mb-1.5">{lang === 'en' ? 'Key Strengths' : 'Fortalezas'}</p>
+            <div className="space-y-1">
+              {rec.strengths?.map((s: string, i: number) => (
+                <p key={i} className="text-[11px] text-foreground/80">• {s}</p>
+              ))}
+            </div>
+          </div>
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-blue-400 mb-1.5">{lang === 'en' ? 'Ideal For' : 'Ideal para'}</p>
+            <div className="flex flex-wrap gap-1.5">
+              {rec.idealFor?.map((item: string) => (
+                <span key={item} className="text-[10px] font-medium bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded-md text-blue-400">{item}</span>
+              ))}
+            </div>
+          </div>
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-purple-400 mb-1.5">{lang === 'en' ? 'What Sets Him Apart' : 'Lo que lo diferencia'}</p>
+            <div className="space-y-1">
+              {rec.differentiators?.map((d: string, i: number) => (
+                <p key={i} className="text-[11px] text-foreground/80">• {d}</p>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // showProfile
+  if (toolInvocation.toolName === 'showProfile') {
+    if (!toolInvocation.result) {
+      return (
+        <div key={toolInvocation.toolCallId} className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-lg animate-pulse mt-1">
+          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+          <span>{lang === 'en' ? 'Loading profile...' : 'Cargando perfil...'}</span>
+        </div>
+      );
+    }
+    const profile = toolInvocation.result as any;
+    return (
+      <div key={toolInvocation.toolCallId} className="w-full sm:min-w-[280px] max-w-[320px] rounded-2xl border border-indigo-500/20 bg-background overflow-hidden shadow-lg animate-in fade-in slide-in-from-bottom-2 mt-1">
+        <div className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 px-4 py-3 border-b border-border/50">
+          <h4 className="font-bold text-sm text-foreground">{profile.name}</h4>
+          <p className="text-[10px] text-muted-foreground font-mono">{profile.role}</p>
+        </div>
+        <div className="p-4 space-y-3">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <MapPin className="w-3 h-3" />
+            <span>{profile.location}</span>
+          </div>
+          <p className="text-xs text-muted-foreground leading-relaxed">{profile.focus}</p>
+          <div className="space-y-1">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{lang === 'en' ? 'Stack' : 'Stack'}</p>
+            {profile.stack?.map((s: string, i: number) => (
+              <p key={i} className="text-[10px] text-foreground/80 font-mono">• {s}</p>
+            ))}
+          </div>
+          <div className="flex items-center gap-2 text-xs">
+            <span className={`w-2 h-2 rounded-full ${profile.available ? 'bg-green-500' : 'bg-yellow-500'}`} />
+            <span className="text-foreground font-medium">{profile.available
+              ? (lang === 'en' ? 'Available' : 'Disponible')
+              : (lang === 'en' ? 'Not available' : 'No disponible')}
+            </span>
+            <span className="text-muted-foreground">— {profile.availableFrom}</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // showArchitecture
+  if (toolInvocation.toolName === 'showArchitecture') {
+    if (!toolInvocation.result) {
+      return (
+        <div key={toolInvocation.toolCallId} className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-lg animate-pulse mt-1">
+          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+          <span>{lang === 'en' ? 'Loading architecture...' : 'Cargando arquitectura...'}</span>
+        </div>
+      );
+    }
+    const arch = toolInvocation.result as any;
+    const layerColors: Record<string, string> = {
+      blue: 'bg-blue-500/10 border-blue-500/20 text-blue-400',
+      indigo: 'bg-indigo-500/10 border-indigo-500/20 text-indigo-400',
+      cyan: 'bg-cyan-500/10 border-cyan-500/20 text-cyan-400',
+      purple: 'bg-purple-500/10 border-purple-500/20 text-purple-400',
+      emerald: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400',
+      pink: 'bg-pink-500/10 border-pink-500/20 text-pink-400',
+      red: 'bg-red-500/10 border-red-500/20 text-red-400',
+      amber: 'bg-amber-500/10 border-amber-500/20 text-amber-400',
+      green: 'bg-green-500/10 border-green-500/20 text-green-400',
+      slate: 'bg-slate-500/10 border-slate-500/20 text-slate-400',
+    };
+    return (
+      <div key={toolInvocation.toolCallId} className="w-full sm:min-w-[300px] max-w-[380px] rounded-2xl border border-indigo-500/20 bg-background overflow-hidden shadow-lg animate-in fade-in slide-in-from-bottom-2 mt-1">
+        <div className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 px-4 py-3 border-b border-border/50 flex items-center gap-2">
+          <TrendingUp className="w-4 h-4 text-indigo-400" />
+          <h4 className="font-bold text-sm text-foreground">{lang === 'en' ? 'Architecture' : 'Arquitectura'}</h4>
+        </div>
+        <div className="p-4 space-y-4 max-h-[400px] overflow-y-auto">
+          {[arch.portfolio, ...(arch.projects ?? [])].map((section: any, si: number) => (
+            <div key={si}>
+              <p className="text-[11px] font-bold text-foreground mb-2">{section.title}</p>
+              <div className="space-y-1">
+                {section.layers?.map((layer: any, li: number) => (
+                  <div key={li} className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-medium border ${layerColors[layer.color] ?? 'bg-foreground/5 text-foreground/80 border-border/50'}`}>
+                    <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-current opacity-70" />
+                    <span className="font-semibold flex-shrink-0">{layer.name}:</span>
+                    <span className="opacity-80">{layer.tech}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-2 flex items-center gap-1 text-[10px] text-muted-foreground">
+                <span className="font-medium text-foreground/70">{lang === 'en' ? 'Flow' : 'Flujo'}:</span>
+                {section.flow?.map((f: string, fi: number) => (
+                  <span key={fi} className="flex items-center gap-0.5">
+                    {fi > 0 && <span className="text-[8px] opacity-50">→</span>}
+                    <span className="bg-foreground/5 px-1.5 py-0.5 rounded font-mono">{f}</span>
+                  </span>
+                ))}
+              </div>
+              {section.integrations?.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-1.5">
+                  {section.integrations?.map((i: string) => (
+                    <span key={i} className="text-[9px] bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-1.5 py-0.5 rounded-full">{i}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     );

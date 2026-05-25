@@ -41,6 +41,27 @@ export default function ChatPanel({
   const panelWidth  = expanded ? "sm:w-[1000px]" : "sm:w-[400px]";
   const panelHeight = expanded ? "sm:h-[85vh]"   : "sm:h-[520px]";
 
+  const allCommands = [
+    { cmd: '/skills',    descEs: 'Ver tecnologías',    descEn: 'View tech stack' },
+    { cmd: '/projects',  descEs: 'Ver proyectos',     descEn: 'View projects' },
+    { cmd: '/contact',   descEs: 'Ver contacto',      descEn: 'View contact' },
+    { cmd: '/experience',descEs: 'Ver experiencia',   descEn: 'View experience' },
+    { cmd: '/availability', descEs: 'Disponibilidad',    descEn: 'Availability' },
+    { cmd: '/impact',     descEs: 'Ver métricas',      descEn: 'View metrics' },
+    { cmd: '/arch',       descEs: 'Arquitectura',      descEn: 'Architecture' },
+    { cmd: '/profile',   descEs: 'Sobre Eduardo',     descEn: 'About Eduardo' },
+    { cmd: '/hire',      descEs: 'Por qué contratar', descEn: 'Why hire' },
+    { cmd: '/go',        descEs: 'Ir a sección',      descEn: 'Go to section' },
+    { cmd: '/goto',      descEs: 'Abrir proyecto',    descEn: 'Open project' },
+    { cmd: '/dark',      descEs: 'Modo oscuro',       descEn: 'Dark mode' },
+    { cmd: '/lang',      descEs: 'Cambiar idioma',    descEn: 'Switch language' },
+    { cmd: '/menu',      descEs: 'Menú navegación',   descEn: 'Navigation menu' },
+    { cmd: '/contactform', descEs: 'Formulario contacto', descEn: 'Contact form' },
+    { cmd: '/clear',     descEs: 'Limpiar chat',      descEn: 'Clear chat' },
+    { cmd: '/help',      descEs: 'Ver comandos',      descEn: 'Help' },
+  ];
+  const showCmdHint = input.startsWith('/');
+
   return (
     <>
       {open && <div className="fixed inset-0 z-40 bg-background/50 backdrop-blur-sm sm:hidden" onClick={onClose} />}
@@ -78,7 +99,7 @@ export default function ChatPanel({
               </div>
             </div>
 
-            <div data-lenis-prevent className="flex-1 overflow-y-auto overscroll-contain p-4 space-y-4 scrollbar-thin overflow-x-hidden">
+            <div data-lenis-prevent className="flex-1 overflow-y-auto overscroll-contain p-4 space-y-4 scrollbar-thin overflow-x-hidden" style={{ overscrollBehavior: 'contain' }}>
               {messages.map((msg) => (
                 <div key={msg.id} className={`flex gap-2 sm:gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
                   <div className={`w-7 h-7 rounded-xl flex-shrink-0 flex items-center justify-center ${msg.role === "assistant" ? "bg-foreground text-background" : "bg-muted text-muted-foreground"}`}>
@@ -132,10 +153,23 @@ export default function ChatPanel({
               </div>
             )}
 
-            <div className="p-3 sm:p-4 border-t border-border/50 bg-muted/10 flex-shrink-0 w-full">
+            <div className="p-3 sm:p-4 border-t border-border/50 bg-muted/10 flex-shrink-0 w-full relative">
+              {showCmdHint && (
+                <div data-lenis-prevent className="absolute bottom-full left-0 right-0 mb-1 mx-3 p-2 rounded-xl bg-muted/95 border border-border/50 backdrop-blur-md shadow-xl z-50 grid grid-cols-1 sm:grid-cols-2 gap-0.5 max-h-48 overflow-y-auto">
+                  {allCommands.map((c) => (
+                    <button key={c.cmd} type="button" onClick={() => { onInputChange(c.cmd + ' '); (document.activeElement as HTMLInputElement)?.focus(); }}
+                      className="text-left px-3 py-2 rounded-lg hover:bg-foreground/10 transition-colors text-xs">
+                      <span className="font-mono font-bold text-foreground">{c.cmd}</span>
+                      <span className="text-muted-foreground ml-2">{lang === 'en' ? c.descEn : c.descEs}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
               <form onSubmit={(e) => onSend(e)} className="flex gap-2 w-full">
                 <input type="text" value={input} onChange={(e) => onInputChange(e.target.value)} placeholder={ch.placeholder} className="flex-1 min-w-0 bg-muted/50 border border-border/50 rounded-xl px-4 py-3 text-[13px] sm:text-sm text-foreground focus:outline-none focus:border-foreground/40 transition-all" />
-                <button type="submit" disabled={!input.trim() || isLoading} aria-label={lang === 'en' ? 'Send message' : 'Enviar mensaje'} className="w-[44px] h-[44px] sm:w-[46px] sm:h-[46px] rounded-xl bg-foreground text-background hover:bg-foreground/90 disabled:opacity-50 flex items-center justify-center transition-colors"><Send className="w-[16px] h-[16px]" /></button>
+                <button type="submit" disabled={!input.trim() || isLoading} aria-label={lang === 'en' ? 'Send message' : 'Enviar mensaje'} className={`w-[44px] h-[44px] sm:w-[46px] sm:h-[46px] rounded-xl flex items-center justify-center transition-all duration-200 ${!input.trim() && !isLoading ? 'bg-muted text-muted-foreground cursor-not-allowed' : 'bg-foreground text-background hover:bg-foreground/90 cursor-pointer'}`}>
+                  <Send className="w-[16px] h-[16px]" />
+                </button>
               </form>
             </div>
           </div>

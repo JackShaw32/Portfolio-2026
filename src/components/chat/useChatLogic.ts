@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import type { ChatMessage } from "./types";
+import { readStream, serializeHistory } from "@/ai/streamReader";
 
 export function useChatLogic(lang: string, defaultWelcomeMsg: string, pageSlug?: string) {
   const [open, setOpen] = useState(false);
@@ -103,13 +104,217 @@ export function useChatLogic(lang: string, defaultWelcomeMsg: string, pageSlug?:
     setInput("");
     setIsLoading(true);
 
-    const userId      = genId();
+    // Slash commands
+    const cmd = textoAEnviar.trim().toLowerCase();
+    const cmdBase = cmd.split(/\s+/)[0];
+    const commands: Record<string, { trigger: string; label: string }> = {
+      '/skills':    { trigger: 'mostrame tus skills',         label: 'Skills' },
+      '/stack':     { trigger: 'mostrame tus skills',         label: 'Stack' },
+      '/projects':  { trigger: 'mostrame todos los proyectos', label: 'Projects' },
+      '/contact':   { trigger: 'mostrame el contacto',        label: 'Contact' },
+      '/experience':{ trigger: 'mostrame tu experiencia',     label: 'Experience' },
+      '/cv':        { trigger: 'mostrame tu experiencia',     label: 'CV' },
+      '/availability': { trigger: 'está disponible',          label: 'Availability' },
+      '/impact':    { trigger: 'mostrame las métricas de impacto', label: 'Impact' },
+      '/arch':      { trigger: 'mostrame la arquitectura',       label: 'Architecture' },
+      '/profile':   { trigger: 'contame sobre vos',           label: 'Profile' },
+      '/hire':      { trigger: 'por qué contratar a eduardo', label: 'Hire' },
+    };
+
+    if (cmdBase === '/clear') {
+      try { localStorage.removeItem('edubot-history'); } catch { /* ignore */ }
+      setMessages([{ id: '1', role: 'assistant', content: defaultWelcomeMsg }]);
+      didLoadStorage.current = false;
+      setIsLoading(false);
+      return;
+    }
+
+    if (cmdBase === '/lang' || cmdBase === '/language' || cmdBase === '/idioma') {
+      const parts = cmd.split(/\s+/);
+      const targetLang = parts[1];
+      const currentLang = localStorage.getItem('lang') || 'es';
+      const newLang = targetLang === 'en' || targetLang === 'es' ? targetLang : (currentLang === 'es' ? 'en' : 'es');
+      localStorage.setItem('lang', newLang);
+      window.dispatchEvent(new CustomEvent('langchange', { detail: newLang }));
+      setMessages(prev => [
+        ...prev,
+        { id: genId(), role: 'user', content: textoAEnviar },
+        { id: genId(), role: 'assistant', content: newLang === 'en' ? 'Switched to English 🇬🇧' : 'Cambiado a Español 🇦🇷' },
+      ]);
+      setIsLoading(false);
+      return;
+    }
+
+    if (cmdBase === '/menu' || cmdBase === '/hamburger') {
+      const btn = document.querySelector<HTMLButtonElement>('button[aria-label="Toggle menu"]');
+      btn?.click();
+      setMessages(prev => [
+        ...prev,
+        { id: genId(), role: 'user', content: textoAEnviar },
+        { id: genId(), role: 'assistant', content: lang === 'en' ? 'Menu toggled' : 'Menú alternado' },
+      ]);
+      setIsLoading(false);
+      return;
+    }
+
+    if (cmdBase === '/contactform' || cmdBase === '/opencontact' || cmdBase === '/contacto') {
+      setMessages(prev => [
+        ...prev,
+        { id: genId(), role: 'user', content: textoAEnviar },
+        { id: genId(), role: 'assistant', content: lang === 'en' ? 'Opening contact form...' : 'Abriendo formulario de contacto...' },
+      ]);
+      setTimeout(() => {
+        const btns = document.querySelectorAll('button');
+        for (const b of btns) {
+          if (b.textContent?.toLowerCase().includes('contactar') || b.textContent?.toLowerCase().includes('contact')) {
+            b.click(); break;
+          }
+        }
+      }, 100);
+      setIsLoading(false);
+      return;
+    }
+
+    if (cmdBase === '/cv') {
+      const link = document.createElement('a');
+      link.href = lang === 'en' ? '/Eduardo-Cabral-Full-Stack-Developer-EN.pdf' : '/Eduardo-Cabral-Full-Stack-Developer-ES.pdf';
+      link.download = '';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setMessages(prev => [
+        ...prev,
+        { id: genId(), role: 'user', content: textoAEnviar },
+        { id: genId(), role: 'assistant', content: lang === 'en' ? 'Downloading CV... \uD83D\uDCC4' : 'Descargando CV... \uD83D\uDCC4' },
+      ]);
+      setIsLoading(false);
+      return;
+    }
+
+    const mappedText = commands[cmdBase]?.trigger ?? textoAEnviar;
+    const navSections: Record<string, string> = {
+      'top': 'top', 'inicio': 'top', 'home': 'top', 'hero': 'top',
+      'skills': 'skills', 'stack': 'skills', 'tecnologías': 'skills',
+      'projects': 'projects', 'proyectos': 'projects',
+      'optimizations': 'optimizations', 'optimizaciones': 'optimizations', 'performance': 'optimizations',
+      'about': 'about', 'sobre': 'about', 'sobre mí': 'about',
+      'contact': 'contact', 'contacto': 'contact',
+    };
+
+    const themeMsgs: Record<string, string> = {
+      '/dark':  lang === 'en' ? 'Switched to dark mode 🌙' : 'Cambiado a modo oscuro 🌙',
+      '/light': lang === 'en' ? 'Switched to light mode ☀️' : 'Cambiado a modo claro ☀️',
+    };
+
+    if (cmdBase === '/theme' || cmdBase === '/dark' || cmdBase === '/light') {
+      const isDark = cmdBase === '/dark' || (cmdBase === '/theme' && !document.documentElement.classList.contains('dark'));
+      document.documentElement.classList.toggle('dark', isDark);
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      setMessages(prev => [
+        ...prev,
+        { id: genId(), role: 'user', content: textoAEnviar },
+        { id: genId(), role: 'assistant', content: themeMsgs[cmdBase] || (lang === 'en' ? `Switched to ${isDark ? 'dark' : 'light'} mode` : `Cambiado a modo ${isDark ? 'oscuro' : 'claro'}`) },
+      ]);
+      setIsLoading(false);
+      return;
+    }
+
+    const goMatch = cmd.match(/^\/go\s+(.+)/);
+    if (goMatch) {
+      const section = navSections[goMatch[1].trim().toLowerCase()];
+      if (section) {
+        const el = document.getElementById(section);
+        if (el) {
+          const lenis = (window as any).lenis;
+          if (lenis) lenis.scrollTo(el, { duration: 1.2 });
+          else el.scrollIntoView({ behavior: 'smooth' });
+        }
+        setMessages(prev => [
+          ...prev,
+          { id: genId(), role: 'user', content: textoAEnviar },
+          { id: genId(), role: 'assistant', content: lang === 'en' ? `Navigated to ${section} section` : `Navegando a la sección ${section}` },
+        ]);
+        setIsLoading(false);
+        return;
+      }
+    }
+
+    const gotoMatch = cmd.match(/^\/goto\s+(.+)/);
+    if (gotoMatch) {
+      const slug = gotoMatch[1].trim().toLowerCase();
+      const slugs = ['uncuartodemilla', 'expresoomega', '14milla', 'omega'];
+      const matched = slugs.find(s => slug.includes(s.replace('uncuartodemilla', 'milla').replace('expresoomega', 'omega')) || s.includes(slug));
+      if (matched) {
+        window.location.href = `/projects/${matched}`;
+        setIsLoading(false);
+        return;
+      }
+    }
+
+    if (cmd === '/help') {
+      const helpLines = lang === 'en'
+        ? [
+            'Available commands:',
+            '',
+            '  /skills       — Show tech stack',
+            '  /projects     — Show projects',
+            '  /contact      — Show contact info',
+            '  /experience   — Show experience & CV',
+            '  /availability — Check availability',
+            '  /impact       — Show metrics & scores',
+            '  /arch         — Show architecture diagram',
+            '  /profile      — About Eduardo',
+            '  /hire         — Why hire Eduardo',
+            '  /clear        — Clear chat',
+            '  /help         — Show this message',
+            '  /go [section] — Scroll to section (top, skills, projects, about, contact)',
+            '  /goto [project] — Open project page (milla, omega)',
+            '  /dark /light   — Switch theme',
+            '  /lang          — Switch language',
+            '  /menu          — Toggle navigation menu',
+            '  /contactform   — Open contact form',
+            '',
+            'You can also just ask naturally in Spanish or English!',
+          ]
+        : [
+            'Comandos disponibles:',
+            '',
+            '  /skills       — Ver tecnologías',
+            '  /projects     — Ver proyectos',
+            '  /contact      — Ver contacto',
+            '  /experience   — Ver experiencia y CV',
+            '  /availability — Ver disponibilidad',
+            '  /impact       — Ver métricas y scores',
+            '  /arch         — Ver diagrama de arquitectura',
+            '  /profile      — Sobre Eduardo',
+            '  /hire         — Por qué contratarlo',
+            '  /clear        — Limpiar chat',
+            '  /help         — Mostrar esto',
+            '  /go [sección] — Ir a sección (top, skills, projects, about, contact)',
+            '  /goto [proyecto] — Abrir proyecto (milla, omega)',
+            '  /dark /light   — Cambiar tema',
+            '  /lang          — Cambiar idioma',
+            '  /menu          — Menú de navegación',
+            '  /contactform   — Abrir formulario de contacto',
+            '',
+            'También podés preguntar en lenguaje natural en español o inglés.',
+          ];
+      setMessages(prev => [
+        ...prev,
+        { id: genId(), role: 'user', content: textoAEnviar },
+        { id: genId(), role: 'assistant', content: helpLines.join('\n') },
+      ]);
+      setIsLoading(false);
+      return;
+    }
+
+    const userId = genId();
     const assistantId = genId();
 
     const nuevoMensajeUser: ChatMessage = {
       id: userId,
       role: 'user',
-      content: textoAEnviar
+      content: mappedText
     };
 
     const nuevoHistorial = [...messages, nuevoMensajeUser];
@@ -120,34 +325,7 @@ export function useChatLogic(lang: string, defaultWelcomeMsg: string, pageSlug?:
     ]);
 
     try {
-      const historialParaEnviar = nuevoHistorial
-        .filter(m => m.id !== '1')
-        .map(m => {
-          if (m.role !== 'assistant' || m.content.trim()) {
-            return { role: m.role, content: m.content };
-          }
-          const invocations = m.toolInvocations ?? [];
-          const summaryParts: string[] = [];
-          for (const inv of invocations) {
-            if (!inv.result) continue;
-            if (inv.toolName === 'sendContactForm') {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const r = inv.result as any;
-              if (r.success) {
-                summaryParts.push(
-                  `[SYSTEM NOTE: sendContactForm was already called and succeeded for "${r.name}". ` +
-                  `The contact form has been submitted. Do NOT call sendContactForm again in this conversation.]`
-                );
-              } else {
-                summaryParts.push(`[Contact form submission failed: ${r.reason}]`);
-              }
-            } else {
-              summaryParts.push(`[Showed ${inv.toolName} card]`);
-            }
-          }
-          const content = summaryParts.length > 0 ? summaryParts.join(' ') : '[Visual response shown]';
-          return { role: m.role, content };
-        });
+      const historialParaEnviar = serializeHistory(nuevoHistorial);
 
       const res = await fetch('/api/chat', {
         method: 'POST',
@@ -160,92 +338,52 @@ export function useChatLogic(lang: string, defaultWelcomeMsg: string, pageSlug?:
         throw new Error(errorData.error || `Error ${res.status}`);
       }
 
-      if (!res.body) throw new Error('Sin respuesta del servidor');
-
-      const reader  = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer    = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop() ?? '';
-
-        for (const line of lines) {
-          if (!line.trim()) continue;
-
-          const colonIdx = line.indexOf(':');
-          if (colonIdx === -1) continue;
-
-          const prefix = line.slice(0, colonIdx);
-          const data   = line.slice(colonIdx + 1);
-
-          if (!data || data.trim() === '' || data.trim() === 'undefined') continue;
-
-          try {
-            if (prefix === '0') {
-              const chunk = JSON.parse(data) as string;
-              if (typeof chunk !== 'string') continue;
-
-              setMessages(prev => {
-                const idx = prev.findIndex(m => m.id === assistantId);
-                if (idx === -1) {
-                  return [...prev, { id: assistantId, role: 'assistant', content: chunk, toolInvocations: [] }];
-                }
-                const updated = [...prev];
-                updated[idx] = { ...updated[idx], content: updated[idx].content + chunk };
-                return updated;
-              });
-
-            } else if (prefix === '9') {
-              const toolCall = JSON.parse(data);
-              if (!toolCall?.toolCallId || !toolCall?.toolName) continue;
-
-              setMessages(prev => {
-                const idx = prev.findIndex(m => m.id === assistantId);
-                if (idx === -1) return prev;
-                const updated = [...prev];
-                updated[idx] = {
-                  ...updated[idx],
-                  toolInvocations: [
-                    ...(updated[idx].toolInvocations || []),
-                    { toolCallId: toolCall.toolCallId, toolName: toolCall.toolName, args: toolCall.args ?? {} }
-                  ]
-                };
-                return updated;
-              });
-
-            } else if (prefix === 'a') {
-              const toolResult = JSON.parse(data);
-              if (!toolResult?.toolCallId) continue;
-
-              setMessages(prev => {
-                const idx = prev.findIndex(m => m.id === assistantId);
-                if (idx === -1) return prev;
-                const updated = [...prev];
-                updated[idx] = {
-                  ...updated[idx],
-                  toolInvocations: (updated[idx].toolInvocations || []).map(ti =>
-                    ti.toolCallId === toolResult.toolCallId
-                      ? { ...ti, result: toolResult.result }
-                      : ti
-                  )
-                };
-                return updated;
-              });
+      await readStream(
+        res,
+        assistantId,
+        (chunk) => {
+          setMessages(prev => {
+            const idx = prev.findIndex(m => m.id === assistantId);
+            if (idx === -1) {
+              return [...prev, { id: assistantId, role: 'assistant', content: chunk, toolInvocations: [] }];
             }
-            // prefijos '2', 'd', 'e', 'f', '8', '3' → ignorados
-
-          } catch {
-            if (import.meta.env.DEV) {
-              console.warn(`[ChatAI] Skipping (prefix="${prefix}"):`, data.slice(0, 60));
-            }
-          }
+            const updated = [...prev];
+            updated[idx] = { ...updated[idx], content: updated[idx].content + chunk };
+            return updated;
+          });
+        },
+        (toolCall) => {
+          setMessages(prev => {
+            const idx = prev.findIndex(m => m.id === assistantId);
+            if (idx === -1) return prev;
+            const updated = [...prev];
+            updated[idx] = {
+              ...updated[idx],
+              toolInvocations: [
+                ...(updated[idx].toolInvocations || []),
+                { toolCallId: toolCall.toolCallId, toolName: toolCall.toolName, args: toolCall.args }
+              ]
+            };
+            return updated;
+          });
+        },
+        (toolResult) => {
+          setMessages(prev => {
+            const idx = prev.findIndex(m => m.id === assistantId);
+            if (idx === -1) return prev;
+            const updated = [...prev];
+            updated[idx] = {
+              ...updated[idx],
+              toolInvocations: (updated[idx].toolInvocations || []).map(ti =>
+                ti.toolCallId === toolResult.toolCallId
+                  ? { ...ti, result: toolResult.result }
+                  : ti
+              )
+            };
+            return updated;
+          });
         }
-      }
+      );
     } catch (error) {
       if (import.meta.env.DEV) {
         console.error("[ChatAI] Error:", error);
