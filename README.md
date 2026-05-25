@@ -1,6 +1,6 @@
 # Portfolio de Eduardo Cabral
 
-Sitio web de portfolio profesional con chatbot de inteligencia artificial, diseñado para mostrar proyectos, experiencia laboral y habilidades técnicas. Construido con Astro en modo SSR completo y desplegado en Vercel.
+Sitio web de portfolio profesional con chatbot de inteligencia artificial, diseñado para mostrar proyectos, experiencia laboral y habilidades técnicas. Construido con **Astro v5 SSR** + **React 19 islands** + **Tailwind CSS v4**. Desplegado en **Vercel** con pre-renderizado ISR.
 
 ---
 
@@ -84,7 +84,7 @@ educcabral/
 ├── src/
 │   ├── ai/                          # Lógica del chatbot IA
 │   │   ├── model.ts                 # Definición de modelos LLM
-│   │   ├── tools.ts                 # 6 herramientas del chatbot
+│   │   ├── tools.ts                 # 10 herramientas del chatbot
 │   │   ├── intentDetection.ts       # Detección de intenciones por regex
 │   │   ├── streamPipeline.ts        # Consumidor del stream de IA
 │   │   └── textToolParser.ts        # Parser fallback para tool calls en texto
@@ -331,17 +331,52 @@ Permite configurar hasta 20 API keys de Groq (`GROQ_API_KEY`, `GROQ_API_KEY_1` .
 
 ### Herramientas del chatbot (Tool Calling)
 
-EduBot tiene 7 herramientas que el LLM puede invocar. Los resultados se muestran como tarjetas visuales en el chat, no como texto plano.
+EduBot tiene 10 herramientas que el LLM puede invocar. Los resultados se muestran como tarjetas visuales en el chat, no como texto plano.
 
 | Herramienta | Qué hace |
 |---|---|
-| `showProject` | Muestra una tarjeta de proyecto con imagen, descripción y links (URLs validadas contra whitelist) |
-| `showContact` | Muestra tarjeta con LinkedIn, email, GitHub, CV en ES/EN, teléfono |
-| `showSkills` | Muestra stack técnico categorizado (Frontend, Backend, DBs, Cloud, Pagos) |
-| `showExperience` | Muestra línea de tiempo de carrera (Freelance, Gearthlogic LLC, educación) |
-| `showAvailability` | Lee las env vars `EDUARDO_AVAILABLE` y `AVAILABLE_FROM` para mostrar estado en tiempo real |
-| `showImpact` | Muestra tarjeta con métricas de impacto (10+ proyectos, 3+ años, 45% performance, 30% deuda técnica, 100% en producción) y los 4 Lighthouse scores del portfolio |
-| `sendContactForm` | Recopila nombre/email/mensaje del usuario dentro del chat y envía el email |
+| `showProject` | Tarjeta de proyecto con imagen, descripción y links (URLs validadas contra whitelist) |
+| `showContact` | Tarjeta con LinkedIn, email, GitHub, CV en ES/EN, teléfono |
+| `showSkills` | Stack técnico categorizado (Frontend, Backend, DBs, Cloud, Pagos) |
+| `showExperience` | Línea de tiempo de carrera (Freelance, Gearthlogic LLC, educación) |
+| `showProfile` | Resumen completo del perfil profesional |
+| `showAvailability` | Lee env vars `EDUARDO_AVAILABLE` y `AVAILABLE_FROM` para mostrar estado en tiempo real |
+| `showImpact` | Métricas de impacto y 4 Lighthouse scores del portfolio |
+| `showRecommendation` | "Por qué contratarlo" con score y secciones (Strengths, Ideal For, Differentiators) |
+| `showArchitecture` | Diagrama de arquitectura por capas del portfolio y proyectos |
+| `sendContactForm` | Recopila nombre/email/mensaje del usuario y envía el email |
+
+### Modelo dual (8b + 70b)
+
+- **`llama-3.1-8b-instant`** — respuestas de texto (rápido, 560 t/s, $0.05/1M tokens)
+- **`llama-3.3-70b-versatile`** — tool calls forzadas (280 t/s, $0.59/1M tokens, soporta function calling nativo)
+- `prepareStep` en `streamText` cambia de modelo automáticamente por step: cuando se detecta un tool forzado (forcedTool, multiProject), usa 70b para ese step y vuelve a 8b para texto.
+- `sendContactForm` se ejecuta del lado del servidor (bypassea el LLM) cuando `isContactMessageStep` detecta que el usuario completó nombre + email + mensaje.
+
+### Slash commands
+
+Escribí `/help` en el chat o presioná `/` para ver el menú de comandos disponibles:
+
+| Comando | Qué hace | Tipo |
+|---|---|---|
+| `/skills` / `/stack` | Tech stack | API tool |
+| `/projects` | Proyectos | API tool |
+| `/contact` | Contacto | API tool |
+| `/experience` | Experiencia | API tool |
+| `/availability` | Disponibilidad | API tool |
+| `/impact` | Métricas y Lighthouse | API tool |
+| `/arch` | Diagrama de arquitectura | API tool |
+| `/profile` | Perfil completo | API tool |
+| `/hire` | Por qué contratarlo | API tool |
+| `/clear` | Limpiar chat | Cliente |
+| `/help` | Mostrar comandos | Cliente |
+| `/go [sección]` | Scroll a sección | Cliente |
+| `/goto [proyecto]` | Abrir proyecto | Cliente |
+| `/dark` / `/light` | Cambiar tema | Cliente |
+| `/lang` | Cambiar idioma | Cliente |
+| `/menu` | Menú navegación | Cliente |
+| `/contactform` | Formulario contacto | Cliente |
+| `/cv` | Descargar CV | Cliente |
 
 ### Detección de intenciones (`src/ai/intentDetection.ts`)
 
@@ -363,7 +398,7 @@ El cliente consume el stream línea a línea. Cada línea tiene un prefijo:
 a:{"toolCallId":"..."}  → resultado de tool call, se renderiza como tarjeta
 ```
 
-El pipeline descarta texto previo a un tool call (preamble) y filtra texto posterior que parece una descripción del tool call filtrada (`TOOL_LEAK_RE`). Si el modelo emite tool calls como texto plano en lugar de JSON estructurado (comportamiento de algunos modelos pequeños de Groq), el `textToolParser.ts` los intercepta y convierte al formato correcto.
+El pipeline descarta texto previo a un tool call (preamble) y filtra texto posterior con `TOOL_LEAK_RE` (atrapa nombres de tool sueltos como texto, tool calls escritas como `<function=...>`, y etiquetas como "Título:" o "Descripción:"). Si el modelo emite tool calls como texto plano en lugar de JSON estructurado, el `textToolParser.ts` los intercepta mediante `XML_TOOL_RE` (formato `<function=toolName>...`) y `NATURAL_TOOL_RE` (formato `toolName({...})`) y los convierte al formato correcto.
 
 ### Client-side del chat (`src/components/chat/useChatLogic.ts`)
 
@@ -413,6 +448,25 @@ Parámetros adicionales:
 
 - Las URLs e imágenes que `showProject` puede retornar están validadas contra un conjunto de valores conocidos, impidiendo que el modelo retorne URLs arbitrarias al cliente
 - Los slugs de proyectos son validados contra `VALID_SECTIONS`
+
+---
+
+## Testing del portfolio
+
+57 tests unitarios con **Vitest** ubicados junto al código fuente:
+
+| Archivo | Tests | Coverage |
+|---|---|---|
+| `src/ai/intentDetection.test.ts` | 17 | Patrones de detección de las 10 tools |
+| `src/ai/tools.test.ts` | 12 | Ejecución, sanitización y whitelist de todas las tools |
+| `src/security/sanitize.test.ts` | 14 | 23 patrones de inyección, flooding, validación |
+| `src/ai/streamReader.test.ts` | 4 | Serialización del historial del chat |
+| `src/ai/textToolParser.test.ts` | 3 | XML y text tool calls parsing |
+
+```bash
+pnpm test        # Ejecución única
+pnpm test:watch  # Modo watch
+```
 
 ---
 
@@ -494,8 +548,10 @@ Todos los comandos se ejecutan desde la raíz del proyecto:
 |---|---|
 | `pnpm install` | Instala las dependencias |
 | `pnpm dev` | Inicia el servidor de desarrollo en `localhost:4321` |
-| `pnpm build` | Genera el build de producción en `./dist/` |
+| `pnpm build` | Genera el build de producción en `./dist/` + pre-renderizado ISR |
 | `pnpm preview` | Previsualiza el build de producción localmente |
+| `pnpm test` | Tests unitarios (57 tests con Vitest) |
+| `pnpm test:watch` | Tests en modo watch |
 | `pnpm astro check` | Verifica tipos en archivos `.astro` |
 
 ---
@@ -510,3 +566,5 @@ Todos los comandos se ejecutan desde la raíz del proyecto:
 - **Imágenes WebP** para todas las fotos del portfolio
 - **`ClientRouter`** de Astro (View Transitions API) para navegación sin recarga y Shared Element Transitions en cards de proyectos
 - **PWA-ready**: `site.webmanifest`, iconos en múltiples tamaños, `apple-touch-icon`
+
+---
