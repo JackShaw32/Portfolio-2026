@@ -241,7 +241,19 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
         (window as any).ScrollTrigger = ScrollTrigger;
 
         lenis.on('scroll', ScrollTrigger.update);
+
+        var saved = sessionStorage.getItem('scroll-pos');
+        if (saved) {
+          sessionStorage.removeItem('scroll-pos');
+          lenis.scrollTo(Number(saved), { immediate: true });
+        }
+        document.body.classList.remove('no-flicker');
       }
+
+      window.addEventListener('beforeunload', function() {
+        var l = (window as any).lenis;
+        if (l) { sessionStorage.setItem('scroll-pos', String(l.scroll)); }
+      });
 
       initLenis();
 
@@ -293,12 +305,12 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
         history.replaceState(null, '', window.location.pathname);
         var el = document.querySelector(id);
         if (el) {
-          var l = window.lenis;
-          if (l) {
-            l.scrollTo(el as HTMLElement, { duration: 1.2 });
-          } else {
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
+          var targetY = el.getBoundingClientRect().top + window.scrollY;
+          window.scrollTo(0, targetY);
+          setTimeout(function() {
+            var l = window.lenis;
+            if (l) { l.scrollTo(targetY, { immediate: true }); }
+          }, 100);
         }
       }
     </script>
@@ -361,9 +373,10 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
       });
     </script>
 
+    <style>body.no-flicker{visibility:hidden}</style>
     <ClientRouter />
   </head>
-  <body class="min-h-screen bg-background font-sans antialiased selection:bg-primary/30 overflow-x-hidden">
+  <body class="min-h-screen bg-background font-sans antialiased selection:bg-primary/30 overflow-x-hidden no-flicker">
     <!-- Reading progress bar -->
     <div id="reading-progress" class="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 z-[100]" style="width:0%" />
     <script>
