@@ -238,19 +238,21 @@ export default function Optimizations() {
                   >
                     {tech.icon2 ? (
                       <div className="flex items-center gap-0.5 [@media(hover:hover)]:opacity-40 [@media(hover:hover)]:grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-200 group-hover:scale-110">
-                        <tech.icon className="w-4 h-4" style={{ color: tech.color }} />
-                        <tech.icon2 className="w-4 h-4" style={{ color: tech.color2 }} />
+                        <tech.icon className="w-4 h-4" style={{ color: tech.color }} aria-label={tech.name} />
+                        <tech.icon2 className="w-4 h-4" style={{ color: tech.color2 }} aria-label={tech.name} />
                       </div>
                     ) : (
                       <>
                         <tech.icon
                           className={`w-6 h-6 [@media(hover:hover)]:opacity-40 [@media(hover:hover)]:grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-200 group-hover:scale-110 ${tech.darkColor ? 'dark:hidden' : ''}`}
                           style={{ color: tech.color }}
+                          aria-label={tech.name}
                         />
                         {tech.darkColor && (
                           <tech.icon
                             className="w-6 h-6 [@media(hover:hover)]:opacity-40 [@media(hover:hover)]:grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-200 group-hover:scale-110 hidden dark:block"
                             style={{ color: tech.darkColor }}
+                            aria-label={tech.name}
                           />
                         )}
                       </>
