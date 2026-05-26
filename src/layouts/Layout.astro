@@ -323,37 +323,40 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
 
       document.addEventListener('astro:after-swap', function() {
         if (location.pathname !== '/' && location.pathname !== '') return;
-        var l = window.lenis;
 
         var section = sessionStorage.getItem('scroll-to-section');
         if (section) {
           sessionStorage.removeItem('scroll-to-section');
           sessionStorage.removeItem('return-to-project');
-          if (section === 'top') {
-            if (l) { l.scrollTo(0, { immediate: true }); } else { window.scrollTo(0, 0); }
-          } else {
-            var sectionEl = document.getElementById(section);
-            if (sectionEl) {
-              if (l) { l.scrollTo(sectionEl, { immediate: true }); } else { sectionEl.scrollIntoView({ block: 'start' }); }
+          setTimeout(function() {
+            var l = window.lenis;
+            if (!l) return;
+            if (section === 'top') {
+              l.scrollTo(0, { immediate: true });
+            } else {
+              var sectionEl = document.getElementById(section!);
+              if (sectionEl) { l.scrollTo(sectionEl, { immediate: true }); }
             }
-          }
+          }, 100);
           return;
         }
 
         var slug = sessionStorage.getItem('return-to-project');
         if (slug) {
           sessionStorage.removeItem('return-to-project');
-          if (l) {
-            var card = document.querySelector('[data-project-slug="' + slug + '"]');
-            if (card) {
-              var offset = -(window.innerHeight / 2) + (card as HTMLElement).offsetHeight / 2;
-              l.scrollTo(card as HTMLElement, { immediate: true, offset: offset });
-            }
+          var card = document.querySelector('[data-project-slug="' + slug + '"]') as HTMLElement | null;
+          if (card) {
+            var offset = -(window.innerHeight / 2) + card.offsetHeight / 2;
+            var targetY = card.getBoundingClientRect().top + window.scrollY + offset;
+            window.scrollTo(0, Math.max(0, targetY));
           }
-          requestAnimationFrame(function() {
+          setTimeout(function() {
+            var l = window.lenis;
+            if (!l || !card) return;
+            l.scrollTo(card, { immediate: true, offset: offset });
             var st = window.ScrollTrigger;
             if (st) st.refresh();
-          });
+          }, 100);
         }
       });
     </script>

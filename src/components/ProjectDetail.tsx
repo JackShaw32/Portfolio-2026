@@ -397,6 +397,7 @@ export default function ProjectDetail({ slug }: Props) {
       <div className="pt-16 md:pt-24 pb-4 px-6 container mx-auto">
         <a
           href="/"
+          onClick={() => { sessionStorage.setItem('return-to-project', slug); sessionStorage.removeItem('scroll-to-section'); }}
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -652,6 +653,7 @@ export default function ProjectDetail({ slug }: Props) {
         <div className="container mx-auto px-6 py-10 max-w-5xl flex items-center justify-between gap-4">
           <a
             href="/"
+            onClick={() => { sessionStorage.setItem('return-to-project', slug); sessionStorage.removeItem('scroll-to-section'); }}
             className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors group"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
