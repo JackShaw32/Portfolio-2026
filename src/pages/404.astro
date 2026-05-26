@@ -1,8 +1,18 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+const cookieLang = Astro.cookies.get('lang')?.value;
+const isEn = cookieLang === 'en';
+
+const title = isEn ? '404 — Page not found' : '404 — Página no encontrada';
+const desc = isEn ? 'The page you are looking for does not exist.' : 'La página que buscas no existe.';
+const heading = isEn ? 'Page not found' : 'Página no encontrada';
+const message = isEn ? 'The link you followed may be broken or the page was deleted.' : 'El enlace que seguiste puede estar roto o la página fue eliminada.';
+const backHome = isEn ? 'Back to home' : 'Volver al inicio';
+const prevPage = isEn ? 'Previous page' : 'Página anterior';
 ---
 
-<Layout title="404 — Página no encontrada" description="La página que buscas no existe." noindex={true}>
+<Layout title={title} description={desc} noindex={true} lang={cookieLang === 'en' ? 'en' : 'es'}>
   <div class="flex min-h-screen items-center justify-center bg-background px-6">
     <div class="text-center max-w-md">
       <div class="font-mono text-[120px] sm:text-[160px] font-black leading-none text-foreground/5 select-none animate-pulse">
@@ -10,10 +20,10 @@ import Layout from '../layouts/Layout.astro';
       </div>
       <div class="-mt-10 sm:-mt-14 mb-6 space-y-2">
         <p class="text-lg sm:text-xl font-semibold text-foreground">
-          <span class="text-primary">{'>'}</span> Página no encontrada
+          <span class="text-primary">{'>'}</span> {heading}
         </p>
         <p class="text-sm text-muted-foreground font-mono">
-          El enlace que seguiste puede estar roto o la página fue eliminada.
+          {message}
         </p>
       </div>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -22,14 +32,14 @@ import Layout from '../layouts/Layout.astro';
           class="inline-flex items-center gap-2 bg-foreground text-background hover:opacity-85 font-bold px-6 py-3 rounded-2xl text-sm transition-all duration-200"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
-          Volver al inicio
+          {backHome}
         </a>
         <button
           onclick="history.back()"
           class="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground font-medium px-6 py-3 rounded-2xl text-sm transition-all duration-200 border border-border/50 hover:border-foreground/30"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-          Página anterior
+          {prevPage}
         </button>
       </div>
     </div>

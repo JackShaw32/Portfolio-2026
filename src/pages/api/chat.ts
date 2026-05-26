@@ -8,7 +8,7 @@ import { LIMITS, checkRateLimit }                      from '../../security/rate
 import { validateMessages }                            from '../../security/sanitize';
 import { logInteraction }                              from '../../analytics/interactionLogger';
 import { detectForcedTool, wantsAllProjects, isSendMessageIntent } from '../../ai/intentDetection';
-import { toolsDefinition }                             from '../../ai/tools';
+import { getToolsDefinition }                          from '../../ai/tools';
 import { pipeStreamToController }                      from '../../ai/streamPipeline';
 import { PRIMARY_MODEL, FALLBACK_MODEL }               from '../../ai/model';
 
@@ -40,6 +40,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   const safeLang = language === 'en' ? 'en' : 'es';
+  const toolsDefinition = getToolsDefinition(safeLang);
 
   const msgCheck = validateMessages(messages);
   if (!msgCheck.valid) {
@@ -72,8 +73,8 @@ export const POST: APIRoute = async ({ request }) => {
     ? '⚠️ The assistant is temporarily busy. Please wait a few seconds and try again.'
     : '⚠️ El asistente está ocupado en este momento. Esperá unos segundos y volvé a intentarlo.';
   const langLock = safeLang === 'en'
-    ? '\n\n⚡ LANGUAGE LOCK: This session is in ENGLISH. Every single response MUST be in English. No Spanish. No exceptions.'
-    : '\n\n⚡ IDIOMA LOCK: Esta sesión es en ESPAÑOL RIOPLATENSE. Respondé TODO en español con "vos". Sin excepciones.';
+    ? '\n\n⚡ LANGUAGE LOCK: This session is in ENGLISH. EVERY response MUST be in English — even for math, greetings, or short answers. Example: "2+2=4. Want to know about Eduardo\'s profile?" NOT "¿Querés saber?". No Spanish. Zero exceptions.'
+    : '\n\n⚡ IDIOMA LOCK: Esta sesión es en ESPAÑOL RIOPLATENSE. TODA respuesta debe ser en español con "vos". Ejemplo: "2+2=4. ¿Querés saber algo sobre el perfil de Eduardo?". Sin excepciones.';
 
   const safeSection  = typeof pageContext === 'string' && VALID_SECTIONS.has(pageContext) ? pageContext : null;
   const isProjectPage = safeSection && ['uncuartodemilla', 'expresoomega'].includes(safeSection);
@@ -158,7 +159,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   try {
     primaryResult = await streamText({
-      model:      getGroq()(hasAnyToolIntent ? FALLBACK_MODEL : PRIMARY_MODEL),
+      model:      getGroq()(FALLBACK_MODEL),
       system:     BASE_PROMPT + pageContextStr + LANG_INSTRUCTION + langLock,
       messages:   trimmedMessages,
       tools:      activeTools as typeof toolsDefinition,
@@ -215,7 +216,7 @@ export const POST: APIRoute = async ({ request }) => {
     markKeyCooldown(getKeyIdx(), primaryErr);
     const rotated = rotateKey();
     if (rotated) {
-      const retryModel = hasAnyToolIntent ? FALLBACK_MODEL : PRIMARY_MODEL;
+      const retryModel = FALLBACK_MODEL;
       console.warn(`[EduBot] Rate limited → rotated key, retrying with ${retryModel}`);
       try {
         primaryResult = await streamText({
@@ -355,7 +356,7 @@ export const POST: APIRoute = async ({ request }) => {
           markKeyCooldown(getKeyIdx(), streamErr);
           const rotated = rotateKey();
           if (rotated) {
-            emergencyModel = hasAnyToolIntent ? FALLBACK_MODEL : PRIMARY_MODEL;
+            emergencyModel = FALLBACK_MODEL;
             console.warn(`[EduBot] Stream rate limit → rotated key, emergency ${emergencyModel}`);
           } else {
             console.warn('[EduBot] Stream rate limit → no keys, emergency 70b (separate TPM)');

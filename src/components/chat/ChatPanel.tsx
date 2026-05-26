@@ -8,7 +8,7 @@ interface ChatPanelProps {
   isLoading: boolean;
   messages: ChatMessage[];
   input: string;
-  lang: string;
+  lang: 'es' | 'en';
   ch: {
     typing: string;
     online: string;

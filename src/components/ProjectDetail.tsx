@@ -265,7 +265,6 @@ function ImageSlider({ images, title }: { images: readonly string[]; title: stri
                 src={src}
                 alt={`${title} - ${i}`}
                 draggable={false}
-                loading="eager"
                 fetchPriority={i === 0 ? "high" : "auto"}
                 className="w-full h-full object-contain sm:object-cover sm:object-top"
               />
@@ -379,8 +378,8 @@ export default function ProjectDetail({ slug }: Props) {
       <div className="min-h-screen flex items-center justify-center pt-24">
         <div className="text-center">
           <h1 className="text-4xl font-black mb-4">404</h1>
-          <p className="text-muted-foreground mb-6">Proyecto no encontrado.</p>
-          <a href="/" className="text-primary hover:underline">Volver al portfolio</a>
+          <p className="text-muted-foreground mb-6">{lang === 'en' ? 'Project not found.' : 'Proyecto no encontrado.'}</p>
+          <a href="/" className="text-primary hover:underline">{pr.backToPortfolio}</a>
         </div>
       </div>
     );

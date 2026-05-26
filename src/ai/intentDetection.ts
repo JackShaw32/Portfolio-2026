@@ -8,6 +8,7 @@ const SHOW_INTENTS: Array<{ pattern: RegExp; tool: string }> = [
   { pattern: /(?:d[oó]nde\s*(?:vive|viv[eé]s|est[aá]|trabaja|queda)|locaci[oó]n|ubicaci[oó]n|location|based|radica|reside|zona)/i, tool: 'showContact' },
   { pattern: /(?:por\s*qu[eé]\s*contratar|why\s*(?:should\s*I\s*)?hire|recomi[eé]ndame|recomendaci[oó]n|would\s*(?:you\s*)?recommend|es\s*bueno\s*para|is\s*(?:he|eduardo)\s*a\s*good\s*fit|qu[eé]\s*opinas|what\s*do\s*you\s*think|lo\s*recomiendas|recomiendo|hiring|contratarlo)/i, tool: 'showRecommendation' },
   { pattern: /(?:arquitectur|architectur|diagrama|diagram|flujo|flow\s*(?:de|of|del)|c[oó]mo\s*(?:est[aá]|estructur)|how\s*(?:is|does)\s*(?:it|the)\s*(?:structured|connected|built)|stack\s*diagram|componentes\s*del\s*sistema|system\s*architecture)/i, tool: 'showArchitecture' },
+  { pattern: /(?:impacto|impact|m[eé]trica|metrics?|logros|achievements|resultados|results|lighthouse)/i, tool: 'showImpact' },
 ];
 
 const PROJECT_OVERRIDE = /(?:mostrame|show me|ver|muéstrame|muestrame|quiero ver|puedo ver|dejame ver|podés mostrarme|can you show|show me|dame)\s+(?:el\s+)?(?:proyecto|project)?\s*(?:de\s+)?/i;
@@ -21,7 +22,7 @@ const RECOMMENDATION_OVERRIDE = /(?:recomi[eé]ndame|recomendaci[oó]n|lo\s*reco
 
 const SEND_MESSAGE_PATTERN = /envi[aá](rle|le|r)?\s+un\s+mensaje|mandar(le)?\s+un\s+mensaje|escribir(le)?|send.*message|contact.*him|write.*to|quiero.*mensaje|mensaje.*a\s+edu|dejar(le)?\s+un\s+(mensaje|recado)/i;
 
-const TEXT_ONLY_PATTERN = /impacto|impactos|m[eé]trica[s]?|\bkpi\b|logros|achievements|n[uú]meros\s+(de|del)|cuántos\s+proyectos|how\s+many\s+projects|n[uú]mero\s+de\s+proyectos|resultados|results|lighthouse|scores/i;
+const TEXT_ONLY_PATTERN = /impacto|impactos|m[eé]trica[s]?|\bkpi\b|logros|achievements|n[uú]meros\s+(de|del)|cuántos\s+proyectos|how\s+many\s+projects|n[uú]mero\s+de\s+proyectos|resultados|results|lighthouse|scores|impact\s+metrics|metrics\b/i;
 
 const ALL_PROJECTS_PATTERN = /todos|all|ambos|both|los proyectos|the projects|show.*projects|projec.*all|ver todos|mostrame todos|tus proyectos|your projects|qu[eé]\s*proyectos/i;
 

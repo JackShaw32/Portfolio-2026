@@ -3,7 +3,7 @@ import type { ToolInvocation } from "./types";
 
 interface ToolResultCardProps {
   toolInvocation: ToolInvocation;
-  lang: string;
+  lang: 'es' | 'en';
 }
 
 export default function ToolResultCard({ toolInvocation, lang }: ToolResultCardProps) {
@@ -19,24 +19,36 @@ export default function ToolResultCard({ toolInvocation, lang }: ToolResultCardP
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const project = toolInvocation.result as any;
+    const projectDescs: Record<string, { es: string; en: string }> = {
+      '/projects/14milla.webp': {
+        es: 'E-commerce B2C completo de indumentaria automotriz. Frontend: React 18 + Vite 6 + Tailwind CSS 3 + Framer Motion. Backend: Express 4 + MongoDB + JWT httpOnly + Google OAuth. Pagos: MercadoPago (Bricks + webhooks + transferencias + gift cards + cupones). Tracking: Meta Pixel + Conversions API (browser + server). Testing: 119 unitarios (Vitest) + 11 E2E (Playwright). Deploy: Netlify + Render.',
+        en: 'Full B2C e-commerce for automotive apparel. Frontend: React 18 + Vite 6 + Tailwind CSS 3 + Framer Motion. Backend: Express 4 + MongoDB + JWT httpOnly + Google OAuth. Payments: MercadoPago (Bricks + webhooks + transfers + gift cards + coupons). Tracking: Meta Pixel + Conversions API (browser + server). Testing: 119 unit (Vitest) + 11 E2E (Playwright). Deploy: Netlify + Render.',
+      },
+      '/projects/omega.webp': {
+        es: 'Sitio corporativo B2B desarrollado con HTML5, CSS3 y JavaScript Vanilla para una empresa de logística y transporte. Sin frameworks pesados, enfocado en velocidad de carga, SEO técnico y generación de leads.',
+        en: 'B2B corporate website built with HTML5, CSS3 and Vanilla JavaScript for a logistics and transportation company. No heavy frameworks, focused on load speed, technical SEO and lead generation.',
+      },
+    };
+    const safeDesc = projectDescs[project.image]?.[lang] ?? project.description;
     return (
       <div
         key={toolInvocation.toolCallId}
         className="w-full sm:min-w-[280px] max-w-[320px] rounded-2xl border border-indigo-500/20 bg-background overflow-hidden shadow-lg animate-in fade-in slide-in-from-bottom-2 mt-1"
       >
         {project.image ? (
-          <img
-            src={project.image}
-            alt={project.title}
-            className="w-full h-36 object-cover object-top"
-          />
+            <img
+              src={project.image}
+              alt={project.title}
+              loading="lazy"
+              className="w-full h-36 object-cover object-top"
+            />
         ) : null}
         <div className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 px-4 py-3 border-b border-border/50">
           <h4 className="font-bold text-sm text-foreground">{project.title}</h4>
         </div>
         <div className="p-4 space-y-3">
           <p className="text-xs text-muted-foreground leading-relaxed">
-            {project.description}
+            {safeDesc}
           </p>
           <div className="flex flex-wrap gap-1.5">
             {project.tech?.map((tech: string) => (
@@ -119,16 +131,18 @@ export default function ToolResultCard({ toolInvocation, lang }: ToolResultCardP
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const skills = toolInvocation.result as any;
     const categoryColors: Record<string, string> = {
-      'Frontend':        'text-blue-400',
-      'Backend':         'text-green-400',
-      'Bases de datos':  'text-yellow-400',
-      'Cloud & DevOps':  'text-orange-400',
-      'Pagos & otros':   'text-pink-400',
+      'Frontend':              'text-blue-400',
+      'Backend':               'text-green-400',
+      'Bases de datos':        'text-yellow-400',
+      'Databases':             'text-yellow-400',
+      'Cloud & DevOps':        'text-orange-400',
+      'Pagos & otros':         'text-pink-400',
+      'Payments & Other':      'text-pink-400',
     };
     return (
       <div key={toolInvocation.toolCallId} className="w-full sm:min-w-[280px] max-w-[340px] rounded-2xl border border-indigo-500/20 bg-background overflow-hidden shadow-lg animate-in fade-in slide-in-from-bottom-2 mt-1">
         <div className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 px-4 py-3 border-b border-border/50">
-          <h4 className="font-bold text-sm text-foreground">🛠️ {lang === 'en' ? 'Tech Stack' : 'Tech Stack de Eduardo'}</h4>
+          <h4 className="font-bold text-sm text-foreground">🛠️ {lang === 'en' ? 'Tech Stack' : 'Stack Tecnológico'}</h4>
         </div>
         <div className="p-4 space-y-3">
           {skills.categories?.map((cat: { name: string; skills: string[] }) => (

@@ -9,25 +9,39 @@ interface Props {
   keywords?: string;
   type?: 'website' | 'article' | 'profile';
   noindex?: boolean;
+  lang?: string;
 }
 
 const {
   title,
-  description = "Software Engineer & Full Stack Developer especializado en aplicaciones web modernas, e-commerce y productos escalables con React, Node.js y TypeScript.",
-  image = "/api/og",
-  keywords = "Eduardo Cabral, Software Engineer, Full Stack Developer, React, Node.js, TypeScript, Argentina, desarrollador web, e-commerce, portfolio",
+  description: rawDescription,
+  image: rawImage,
+  keywords: rawKeywords,
   type = "website",
   noindex = false,
+  lang: propLang,
 } = Astro.props;
+
+const cookieLang = Astro.cookies.get('lang')?.value;
+const pageLang = propLang || cookieLang || 'es';
+const isEn = pageLang === 'en';
+
+const description = rawDescription || (isEn
+  ? "Software Engineer & Full Stack Developer specialized in modern web applications, e-commerce and scalable products with React, Node.js and TypeScript."
+  : "Software Engineer & Full Stack Developer especializado en aplicaciones web modernas, e-commerce y productos escalables con React, Node.js y TypeScript.");
+const keywords = rawKeywords || (isEn
+  ? "Eduardo Cabral, Software Engineer, Full Stack Developer, React, Node.js, TypeScript, Argentina, web developer, e-commerce, portfolio"
+  : "Eduardo Cabral, Software Engineer, Full Stack Developer, React, Node.js, TypeScript, Argentina, desarrollador web, e-commerce, portfolio");
+const image = rawImage ?? "/api/og";
 
 const siteURL = "https://jackshaw32.vercel.app";
 const canonicalURL = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', siteURL).href;
-const ogImage = image.startsWith('http') ? image : `${siteURL}${image}`;
+const ogImage = image.startsWith('http') ? image : `${siteURL}${image}${image === '/api/og' ? `?lang=${pageLang}` : ''}`;
 const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo Cabral`;
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={pageLang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -87,7 +101,7 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
               "height": 800
             },
             "jobTitle": "Software Engineer & Full Stack Developer",
-            "description": "Software Engineer & Full Stack Developer especializado en aplicaciones web modernas, e-commerce y productos escalables con React, Node.js y TypeScript.",
+            "description": "Software Engineer & Full Stack Developer" + (isEn ? " specialized in modern web applications, e-commerce and scalable products with React, Node.js and TypeScript." : " especializado en aplicaciones web modernas, e-commerce y productos escalables con React, Node.js y TypeScript."),
             "knowsAbout": ["JavaScript", "TypeScript", "React", "Node.js", "MongoDB", "Firebase", "Tailwind CSS", "E-commerce", "REST API"],
             "knowsLanguage": ["es", "en"],
             "nationality": {
@@ -104,7 +118,9 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
             "@id": "https://jackshaw32.vercel.app/#website",
             "url": "https://jackshaw32.vercel.app",
             "name": "Eduardo Cabral — Software Engineer & Full Stack Developer",
-            "description": "Portafolio profesional de Eduardo Cabral, Software Engineer & Full Stack Developer especializado en aplicaciones web modernas y e-commerce.",
+            "description": (isEn
+              ? "Professional portfolio of Eduardo Cabral, Software Engineer & Full Stack Developer specialized in modern web applications and e-commerce."
+              : "Portafolio profesional de Eduardo Cabral, Software Engineer & Full Stack Developer especializado en aplicaciones web modernas y e-commerce."),
             "inLanguage": ["es", "en"],
             "author": {
               "@id": "https://jackshaw32.vercel.app/#person"
@@ -117,15 +133,17 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
             "name": "Eduardo Cabral | Software Engineer & Full Stack Developer",
             "isPartOf": { "@id": "https://jackshaw32.vercel.app/#website" },
             "about": { "@id": "https://jackshaw32.vercel.app/#person" },
-            "description": "Portfolio profesional de Eduardo Cabral — Software Engineer & Full Stack Developer con experiencia en React, Node.js, TypeScript y e-commerce escalable.",
-            "inLanguage": "es",
+            "description": isEn
+              ? "Eduardo Cabral's professional portfolio — Software Engineer & Full Stack Developer with experience in React, Node.js, TypeScript and scalable e-commerce."
+              : "Portfolio profesional de Eduardo Cabral — Software Engineer & Full Stack Developer con experiencia en React, Node.js, TypeScript y e-commerce escalable.",
+            "inLanguage": pageLang,
             "breadcrumb": {
               "@type": "BreadcrumbList",
               "itemListElement": [
                 {
                   "@type": "ListItem",
                   "position": 1,
-                  "name": "Inicio",
+                  "name": isEn ? "Home" : "Inicio",
                   "item": "https://jackshaw32.vercel.app"
                 }
               ]

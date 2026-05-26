@@ -31,6 +31,7 @@ export function useLanguage() {
     const scrollY = window.scrollY;
     try {
       localStorage.setItem(STORAGE_KEY, newLang);
+      document.cookie = `lang=${newLang};path=/;max-age=31536000;SameSite=Lax`;
     } catch {
       // localStorage blocked
     }

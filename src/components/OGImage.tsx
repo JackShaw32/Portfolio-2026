@@ -1,6 +1,7 @@
 const techStack = ['React', 'Node.js', 'TypeScript', 'MongoDB', 'Next.js'];
 
-export function OGImage() {
+export function OGImage({ lang = 'es' }: { lang?: string }) {
+  const isEn = lang === 'en';
   return (
     <div tw="flex w-full h-full bg-black overflow-hidden relative">
       <div tw="absolute inset-0 flex [background-image:radial-gradient(rgba(255,255,255,0.08)_1px,transparent_1px)] [background-size:32px_32px]" />
@@ -10,7 +11,7 @@ export function OGImage() {
       <div tw="relative z-10 flex flex-col justify-center w-full px-24 py-16 gap-5">
         <div tw="flex items-center gap-2 border border-white/10 rounded-full px-4 py-1.5 bg-white/5 w-fit">
           <div tw="w-2.5 h-2.5 rounded-full bg-green-500 flex" />
-          <span tw="text-white/75 text-base">Disponible para nuevos desafíos</span>
+          <span tw="text-white/75 text-base">{isEn ? 'Available for new challenges' : 'Disponible para nuevos desafíos'}</span>
         </div>
         <div tw="flex font-black leading-none text-[90px] tracking-[-2px] bg-clip-text text-transparent [background-image:linear-gradient(90deg,#909090_0%,#cccccc_18%,#f0f0f0_32%,#ffffff_44%,#d8d8d8_54%,#969696_68%,#c8c8c8_80%,#f4f4f4_92%,#909090_100%)]">
           Eduardo Cabral
@@ -22,7 +23,7 @@ export function OGImage() {
         </div>
 
         <div tw="flex text-3xl text-white/50 leading-relaxed max-w-[760px]">
-          Soluciones Web Escalables con Impacto
+          {isEn ? 'Scalable Web Solutions with Impact' : 'Soluciones Web Escalables con Impacto'}
         </div>
 
         <div tw="flex gap-2.5 mt-2">

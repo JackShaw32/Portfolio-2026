@@ -107,18 +107,19 @@ export function useChatLogic(lang: string, defaultWelcomeMsg: string, pageSlug?:
     // Slash commands
     const cmd = textoAEnviar.trim().toLowerCase();
     const cmdBase = cmd.split(/\s+/)[0];
+    const isEn = lang === 'en';
     const commands: Record<string, { trigger: string; label: string }> = {
-      '/skills':    { trigger: 'mostrame tus skills',         label: 'Skills' },
-      '/stack':     { trigger: 'mostrame tus skills',         label: 'Stack' },
-      '/projects':  { trigger: 'mostrame todos los proyectos', label: 'Projects' },
-      '/contact':   { trigger: 'mostrame el contacto',        label: 'Contact' },
-      '/experience':{ trigger: 'mostrame tu experiencia',     label: 'Experience' },
-      '/cv':        { trigger: 'mostrame tu experiencia',     label: 'CV' },
-      '/availability': { trigger: 'está disponible',          label: 'Availability' },
-      '/impact':    { trigger: 'mostrame las métricas de impacto', label: 'Impact' },
-      '/arch':      { trigger: 'mostrame la arquitectura',       label: 'Architecture' },
-      '/profile':   { trigger: 'contame sobre vos',           label: 'Profile' },
-      '/hire':      { trigger: 'por qué contratar a eduardo', label: 'Hire' },
+      '/skills':    { trigger: isEn ? 'show me your skills' : 'mostrame tus skills',         label: 'Skills' },
+      '/stack':     { trigger: isEn ? 'show me your skills' : 'mostrame tus skills',         label: 'Stack' },
+      '/projects':  { trigger: isEn ? 'show me all projects' : 'mostrame todos los proyectos', label: 'Projects' },
+      '/contact':   { trigger: isEn ? 'show me contact info' : 'mostrame el contacto',        label: 'Contact' },
+      '/experience':{ trigger: isEn ? 'show me your experience' : 'mostrame tu experiencia',     label: 'Experience' },
+      '/cv':        { trigger: isEn ? 'show me your experience' : 'mostrame tu experiencia',     label: 'CV' },
+      '/availability': { trigger: isEn ? 'is he available' : 'está disponible',          label: 'Availability' },
+      '/impact':    { trigger: isEn ? 'show me impact metrics' : 'mostrame las métricas de impacto', label: 'Impact' },
+      '/arch':      { trigger: isEn ? 'show me the architecture' : 'mostrame la arquitectura',       label: 'Architecture' },
+      '/profile':   { trigger: isEn ? 'tell me about yourself' : 'contame sobre vos',           label: 'Profile' },
+      '/hire':      { trigger: isEn ? 'why hire eduardo' : 'por qué contratar a eduardo', label: 'Hire' },
     };
 
     if (cmdBase === '/clear') {
