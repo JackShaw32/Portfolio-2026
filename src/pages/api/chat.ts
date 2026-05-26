@@ -150,12 +150,15 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
+  const hasAnyToolIntent = forcedTool || multiProject ||
+    trimmedMessages.some(m => m.role === 'assistant' && m.content.includes('[Showed'));
+
   let primaryResult: Awaited<ReturnType<typeof streamText<any>>> | null = null;
   let useFallback = false;
 
   try {
     primaryResult = await streamText({
-      model:      getGroq()(forcedTool || multiProject ? FALLBACK_MODEL : PRIMARY_MODEL),
+      model:      getGroq()(hasAnyToolIntent ? FALLBACK_MODEL : PRIMARY_MODEL),
       system:     BASE_PROMPT + pageContextStr + LANG_INSTRUCTION + langLock,
       messages:   trimmedMessages,
       tools:      activeTools as typeof toolsDefinition,
@@ -212,10 +215,11 @@ export const POST: APIRoute = async ({ request }) => {
     markKeyCooldown(getKeyIdx(), primaryErr);
     const rotated = rotateKey();
     if (rotated) {
-      console.warn('[EduBot] Rate limited → rotated key, retrying with 8b');
+      const retryModel = hasAnyToolIntent ? FALLBACK_MODEL : PRIMARY_MODEL;
+      console.warn(`[EduBot] Rate limited → rotated key, retrying with ${retryModel}`);
       try {
         primaryResult = await streamText({
-          model:      getGroq()(PRIMARY_MODEL),
+          model:      getGroq()(retryModel),
           system:     BASE_PROMPT + pageContextStr + LANG_INSTRUCTION + langLock,
           messages:   trimmedMessages,
           tools:      activeTools as typeof toolsDefinition,
@@ -351,8 +355,8 @@ export const POST: APIRoute = async ({ request }) => {
           markKeyCooldown(getKeyIdx(), streamErr);
           const rotated = rotateKey();
           if (rotated) {
-            emergencyModel = PRIMARY_MODEL;
-            console.warn('[EduBot] Stream rate limit → rotated key, emergency 8b');
+            emergencyModel = hasAnyToolIntent ? FALLBACK_MODEL : PRIMARY_MODEL;
+            console.warn(`[EduBot] Stream rate limit → rotated key, emergency ${emergencyModel}`);
           } else {
             console.warn('[EduBot] Stream rate limit → no keys, emergency 70b (separate TPM)');
           }
