@@ -1,4 +1,5 @@
-import { Sparkles, ExternalLink, Mail, Linkedin, FileDown, Globe, Phone, Github, Briefcase, GraduationCap, CheckCircle2, XCircle, Clock, MapPin, TrendingUp } from "lucide-react";
+import { Sparkles, ExternalLink, Mail, Linkedin, FileDown, Globe, Phone, Github, Briefcase, GraduationCap, CheckCircle2, XCircle, Clock, MapPin, TrendingUp, Play, Star } from "lucide-react";
+import React from "react";
 import type { ToolInvocation } from "./types";
 
 interface ToolResultCardProps {
@@ -551,5 +552,112 @@ export default function ToolResultCard({ toolInvocation, lang }: ToolResultCardP
     );
   }
 
+  // showGame
+  if (toolInvocation.toolName === 'showGame') {
+    return <SimonGame lang={lang} />;
+  }
+
   return null;
+}
+
+function SimonGame({ lang }: { lang: string }) {
+  const { useState, useEffect, useCallback, useRef } = React;
+  const COLORS = ['#ef4444', '#22c55e', '#3b82f6', '#eab308'];
+  const NAMES = lang === 'en' ? ['Red', 'Green', 'Blue', 'Yellow'] : ['Rojo', 'Verde', 'Azul', 'Amarillo'];
+  const [sequence, setSequence] = useState<number[]>([]);
+  const [playerTurn, setPlayerTurn] = useState(false);
+  const [activeIdx, setActiveIdx] = useState(-1);
+  const [score, setScore] = useState(0);
+  const [status, setStatus] = useState<'idle' | 'playing' | 'gameover'>('idle');
+  const [showSeq, setShowSeq] = useState(false);
+  const playerIdx = useRef(0);
+
+  const playSequence = useCallback(async (seq: number[]) => {
+    setShowSeq(true);
+    setPlayerTurn(false);
+    for (let i = 0; i < seq.length; i++) {
+      await new Promise(r => setTimeout(r, 400));
+      setActiveIdx(seq[i]);
+      await new Promise(r => setTimeout(r, 300));
+      setActiveIdx(-1);
+    }
+    await new Promise(r => setTimeout(r, 200));
+    setShowSeq(false);
+    setPlayerTurn(true);
+    playerIdx.current = 0;
+  }, []);
+
+  const startGame = () => {
+    const first = Math.floor(Math.random() * 4);
+    const newSeq = [first];
+    setSequence(newSeq);
+    setScore(0);
+    setStatus('playing');
+    playSequence(newSeq);
+  };
+
+  const handleClick = (idx: number) => {
+    if (!playerTurn || showSeq) return;
+    setActiveIdx(idx);
+    setTimeout(() => setActiveIdx(-1), 200);
+    if (idx !== sequence[playerIdx.current]) {
+      setStatus('gameover');
+      setPlayerTurn(false);
+      return;
+    }
+    playerIdx.current++;
+    if (playerIdx.current === sequence.length) {
+      setScore(sequence.length);
+      const nextSeq = [...sequence, Math.floor(Math.random() * 4)];
+      setSequence(nextSeq);
+      playSequence(nextSeq);
+    }
+  };
+
+  return (
+    <div className="w-full max-w-[260px] rounded-2xl border border-indigo-500/20 bg-background overflow-hidden shadow-lg animate-in fade-in slide-in-from-bottom-2 mt-1">
+      <div className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 px-4 py-3 border-b border-border/50 flex items-center gap-2">
+        <Play className="w-4 h-4 text-indigo-400" />
+        <h4 className="font-bold text-sm text-foreground">{lang === 'en' ? 'Simon Says' : 'Simón Dice'}</h4>
+        {score > 0 && (
+          <span className="ml-auto text-[10px] font-bold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-full">
+            {score} {lang === 'en' ? 'pts' : 'pts'}
+          </span>
+        )}
+      </div>
+      <div className="p-4 flex flex-col items-center gap-3">
+        <div className="grid grid-cols-2 gap-2 w-fit">
+          {COLORS.map((color, i) => (
+            <button
+              key={i}
+              onClick={() => handleClick(i)}
+              disabled={!playerTurn}
+              className="w-16 h-16 rounded-2xl border-2 transition-all duration-150 cursor-pointer disabled:cursor-not-allowed"
+              style={{
+                backgroundColor: activeIdx === i ? color : `${color}55`,
+                borderColor: activeIdx === i ? color : `${color}33`,
+                transform: activeIdx === i ? 'scale(0.92)' : 'scale(1)',
+                opacity: !playerTurn && activeIdx !== i ? 0.6 : 1,
+              }}
+              aria-label={NAMES[i]}
+            />
+          ))}
+        </div>
+        <p className="text-[11px] text-muted-foreground text-center leading-relaxed min-h-[32px]">
+          {status === 'idle' && (lang === 'en' ? 'Repeat the sequence!' : '¡Repetí la secuencia!')}
+          {status === 'playing' && (showSeq ? (lang === 'en' ? 'Watch... 👀' : 'Mirá... 👀') : (lang === 'en' ? 'Your turn!' : 'Tu turno!'))}
+          {status === 'gameover' && (lang === 'en' ? 'Game over! Score: ' : 'Perdiste! Puntaje: ') + score}
+        </p>
+        {status !== 'playing' && (
+          <button
+            onClick={startGame}
+            className="flex items-center gap-1.5 bg-foreground text-background text-xs font-bold px-4 py-2 rounded-xl hover:opacity-85 transition-opacity"
+          >
+            <Star className="w-3 h-3" />
+            {status === 'gameover' ? (lang === 'en' ? 'Retry' : 'Reintentar') : (lang === 'en' ? 'Start Game' : 'Empezar')}
+          </button>
+        )}
+      </div>
+    </div>
+  );
 }

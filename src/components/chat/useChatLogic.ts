@@ -192,6 +192,21 @@ export function useChatLogic(lang: string, defaultWelcomeMsg: string, pageSlug?:
       return;
     }
 
+    if (cmdBase === '/game' || cmdBase === '/simon' || cmdBase === '/juego') {
+      const gameId = genId();
+      setMessages(prev => [
+        ...prev,
+        { id: genId(), role: 'user', content: textoAEnviar },
+        {
+          id: gameId, role: 'assistant',
+          content: '',
+          toolInvocations: [{ toolCallId: gameId, toolName: 'showGame', args: {}, result: {} }],
+        },
+      ]);
+      setIsLoading(false);
+      return;
+    }
+
     const mappedText = commands[cmdBase]?.trigger ?? textoAEnviar;
     const navSections: Record<string, string> = {
       'top': 'top', 'inicio': 'top', 'home': 'top', 'hero': 'top',
@@ -274,6 +289,7 @@ export function useChatLogic(lang: string, defaultWelcomeMsg: string, pageSlug?:
             '  /lang          — Switch language',
             '  /menu          — Toggle navigation menu',
             '  /contactform   — Open contact form',
+            '  /game          — Play Simon Says!',
             '',
             'You can also just ask naturally in Spanish or English!',
           ]
@@ -297,6 +313,7 @@ export function useChatLogic(lang: string, defaultWelcomeMsg: string, pageSlug?:
             '  /lang          — Cambiar idioma',
             '  /menu          — Menú de navegación',
             '  /contactform   — Abrir formulario de contacto',
+            '  /game          — Jugar Simón Dice!',
             '',
             'También podés preguntar en lenguaje natural en español o inglés.',
           ];
