@@ -199,7 +199,8 @@ export const POST: APIRoute = async ({ request }) => {
     return new ReadableStream({
       async start(controller) {
         let toolCallsEmitted = 0;
-        try {
+  console.log(`[EduBot] Model path: forcedTool=${forcedTool}, multiProject=${multiProject}`);
+  try {
           await pipeStreamToController(
             result, controller, encoderForStream, tools,
             () => { toolCallsEmitted++; },
@@ -231,6 +232,7 @@ export const POST: APIRoute = async ({ request }) => {
   if (forcedTool && !multiProject) {
     const toolName = forcedTool;
     const tool = (activeTools as any)[toolName];
+    console.log(`[EduBot] Forced tool path: toolName=${toolName}, hasExecute=${!!tool?.execute}`);
     if (tool?.execute) {
       try {
         let toolArgs: Record<string, unknown> = {};
