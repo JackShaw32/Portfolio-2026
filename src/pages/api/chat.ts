@@ -151,156 +151,136 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  const hasAnyToolIntent = forcedTool || multiProject ||
-    trimmedMessages.some(m => m.role === 'assistant' && m.content.includes('[Showed'));
+  const systemPrompt = BASE_PROMPT + pageContextStr + LANG_INSTRUCTION + langLock;
+
+  function buildPrepareStep(opts: {
+    forcedTool: string | null;
+    multiProject: boolean;
+    isSendMsg: boolean;
+    isDataCollectionTurn: boolean;
+    isContactMessageStep: boolean;
+  }) {
+    return ({ stepNumber }: { stepNumber: number }) => {
+      if (opts.multiProject) {
+        if (stepNumber >= 3) return { toolChoice: 'none' as const, activeTools: [] as any };
+        return { toolChoice: 'auto' as const };
+      }
+      if (stepNumber === 0 && opts.isSendMsg) {
+        return { toolChoice: 'none' as const };
+      }
+      if (stepNumber === 0 && opts.isDataCollectionTurn) {
+        return { toolChoice: 'none' as const };
+      }
+      if (stepNumber === 0 && opts.isContactMessageStep) {
+        return {
+          toolChoice: { type: 'tool', toolName: 'sendContactForm' } as any,
+          activeTools: ['sendContactForm'] as any,
+        };
+      }
+      if (stepNumber === 0 && opts.forcedTool) {
+        return {
+          toolChoice: { type: 'tool', toolName: opts.forcedTool } as any,
+          activeTools: [opts.forcedTool] as any,
+        };
+      }
+      if (stepNumber >= 1) return { toolChoice: 'none' as const, activeTools: [] as any };
+      return { toolChoice: 'none' as const };
+    };
+  }
+
+  const stepOpts = { forcedTool, multiProject, isSendMsg, isDataCollectionTurn, isContactMessageStep };
 
   let primaryResult: Awaited<ReturnType<typeof streamText<any>>> | null = null;
   let useFallback = false;
 
   try {
     primaryResult = await streamText({
-      model:      getGroq()(FALLBACK_MODEL),
-      system:     BASE_PROMPT + pageContextStr + LANG_INSTRUCTION + langLock,
+      model:      getGroq()(PRIMARY_MODEL),
+      system:     systemPrompt,
       messages:   trimmedMessages,
       tools:      activeTools as typeof toolsDefinition,
       toolChoice: 'auto',
-      stopWhen:   stepCountIs(5),
+      stopWhen:   stepCountIs(multiProject ? 5 : 2),
       maxOutputTokens:  600,
-      maxRetries: 0,
+      maxRetries: 1,
       temperature: 0.3,
-      prepareStep: ({ stepNumber }) => {
-  if (multiProject) {
-    if (stepNumber >= 3) return { toolChoice: 'none', activeTools: [] as any };
-    return { model: getGroq()(FALLBACK_MODEL), toolChoice: 'auto' as const };
-  }
-
-  if (stepNumber === 0 && isSendMsg) {
-    return { toolChoice: 'none' as const };
-  }
-
-  if (stepNumber === 0 && isDataCollectionTurn) {
-    return { toolChoice: 'none' as const };
-  }
-
-  if (stepNumber === 0 && isContactMessageStep) {
-    return {
-      model: getGroq()(FALLBACK_MODEL),
-      toolChoice: { type: 'tool', toolName: 'sendContactForm' } as any,
-      activeTools: ['sendContactForm'] as any,
-    };
-  }
-
-  if (stepNumber === 0 && forcedTool) {
-    return {
-      model: getGroq()(FALLBACK_MODEL),
-      toolChoice: { type: 'tool', toolName: forcedTool } as any,
-      activeTools: [forcedTool] as any,
-    };
-  }
-
-  if (stepNumber >= 1) return { toolChoice: 'none', activeTools: [] as any };
-
-  return { toolChoice: 'none' };
-},
+      onError: ({ error }) => {
+        console.error('[EduBot] streamText onError:', error);
+      },
+      prepareStep: buildPrepareStep(stepOpts),
     });
   } catch (primaryErr: any) {
-  const errMsg = primaryErr?.message ?? primaryErr?.data?.error?.message ?? '';
-  const isRateLimitErr = primaryErr?.statusCode === 429 ||
-                         errMsg.includes('Rate limit') ||
-                         errMsg.includes('rate_limit');
-  const isFunctionFail = errMsg.includes('Failed to call a function') ||
-                         errMsg.includes('failed_generation') ||
-                         errMsg.includes('invalid_request_error');
+    const errMsg = primaryErr?.message ?? primaryErr?.data?.error?.message ?? '';
+    const isRateLimitErr = primaryErr?.statusCode === 429 ||
+                           errMsg.includes('Rate limit') ||
+                           errMsg.includes('rate_limit');
+    const isFunctionFail = errMsg.includes('Failed to call a function') ||
+                           errMsg.includes('failed_generation') ||
+                           errMsg.includes('invalid_request_error');
 
-  if (isRateLimitErr) {
-    markKeyCooldown(getKeyIdx(), primaryErr);
-    const rotated = rotateKey();
-    if (rotated) {
-      const retryModel = FALLBACK_MODEL;
-      console.warn(`[EduBot] Rate limited → rotated key, retrying with ${retryModel}`);
+    if (isRateLimitErr) {
+      markKeyCooldown(getKeyIdx(), primaryErr);
+      const rotated = rotateKey();
+      if (rotated) {
+        console.warn(`[EduBot] Rate limited → rotated key, retrying with ${FALLBACK_MODEL}`);
+        try {
+          primaryResult = await streamText({
+            model:      getGroq()(FALLBACK_MODEL),
+            system:     systemPrompt,
+            messages:   trimmedMessages,
+            tools:      activeTools as typeof toolsDefinition,
+            toolChoice: 'auto',
+            stopWhen:   stepCountIs(multiProject ? 5 : 2),
+            maxOutputTokens:  600,
+            maxRetries: 0,
+            onError: ({ error }) => {
+              console.error('[EduBot] Retry onError:', error);
+            },
+            prepareStep: buildPrepareStep(stepOpts),
+          });
+        } catch (retryErr: any) {
+          const retryIsRL = retryErr?.statusCode === 429 ||
+            String(retryErr?.message).includes('Rate limit') || String(retryErr?.message).includes('rate_limit');
+          if (retryIsRL) markKeyCooldown(getKeyIdx(), retryErr);
+          console.warn(`[EduBot] Rotated key also failed → fallback`);
+          useFallback = true;
+        }
+      } else {
+        console.warn('[EduBot] Rate limited, no keys available → fallback');
+        useFallback = true;
+      }
+    } else if (isFunctionFail) {
+      console.warn('[EduBot] Function call failed, retrying with fallback model...');
       try {
         primaryResult = await streamText({
-          model:      getGroq()(retryModel),
-          system:     BASE_PROMPT + pageContextStr + LANG_INSTRUCTION + langLock,
+          model:      getGroq()(FALLBACK_MODEL),
+          system:     systemPrompt,
           messages:   trimmedMessages,
           tools:      activeTools as typeof toolsDefinition,
           toolChoice: 'auto',
-          stopWhen:   stepCountIs(5),
+          stopWhen:   stepCountIs(multiProject ? 4 : 2),
           maxOutputTokens:  600,
           maxRetries: 0,
-          prepareStep: ({ stepNumber }) => {
-            if (multiProject) {
-              if (stepNumber >= 3) return { toolChoice: 'none', activeTools: [] as any };
-              return { toolChoice: 'auto' };
-            }
-            if (stepNumber === 0 && isSendMsg) {
-              return { toolChoice: 'none' as const };
-            }
-            if (stepNumber === 0 && isDataCollectionTurn) {
-              return { toolChoice: 'none' as const };
-            }
-            if (stepNumber === 0 && isContactMessageStep) {
-              return { toolChoice: { type: 'tool', toolName: 'sendContactForm' } as any, activeTools: ['sendContactForm'] as any };
-            }
-            if (stepNumber === 0 && forcedTool) {
-              return { toolChoice: { type: 'tool', toolName: forcedTool } as any, activeTools: [forcedTool] as any };
-            }
-            if (stepNumber >= 1) return { toolChoice: 'none', activeTools: [] as any };
-            return { toolChoice: 'auto' };
+          onError: ({ error }) => {
+            console.error('[EduBot] Function retry onError:', error);
           },
+          prepareStep: buildPrepareStep(stepOpts),
         });
-      } catch (retryErr: any) {
-        const retryIsRL = retryErr?.statusCode === 429 ||
-          String(retryErr?.message).includes('Rate limit') || String(retryErr?.message).includes('rate_limit');
-        if (retryIsRL) markKeyCooldown(getKeyIdx(), retryErr);
-        console.warn(`[EduBot] Rotated key also failed → fallback 70b`);
+      } catch (retryErr) {
+        console.error('[EduBot] Retry also failed:', retryErr);
         useFallback = true;
       }
     } else {
-      console.warn('[EduBot] Rate limited, no keys available → fallback 70b');
+      console.error('[EduBot] Primary model error:', primaryErr);
       useFallback = true;
     }
-  } else if (isFunctionFail) {
-    console.warn('[EduBot] Function call failed, retrying with 70b...');
-    try {
-      primaryResult = await streamText({
-        model:      getGroq()(FALLBACK_MODEL),
-        system:     BASE_PROMPT + pageContextStr + LANG_INSTRUCTION + langLock,
-        messages:   trimmedMessages,
-        tools:      activeTools as typeof toolsDefinition,
-        toolChoice: 'auto',
-        stopWhen:   stepCountIs(3),
-        maxOutputTokens:  600,
-        maxRetries: 0,
-        prepareStep: ({ stepNumber }: { stepNumber: number }) => {
-          if (stepNumber === 0 && forcedTool) {
-            return {
-              toolChoice: { type: 'tool', toolName: forcedTool } as any,
-              activeTools: [forcedTool] as any,
-            };
-          }
-          if (stepNumber === 0 && isContactMessageStep) {
-            return { toolChoice: { type: 'tool', toolName: 'sendContactForm' } as any, activeTools: ['sendContactForm'] as any };
-          }
-          if (stepNumber >= 1) return { toolChoice: 'none', activeTools: [] as any };
-          return { toolChoice: 'auto' };
-        },
-      });
-    } catch (retryErr) {
-      console.error('[EduBot] Retry also failed:', retryErr);
-      useFallback = true;
-    }
-  } else {
-    console.error('[EduBot] Primary model error:', primaryErr);
-    useFallback = true;
   }
-}
 
   if (useFallback) {
     try {
       const fallbackResult = await streamText({
         model:      getGroq()(FALLBACK_MODEL),
-        system:     BASE_PROMPT + pageContextStr + LANG_INSTRUCTION + langLock,
+        system:     systemPrompt,
         messages:   trimmedMessages,
         maxOutputTokens: 600,
         toolChoice: 'none' as const,
@@ -348,68 +328,64 @@ export const POST: APIRoute = async ({ request }) => {
           () => { toolCallsEmitted++; },
         );
       } catch (streamErr) {
-        console.error('[EduBot] Stream error ? fallback');
+        console.error('[EduBot] Stream error → fallback');
         const isRateLimit = (streamErr as any)?.statusCode === 429 ||
                             String((streamErr as any)?.message).includes('Rate limit') ||
                             String((streamErr as any)?.message).includes('rate_limit');
 
-        let emergencyModel = FALLBACK_MODEL;
         if (isRateLimit) {
           markKeyCooldown(getKeyIdx(), streamErr);
-          const rotated = rotateKey();
-          if (rotated) {
-            emergencyModel = FALLBACK_MODEL;
-            console.warn(`[EduBot] Stream rate limit → rotated key, emergency ${emergencyModel}`);
-          } else {
-            console.warn('[EduBot] Stream rate limit → no keys, emergency 70b (separate TPM)');
-          }
-        } else {
-          console.warn('[EduBot] Stream error → emergency 70b');
+          rotateKey();
         }
 
-        const emergencyCanShowTools = toolCallsEmitted === 0 && forcedTool !== null;
-        try {
-          const emergency = await streamText({
-            model:      getGroq()(emergencyModel),
-            system:     BASE_PROMPT + pageContextStr + LANG_INSTRUCTION,
-            messages:   trimmedMessages,
-            maxOutputTokens:  600,
-            ...(emergencyCanShowTools ? {
-              tools:    activeTools as typeof toolsDefinition,
-              stopWhen: stepCountIs(multiProject ? 4 : 2),
-              prepareStep: ({ stepNumber }: { stepNumber: number }) => {
-                if (toolCallsEmitted > 0 && stepNumber >= 1) {
-                  return { toolChoice: 'none', activeTools: [] as any };
-                }
-                if (multiProject) {
-                  if (stepNumber >= 3) return { toolChoice: 'none', activeTools: [] as any };
-                  return { toolChoice: 'auto' };
-                }
-                if (stepNumber === 0 && forcedTool) {
-                  return {
-                    toolChoice: { type: 'tool', toolName: forcedTool } as any,
-                    activeTools: [forcedTool] as any,
-                  };
-                }
-                if (stepNumber >= 1) return { toolChoice: 'none', activeTools: [] as any };
-                return { toolChoice: 'auto' };
-              },
-            } : {
-              toolChoice: 'none' as const,
-            }),
-            maxRetries: 0,
-          });
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          await pipeStreamToController(
-            emergency as any, controller, encoder,
-            emergencyCanShowTools ? activeTools as typeof toolsDefinition : undefined,
-          );
-        } catch (emergencyErr: any) {
-          const emergencyIsRateLimit = (emergencyErr)?.statusCode === 429 ||
-            String(emergencyErr?.message).includes('Rate limit') ||
-            String(emergencyErr?.message).includes('rate_limit');
-          const finalMsg = emergencyIsRateLimit ? rateLimitMessage : errorMessage;
+        if (toolCallsEmitted > 0) {
+          const finalMsg = isRateLimit ? rateLimitMessage : errorMessage;
           controller.enqueue(encoder.encode(`0:${JSON.stringify(finalMsg)}\n`));
+        } else {
+          let emergencyModel = FALLBACK_MODEL;
+          if (isRateLimit) {
+            console.warn(`[EduBot] Stream rate limit → rotated key, emergency ${emergencyModel}`);
+          } else {
+            console.warn('[EduBot] Stream error → emergency model');
+          }
+
+          try {
+            const emergency = await streamText({
+              model:      getGroq()(emergencyModel),
+              system:     systemPrompt,
+              messages:   trimmedMessages,
+              maxOutputTokens:  600,
+              ...(forcedTool ? {
+                tools:    activeTools as typeof toolsDefinition,
+                stopWhen: stepCountIs(multiProject ? 4 : 2),
+                toolChoice: 'auto' as const,
+                prepareStep: ({ stepNumber }: { stepNumber: number }) => {
+                  if (stepNumber === 0 && forcedTool) {
+                    return {
+                      toolChoice: { type: 'tool', toolName: forcedTool } as any,
+                      activeTools: [forcedTool] as any,
+                    };
+                  }
+                  if (stepNumber >= 1) return { toolChoice: 'none' as const, activeTools: [] as any };
+                  return { toolChoice: 'none' as const };
+                },
+              } : {
+                toolChoice: 'none' as const,
+              }),
+              maxRetries: 0,
+            });
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            await pipeStreamToController(
+              emergency as any, controller, encoder,
+              forcedTool ? activeTools as typeof toolsDefinition : undefined,
+            );
+          } catch (emergencyErr: any) {
+            const emergencyIsRateLimit = (emergencyErr)?.statusCode === 429 ||
+              String(emergencyErr?.message).includes('Rate limit') ||
+              String(emergencyErr?.message).includes('rate_limit');
+            const finalMsg = emergencyIsRateLimit ? rateLimitMessage : errorMessage;
+            controller.enqueue(encoder.encode(`0:${JSON.stringify(finalMsg)}\n`));
+          }
         }
       } finally {
         controller.close();
