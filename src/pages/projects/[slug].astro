@@ -7,13 +7,6 @@ import ChatAI from "@/components/ChatAI";
 import { projectsStaticData } from "@/config/projects";
 import { translations } from "@/lib/translations";
 
-export const prerender = true;
-export async function getStaticPaths() {
-  return projectsStaticData.map(project => ({
-    params: { slug: project.slug }
-  }));
-}
-
 const { slug } = Astro.params;
 
 if (!slug) {
