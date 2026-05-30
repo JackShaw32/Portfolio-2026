@@ -12,10 +12,14 @@ import { getToolsDefinition }                          from '../../ai/tools';
 import { pipeStreamToController }                      from '../../ai/streamPipeline';
 import { FALLBACK_MODEL }               from '../../ai/model';
 
+let requestCounter = 0;
+
 export const maxDuration = 30;
 export const POST: APIRoute = async ({ request }) => {
+  const reqId = ++requestCounter;
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
              request.headers.get('x-real-ip') || '0.0.0.0';
+  console.log(`[EduBot] === Request #${reqId} from ${ip} ===`);
 
   const rateCheck = checkRateLimit(ip);
   if (!rateCheck.allowed) {
@@ -199,7 +203,7 @@ export const POST: APIRoute = async ({ request }) => {
     return new ReadableStream({
       async start(controller) {
         let toolCallsEmitted = 0;
-  console.log(`[EduBot] Model path: forcedTool=${forcedTool}, multiProject=${multiProject}`);
+  console.log(`[EduBot] #${reqId} Model path: forcedTool=${forcedTool}, lastQ=${lastQuestion?.slice(0, 60)}`);
   try {
           await pipeStreamToController(
             result, controller, encoderForStream, tools,
@@ -232,7 +236,7 @@ export const POST: APIRoute = async ({ request }) => {
   if (forcedTool && !multiProject) {
     const toolName = forcedTool;
     const tool = (activeTools as any)[toolName];
-    console.log(`[EduBot] Forced tool path: toolName=${toolName}, hasExecute=${!!tool?.execute}`);
+    console.log(`[EduBot] #${reqId} Forced tool: toolName=${toolName}, lastQ=${lastQuestion?.slice(0, 60)}`);
     if (tool?.execute) {
       try {
         let toolArgs: Record<string, unknown> = {};

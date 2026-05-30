@@ -344,10 +344,12 @@ export function useChatLogic(lang: string, defaultWelcomeMsg: string, pageSlug?:
 
     try {
       const historialParaEnviar = serializeHistory(nuevoHistorial);
+      const reqTs = Date.now();
+      console.log(`[ChatAI] SEND @${reqTs}, msgs=${historialParaEnviar.length}, last="${historialParaEnviar.at(-1)?.content?.slice(0, 50)}"`);
 
-      const res = await fetch('/api/chat', {
+      const res = await fetch(`/api/chat?_=${reqTs}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' },
         body: JSON.stringify({ messages: historialParaEnviar, language: lang, pageContext: currentSectionRef.current }),
       });
 
@@ -355,6 +357,8 @@ export function useChatLogic(lang: string, defaultWelcomeMsg: string, pageSlug?:
         const errorData = await res.json().catch(() => ({ error: 'Unknown error' }));
         throw new Error(errorData.error || `Error ${res.status}`);
       }
+
+      console.log(`[ChatAI] GOT response @${reqTs}, status=${res.status}`);
 
       await readStream(
         res,
