@@ -230,7 +230,14 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   function streamResponseHeaders() {
-    return { 'Content-Type': 'text/plain; charset=utf-8', 'x-vercel-ai-data-stream': 'v1' };
+    return {
+      'Content-Type': 'text/plain; charset=utf-8',
+      'x-vercel-ai-data-stream': 'v1',
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+      'Surrogate-Control': 'no-store',
+    };
   }
 
   if (forcedTool && !multiProject) {
