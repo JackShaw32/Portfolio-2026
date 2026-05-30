@@ -10,7 +10,7 @@ import { logInteraction }                              from '../../analytics/int
 import { detectForcedTool, wantsAllProjects, isSendMessageIntent } from '../../ai/intentDetection';
 import { getToolsDefinition }                          from '../../ai/tools';
 import { pipeStreamToController }                      from '../../ai/streamPipeline';
-import { PRIMARY_MODEL, FALLBACK_MODEL }               from '../../ai/model';
+import { FALLBACK_MODEL }               from '../../ai/model';
 
 export const maxDuration = 30;
 export const POST: APIRoute = async ({ request }) => {
@@ -268,65 +268,6 @@ export const POST: APIRoute = async ({ request }) => {
     }
   }
 
-  const needsModelForced =
-    isSendMsg || isDataCollectionTurn || isContactMessageStep;
-
-  if (!forcedTool && !needsModelForced) {
-    try {
-      const result = await streamText({
-        model:      getGroq()(PRIMARY_MODEL),
-        system:     systemPrompt,
-        messages:   trimmedMessages,
-        tools:      activeTools as typeof toolsDefinition,
-        toolChoice: 'auto',
-        stopWhen:   stepCountIs(multiProject ? 5 : 2),
-        maxOutputTokens:  600,
-        maxRetries: 1,
-        temperature: 0.3,
-        onError: ({ error }) => {
-          console.error('[EduBot] streamText onError:', error);
-        },
-        prepareStep: buildPrepareStep(stepOpts),
-      });
-
-      return new Response(buildStreamResponse(result, activeTools as typeof toolsDefinition), {
-        headers: streamResponseHeaders(),
-      });
-
-    } catch (primaryErr: any) {
-      console.error('[EduBot] Primary error:', primaryErr?.message);
-      const errMsg = primaryErr?.message ?? '';
-      const isRateLimitErr = primaryErr?.statusCode === 429 ||
-                             errMsg.includes('Rate limit') || errMsg.includes('rate_limit');
-
-      if (isRateLimitErr) {
-        markKeyCooldown(getKeyIdx(), primaryErr);
-        rotateKey();
-      }
-
-      try {
-        const fallbackResult = await streamText({
-          model:      getGroq()(FALLBACK_MODEL),
-          system:     systemPrompt,
-          messages:   trimmedMessages,
-          maxOutputTokens: 600,
-          toolChoice: 'none' as const,
-          maxRetries: 0,
-        });
-
-        return new Response(buildStreamResponse(fallbackResult), {
-          headers: streamResponseHeaders(),
-        });
-
-      } catch (fallbackErr) {
-        console.error('[EduBot] Fallback error:', fallbackErr);
-        return new Response(errorStream(errorMessage), {
-          headers: streamResponseHeaders(),
-        });
-      }
-    }
-  }
-
   try {
     const result = await streamText({
       model:      getGroq()(FALLBACK_MODEL),
@@ -336,7 +277,7 @@ export const POST: APIRoute = async ({ request }) => {
       toolChoice: 'auto',
       stopWhen:   stepCountIs(multiProject ? 5 : 2),
       maxOutputTokens:  600,
-      maxRetries: 1,
+      maxRetries: 2,
       temperature: 0.3,
       onError: ({ error }) => {
         console.error('[EduBot] streamText onError:', error);
