@@ -299,10 +299,12 @@ export const POST: APIRoute = async ({ request }) => {
   if (useFallback) {
     try {
       const fallbackResult = await streamText({
-        model:    getGroq()(FALLBACK_MODEL),
-        system:   BASE_PROMPT + pageContextStr + LANG_INSTRUCTION + langLock,
-        messages: trimmedMessages,
+        model:      getGroq()(FALLBACK_MODEL),
+        system:     BASE_PROMPT + pageContextStr + LANG_INSTRUCTION + langLock,
+        messages:   trimmedMessages,
         maxOutputTokens: 600,
+        toolChoice: 'none' as const,
+        maxRetries: 0,
       });
 
       const stream = new ReadableStream({
@@ -376,6 +378,9 @@ export const POST: APIRoute = async ({ request }) => {
               tools:    activeTools as typeof toolsDefinition,
               stopWhen: stepCountIs(multiProject ? 4 : 2),
               prepareStep: ({ stepNumber }: { stepNumber: number }) => {
+                if (toolCallsEmitted > 0 && stepNumber >= 1) {
+                  return { toolChoice: 'none', activeTools: [] as any };
+                }
                 if (multiProject) {
                   if (stepNumber >= 3) return { toolChoice: 'none', activeTools: [] as any };
                   return { toolChoice: 'auto' };
