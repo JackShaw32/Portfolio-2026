@@ -258,21 +258,17 @@ export const POST: APIRoute = async ({ request }) => {
           };
         }
 
-        const toolCallId = `forced_${Date.now()}`;
+        const toolCallId = `forced_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
         const toolResult = await tool.execute(toolArgs);
 
-        const toolCallEvent = `9:${JSON.stringify({ toolCallId, toolName, args: toolArgs })}\n`;
-        const toolResultEvent = `a:${JSON.stringify({ toolCallId, result: toolResult })}\n`;
+        const body = `9:${JSON.stringify({ toolCallId, toolName, args: toolArgs })}\na:${JSON.stringify({ toolCallId, result: toolResult })}\n`;
 
-        const stream = new ReadableStream({
-          async start(controller) {
-            controller.enqueue(encoder.encode(toolCallEvent));
-            controller.enqueue(encoder.encode(toolResultEvent));
-            controller.close();
+        return new Response(body, {
+          headers: {
+            ...streamResponseHeaders(),
+            'X-Request-Id': `${reqId}_${Date.now()}`,
           }
         });
-
-        return new Response(stream, { headers: streamResponseHeaders() });
 
       } catch (toolErr) {
         console.error('[EduBot] Tool execution error:', toolErr);
