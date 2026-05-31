@@ -451,13 +451,13 @@ export function getToolsDefinition(lang: string) {
 
         comments.push({ name: safeName, stars: safeStars, message: safeMessage, date: new Date().toISOString() });
 
-        const setRes = await fetch(`${url}/set/portfolio:comments`, {
+        const setRes =         await fetch(`${url}/set/portfolio:comments`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(comments),
+          body: JSON.stringify(JSON.stringify(comments)),
         });
         const setData = await setRes.json();
 

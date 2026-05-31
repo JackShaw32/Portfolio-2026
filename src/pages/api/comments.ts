@@ -91,7 +91,7 @@ export const POST: APIRoute = async ({ request }) => {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(comments),
+      body: JSON.stringify(JSON.stringify(comments)),
     });
 
     return new Response(JSON.stringify({ success: true, count: comments.length }), {
