@@ -7,8 +7,8 @@ const sanitize = (s: string) =>
 const COMMENTS_KEY = 'portfolio:comments';
 
 function getRedis(): Redis | null {
-  const url = import.meta.env.UPSTASH_REDIS_REST_URL;
-  const token = import.meta.env.UPSTASH_REDIS_REST_TOKEN;
+  const url = import.meta.env.KV_REST_API_URL;
+  const token = import.meta.env.KV_REST_API_TOKEN;
   if (!url || !token) return null;
   return new Redis({ url, token });
 }

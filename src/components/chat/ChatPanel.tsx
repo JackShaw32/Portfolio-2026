@@ -120,7 +120,7 @@ export default function ChatPanel({
                     ))}
                     {msg.content
                       && !/<?function[=(\/]/.test(msg.content)
-                      && !/^\s*(sendContactForm|showProject|showContact|showSkills|showExperience|showAvailability)\b/.test(msg.content)
+                      && !/^\s*(sendContactForm|showProject|showContact|showSkills|showExperience|showAvailability|submitComment)\b/.test(msg.content)
                       && (
                         <div className={`rounded-2xl px-4 py-3 text-[13px] sm:text-sm leading-relaxed font-light whitespace-pre-wrap ${msg.role === "assistant" ? "bg-muted/50 text-foreground rounded-tl-sm" : "bg-foreground/10 text-foreground border border-foreground/10 rounded-tr-sm break-words"}`}>
                           {msg.content}
