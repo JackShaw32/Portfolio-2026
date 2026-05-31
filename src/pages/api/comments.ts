@@ -7,10 +7,11 @@ const sanitize = (s: string) =>
 const COMMENTS_KEY = 'portfolio:comments';
 
 function getRedis(): Redis | null {
-  const url = process.env.KV_REST_API_URL;
-  const token = process.env.KV_REST_API_TOKEN;
-  if (!url || !token) return null;
-  return new Redis({ url, token });
+  try {
+    return Redis.fromEnv();
+  } catch {
+    return null;
+  }
 }
 
 interface Comment {
@@ -23,19 +24,20 @@ interface Comment {
 export const GET: APIRoute = async () => {
   const redis = getRedis();
   if (!redis) {
-    return new Response(JSON.stringify({ error: 'db_not_configured', comments: [] }), {
-      headers: { 'Content-Type': 'application/json' },
+    return new Response(JSON.stringify([]), {
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
     });
   }
 
   try {
-    const comments = await redis.get<Comment[]>(COMMENTS_KEY);
-    return new Response(JSON.stringify(comments ?? []), {
-      headers: { 'Content-Type': 'application/json' },
+    const raw = await redis.get(COMMENTS_KEY);
+    const comments: Comment[] = Array.isArray(raw) ? raw : [];
+    return new Response(JSON.stringify(comments), {
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
     });
-  } catch (err) {
-    return new Response(JSON.stringify({ error: 'read_error', comments: [] }), {
-      headers: { 'Content-Type': 'application/json' },
+  } catch {
+    return new Response(JSON.stringify([]), {
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
     });
   }
 };
@@ -69,7 +71,8 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   try {
-    const comments = (await redis.get<Comment[]>(COMMENTS_KEY)) ?? [];
+    const raw = await redis.get(COMMENTS_KEY);
+    const comments: Comment[] = Array.isArray(raw) ? raw : [];
     comments.push({
       name: safeName,
       stars: safeStars,
@@ -78,10 +81,10 @@ export const POST: APIRoute = async ({ request }) => {
     });
     await redis.set(COMMENTS_KEY, comments);
 
-    return new Response(JSON.stringify({ success: true, count: comments.length }), {
+    return new Response(JSON.stringify({ success: true }), {
       headers: { 'Content-Type': 'application/json' },
     });
-  } catch (err) {
+  } catch {
     return new Response(JSON.stringify({ success: false, error: 'save_error' }), {
       status: 500, headers: { 'Content-Type': 'application/json' },
     });
