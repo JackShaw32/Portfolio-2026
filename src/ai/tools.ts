@@ -100,11 +100,11 @@ export function getToolsDefinition(lang: string) {
     }),
     execute: async () => ({
       categories: [
-        { name: 'Frontend',                      skills: ['React', 'Next.js', 'Astro', 'TypeScript', 'Tailwind CSS', 'Redux', 'Angular'] },
-        { name: 'Backend',                       skills: ['Node.js', 'NestJS', 'Express.js', 'JWT', 'Firebase', 'Strapi', 'REST APIs'] },
-        { name: es ? 'Bases de datos' : 'Databases', skills: ['MongoDB', 'PostgreSQL', 'Firestore'] },
-        { name: 'Cloud & DevOps',                skills: ['AWS EC2', 'S3', 'GCP', 'Docker', 'Git & GitHub'] },
-        { name: es ? 'Pagos & otros' : 'Payments & Other', skills: ['Mercado Pago', 'Meta Pixel', 'Scrum/Agile', 'Zod', 'React Hook Form'] },
+        { name: 'Frontend',                      nameEn: 'Frontend',                      skills: ['React', 'Next.js', 'Astro', 'TypeScript', 'Tailwind CSS', 'Redux', 'Angular'] },
+        { name: 'Backend',                       nameEn: 'Backend',                       skills: ['Node.js', 'NestJS', 'Express.js', 'JWT', 'Firebase', 'Strapi', 'REST APIs'] },
+        { name: 'Bases de datos',                nameEn: 'Databases',                     skills: ['MongoDB', 'PostgreSQL', 'Firestore'] },
+        { name: 'Cloud & DevOps',                nameEn: 'Cloud & DevOps',                skills: ['AWS EC2', 'S3', 'GCP', 'Docker', 'Git & GitHub'] },
+        { name: 'Pagos & otros',                 nameEn: 'Payments & Other',              skills: ['Mercado Pago', 'Meta Pixel', 'Scrum/Agile', 'Zod', 'React Hook Form'] },
       ],
     }),
   },
@@ -179,53 +179,50 @@ export function getToolsDefinition(lang: string) {
       properties: {},
     }),
     execute: async () => ({
-      strengths: es
-        ? [
-            'Arquitectura full-stack completa: diseña y construye desde la DB hasta el frontend',
-            'E-commerce end-to-end: pagos, tracking, auth, CMS, testing, deploy — todo hecho por él',
-            'Seguridad y robustez: rate limiting, sanitización, JWT httpOnly, inyección NoSQL, CSRF',
-            'Testing real: 119 unit tests + 11 E2E + Lighthouse audits automáticas',
-            'Product mindset: entiende el negocio, no solo el código',
-            'Autodidacta y rápido: de bootcamp a e-commerce en producción en menos de 2 años',
-          ]
-        : [
-            'Full-stack architecture: designs and builds from DB to frontend',
-            'End-to-end e-commerce: payments, tracking, auth, CMS, testing, deploy — all built by him',
-            'Security & robustness: rate limiting, sanitization, JWT httpOnly, NoSQL injection, CSRF',
-            'Real testing: 119 unit tests + 11 E2E + automated Lighthouse audits',
-            'Product mindset: understands business, not just code',
-            'Self-taught and fast: from bootcamp to production e-commerce in under 2 years',
-          ],
-      idealFor: es
-        ? [
-            'E-commerce y plataformas B2C con pagos integrados',
-            'Aplicaciones web full-stack con React + Node.js',
-            'Startups que necesitan un dev que cubra frontend y backend',
-            'Proyectos que requieren integraciones con APIs externas (pagos, tracking, auth OAuth)',
-            'Equipos remotos, Scrum, código con review y testing',
-          ]
-        : [
-            'E-commerce and B2C platforms with integrated payments',
-            'Full-stack web applications with React + Node.js',
-            'Startups needing a dev who covers frontend and backend',
-            'Projects requiring external API integrations (payments, tracking, OAuth auth)',
-            'Remote teams, Scrum, code review and testing',
-          ],
-      differentiators: es
-        ? [
-            'Stack moderno y actualizado (React 18, Vite 6, Tailwind v4, Astro v5)',
-            'Experiencia con IA (Gemini 2.5, Vercel AI SDK, Groq)',
-            'Arquitecturas limpias con separación de concerns',
-            'Inglés intermedio, comunicación clara, auto-gestión',
-            'Disponibilidad inmediata para proyectos freelance y remoto',
-          ]
-        : [
-            'Modern and up-to-date stack (React 18, Vite 6, Tailwind v4, Astro v5)',
-            'AI experience (Gemini 2.5, Vercel AI SDK, Groq)',
-            'Clean architectures with separation of concerns',
-            'Intermediate English, clear communication, self-management',
-            'Immediate availability for freelance and remote projects',
-          ],
+      strengths: [
+        'Arquitectura full-stack completa: diseña y construye desde la DB hasta el frontend',
+        'E-commerce end-to-end: pagos, tracking, auth, CMS, testing, deploy — todo hecho por él',
+        'Seguridad y robustez: rate limiting, sanitización, JWT httpOnly, inyección NoSQL, CSRF',
+        'Testing real: 119 unit tests + 11 E2E + Lighthouse audits automáticas',
+        'Product mindset: entiende el negocio, no solo el código',
+        'Autodidacta y rápido: de bootcamp a e-commerce en producción en menos de 2 años',
+      ],
+      strengthsEn: [
+        'Full-stack architecture: designs and builds from DB to frontend',
+        'End-to-end e-commerce: payments, tracking, auth, CMS, testing, deploy — all built by him',
+        'Security & robustness: rate limiting, sanitization, JWT httpOnly, NoSQL injection, CSRF',
+        'Real testing: 119 unit tests + 11 E2E + automated Lighthouse audits',
+        'Product mindset: understands business, not just code',
+        'Self-taught and fast: from bootcamp to production e-commerce in under 2 years',
+      ],
+      idealFor: [
+        'E-commerce y plataformas B2C con pagos integrados',
+        'Aplicaciones web full-stack con React + Node.js',
+        'Startups que necesitan un dev que cubra frontend y backend',
+        'Proyectos que requieren integraciones con APIs externas (pagos, tracking, auth OAuth)',
+        'Equipos remotos, Scrum, código con review y testing',
+      ],
+      idealForEn: [
+        'E-commerce and B2C platforms with integrated payments',
+        'Full-stack web applications with React + Node.js',
+        'Startups needing a dev who covers frontend and backend',
+        'Projects requiring external API integrations (payments, tracking, OAuth auth)',
+        'Remote teams, Scrum, code review and testing',
+      ],
+      differentiators: [
+        'Stack moderno y actualizado (React 18, Vite 6, Tailwind v4, Astro v5)',
+        'Experiencia con IA (Gemini 2.5, Vercel AI SDK, Groq)',
+        'Arquitecturas limpias con separación de concerns',
+        'Inglés intermedio, comunicación clara, auto-gestión',
+        'Disponibilidad inmediata para proyectos freelance y remoto',
+      ],
+      differentiatorsEn: [
+        'Modern and up-to-date stack (React 18, Vite 6, Tailwind v4, Astro v5)',
+        'AI experience (Gemini 2.5, Vercel AI SDK, Groq)',
+        'Clean architectures with separation of concerns',
+        'Intermediate English, clear communication, self-management',
+        'Immediate availability for freelance and remote projects',
+      ],
       recommendationScore: 92,
     }),
   },
@@ -243,13 +240,13 @@ export function getToolsDefinition(lang: string) {
       portfolio: {
         title: 'Portfolio — EduCabral',
         layers: [
-          { name: 'CDN / Edge',                   tech: 'Vercel Edge + ISR',       color: 'blue' },
-          { name: 'Frontend',                     tech: 'Astro v5 + React 19',    color: 'indigo' },
-          { name: es ? 'Estilos' : 'Styling',     tech: 'Tailwind CSS v4',        color: 'cyan' },
-          { name: es ? 'Animaciones' : 'Animations', tech: 'GSAP + Lenis',       color: 'purple' },
-          { name: 'API Routes',                   tech: 'Astro SSR Functions',    color: 'emerald' },
-          { name: 'AI Chatbot',                   tech: 'Vercel AI SDK + Groq',  color: 'pink' },
-          { name: es ? 'Seguridad' : 'Security',  tech: 'Rate Limit + Sanitize',  color: 'red' },
+          { name: 'CDN / Edge',                   nameEn: 'CDN / Edge',                   tech: 'Vercel Edge + ISR',       color: 'blue' },
+          { name: 'Frontend',                     nameEn: 'Frontend',                     tech: 'Astro v5 + React 19',    color: 'indigo' },
+          { name: 'Estilos',                      nameEn: 'Styling',                      tech: 'Tailwind CSS v4',        color: 'cyan' },
+          { name: 'Animaciones',                  nameEn: 'Animations',                   tech: 'GSAP + Lenis',           color: 'purple' },
+          { name: 'API Routes',                   nameEn: 'API Routes',                   tech: 'Astro SSR Functions',    color: 'emerald' },
+          { name: 'AI Chatbot',                   nameEn: 'AI Chatbot',                   tech: 'Vercel AI SDK + Groq',   color: 'pink' },
+          { name: 'Seguridad',                    nameEn: 'Security',                     tech: 'Rate Limit + Sanitize',  color: 'red' },
         ],
         flow: ['User Browser', 'Astro SSR / ISR', 'React Islands', 'API (Groq / Resend / OG)'],
         integrations: ['Groq LLM', 'Resend Email', 'Vercel Edge'],
@@ -258,14 +255,14 @@ export function getToolsDefinition(lang: string) {
         {
           title: '1/4 de Milla E-Commerce',
           layers: [
-            { name: 'Frontend',     tech: 'React 18 + Vite 6',     color: 'blue' },
-            { name: es ? 'Estilos' : 'Styling', tech: 'Tailwind CSS 3', color: 'cyan' },
-            { name: 'Auth',         tech: 'JWT httpOnly + Google',  color: 'amber' },
-            { name: 'Backend',      tech: 'Express 4 REST API',    color: 'emerald' },
-            { name: 'DB',           tech: 'MongoDB + Mongoose',     color: 'green' },
-            { name: es ? 'Pagos' : 'Payments', tech: 'MercadoPago Bricks', color: 'pink' },
-            { name: 'Tracking',     tech: 'Meta Pixel + CAPI',     color: 'purple' },
-            { name: es ? 'Infra' : 'Infra', tech: 'Netlify + Render', color: 'slate' },
+            { name: 'Frontend',     nameEn: 'Frontend',     tech: 'React 18 + Vite 6',     color: 'blue' },
+            { name: 'Estilos',      nameEn: 'Styling',      tech: 'Tailwind CSS 3',        color: 'cyan' },
+            { name: 'Auth',         nameEn: 'Auth',         tech: 'JWT httpOnly + Google',  color: 'amber' },
+            { name: 'Backend',      nameEn: 'Backend',      tech: 'Express 4 REST API',    color: 'emerald' },
+            { name: 'DB',           nameEn: 'DB',           tech: 'MongoDB + Mongoose',     color: 'green' },
+            { name: 'Pagos',        nameEn: 'Payments',     tech: 'MercadoPago Bricks',    color: 'pink' },
+            { name: 'Tracking',     nameEn: 'Tracking',     tech: 'Meta Pixel + CAPI',     color: 'purple' },
+            { name: 'Infra',        nameEn: 'Infra',        tech: 'Netlify + Render',      color: 'slate' },
           ],
           flow: ['User', 'React SPA (Netlify)', 'Express API (Render)', 'MongoDB Atlas'],
           integrations: ['MercadoPago', 'Cloudinary', 'Meta CAPI', 'Google OAuth'],
@@ -273,10 +270,10 @@ export function getToolsDefinition(lang: string) {
         {
           title: 'Expreso Omega Logistics',
           layers: [
-            { name: 'Frontend',     tech: 'HTML5 + CSS3 + JS',     color: 'blue' },
-            { name: 'Framework CSS',tech: 'Bootstrap 5',            color: 'purple' },
-            { name: 'SEO',          tech: es ? 'Meta + Semántica' : 'Meta + Semantic', color: 'green' },
-            { name: es ? 'Hosting' : 'Hosting', tech: 'Web Hosting', color: 'slate' },
+            { name: 'Frontend',     nameEn: 'Frontend',      tech: 'HTML5 + CSS3 + JS',     color: 'blue' },
+            { name: 'Framework CSS',nameEn: 'CSS Framework', tech: 'Bootstrap 5',            color: 'purple' },
+            { name: 'SEO',          nameEn: 'SEO',           tech: 'Meta + Semántica',       techEn: 'Meta + Semantic', color: 'green' },
+            { name: 'Hosting',      nameEn: 'Hosting',       tech: 'Web Hosting',           color: 'slate' },
           ],
           flow: ['User', 'Static Site', 'Web Hosting'],
           integrations: [],
@@ -300,20 +297,23 @@ export function getToolsDefinition(lang: string) {
         name: 'Raúl Eduardo Cabral',
         role: 'Software Engineer · Full Stack Developer',
         location: 'Córdoba, Argentina (GMT-3)',
-        focus: es
-          ? 'Construyendo aplicaciones web modernas, e-commerce y productos escalables con React, Next.js, Node.js y TypeScript.'
-          : 'Building modern web applications, e-commerce and scalable products with React, Next.js, Node.js and TypeScript.',
-        experience: es ? '3+ años como Full-Stack Developer' : '3+ years as Full-Stack Developer',
+        focus: 'Construyendo aplicaciones web modernas, e-commerce y productos escalables con React, Next.js, Node.js y TypeScript.',
+        focusEn: 'Building modern web applications, e-commerce and scalable products with React, Next.js, Node.js and TypeScript.',
+        experience: '3+ años como Full-Stack Developer',
+        experienceEn: '3+ years as Full-Stack Developer',
         stack: [
           'Frontend: React, Next.js, Astro, TypeScript, Tailwind CSS v4',
           'Backend: Node.js, Express, NestJS, REST APIs, JWT',
           'DBs: MongoDB, PostgreSQL, Firestore',
           'Cloud: AWS (EC2, S3, CloudFront), GCP, Docker',
-          es ? 'Pagos: MercadoPago, Meta Pixel & Conversions API' : 'Payments: MercadoPago, Meta Pixel & Conversions API',
+          'Pagos: MercadoPago, Meta Pixel & Conversions API',
+          'Payments: MercadoPago, Meta Pixel & Conversions API',
         ],
         available,
-        availableFrom: import.meta.env.AVAILABLE_FROM ?? (es ? 'Inmediato' : 'Immediate'),
-        workMode: es ? ['Remoto', 'Híbrido'] : ['Remote', 'Hybrid'],
+        availableFrom: import.meta.env.AVAILABLE_FROM ?? 'Inmediato',
+        availableFromEn: import.meta.env.AVAILABLE_FROM ?? 'Immediate',
+        workMode: ['Remoto', 'Híbrido'],
+        workModeEn: ['Remote', 'Hybrid'],
         portfolio: 'https://jackshaw32.vercel.app/',
       };
     },
@@ -330,13 +330,16 @@ export function getToolsDefinition(lang: string) {
     }),
     execute: async () => {
       const available     = (import.meta.env.EDUARDO_AVAILABLE ?? 'true') !== 'false';
-      const availableFrom = import.meta.env.AVAILABLE_FROM ?? (es ? 'Inmediato' : 'Immediate');
+      const availableFrom = import.meta.env.AVAILABLE_FROM ?? 'Inmediato';
+      const availableFromEn = import.meta.env.AVAILABLE_FROM ?? 'Immediate';
       return {
         available,
         availableFrom,
+        availableFromEn,
         timezone: 'GMT-3 (Argentina)',
         preferredRoles: ['Full-Stack Developer', 'Frontend Developer', 'Backend Developer'],
-        workMode: es ? ['Remoto', 'Híbrido'] : ['Remote', 'Hybrid'],
+        workMode: ['Remoto', 'Híbrido'],
+        workModeEn: ['Remote', 'Hybrid'],
       };
     },
   },

@@ -152,18 +152,21 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
           <h4 className="font-bold text-sm text-foreground">🛠️ {lang === 'en' ? 'Tech Stack' : 'Stack Tecnológico'}</h4>
         </div>
         <div className="p-4 space-y-3">
-          {skills.categories?.map((cat: { name: string; skills: string[] }) => (
-            <div key={cat.name}>
-              <p className={`text-[10px] font-bold uppercase tracking-wider mb-1.5 ${categoryColors[cat.name] ?? 'text-muted-foreground'}`}>{cat.name}</p>
-              <div className="flex flex-wrap gap-1.5">
-                {cat.skills.map((skill: string) => (
-                  <span key={skill} className="text-[10px] font-medium bg-foreground/5 border border-border/50 px-2 py-0.5 rounded-md text-foreground/80">
-                    {skill}
-                  </span>
-                ))}
+          {skills.categories?.map((cat: { name: string; nameEn?: string; skills: string[] }) => {
+            const displayName = lang === 'en' && cat.nameEn ? cat.nameEn : cat.name;
+            return (
+              <div key={cat.name}>
+                <p className={`text-[10px] font-bold uppercase tracking-wider mb-1.5 ${categoryColors[cat.name] ?? categoryColors[displayName] ?? 'text-muted-foreground'}`}>{displayName}</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {cat.skills.map((skill: string) => (
+                    <span key={skill} className="text-[10px] font-medium bg-foreground/5 border border-border/50 px-2 py-0.5 rounded-md text-foreground/80">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     );
@@ -177,77 +180,55 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const exp = toolInvocation.result as any;
     return (
-      <div key={toolInvocation.toolCallId} className="w-full sm:min-w-[280px] max-w-[340px] rounded-2xl border border-indigo-500/20 bg-background overflow-hidden shadow-lg animate-in fade-in slide-in-from-bottom-2 mt-1">
+      <div key={toolInvocation.toolCallId} className="w-full sm:min-w-[300px] max-w-[380px] rounded-2xl border border-indigo-500/20 bg-background overflow-hidden shadow-lg animate-in fade-in slide-in-from-bottom-2 mt-1">
         <div className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 px-4 py-3 border-b border-border/50 flex items-center gap-2">
           <Briefcase className="w-4 h-4 text-indigo-400" />
-          <h4 className="font-bold text-sm text-foreground">
-            {lang === 'en' ? 'Experience & Education' : 'Experiencia & Educación'}
-          </h4>
+          <h4 className="font-bold text-sm text-foreground">{lang === 'en' ? 'Experience' : 'Experiencia'}</h4>
         </div>
-        <div className="p-4">
-          <div className="relative ml-3 space-y-0">
-            {exp.items?.map((item: {
-              period: string; periodEn?: string; role: string; roleEn?: string;
-              company: string; companyEn?: string; years: string; yearsEn?: string;
-              current: boolean; description?: string; descriptionEn?: string; tech?: string;
-            }, i: number) => {
-              const displayPeriod = lang === 'en' && item.periodEn ? item.periodEn : item.period;
-              const displayRole = lang === 'en' && item.roleEn ? item.roleEn : item.role;
-              const displayCompany = lang === 'en' && item.companyEn ? item.companyEn : item.company;
-              const displayYears = lang === 'en' && item.yearsEn ? item.yearsEn : item.years;
-              const displayDescription = lang === 'en' && item.descriptionEn ? item.descriptionEn : item.description;
-              const isEducation = item.company.includes('Bootcamp') ||
-                item.company.includes('Academia') ||
-                item.company.includes('DevSchool') ||
-                item.company.includes('Edici') ||
-                item.company.includes('Egg') ||
-                item.company.includes('Casa') ||
-                item.role.includes('Bootcamp') ||
-                item.role.includes('Programaci');
-              return (
-                <div key={i} className="relative pl-5 pb-5 last:pb-0">
-                  {i < (exp.items?.length ?? 0) - 1 && (
-                    <span className="absolute left-[4px] top-4 bottom-0 w-px bg-border/60" />
+        <div className="p-4 space-y-4 max-h-[400px] overflow-y-auto">
+          {exp.items?.map((item: {
+            period: string; periodEn?: string; role: string; roleEn?: string;
+            company: string; companyEn?: string; years?: string; yearsEn?: string;
+            current?: boolean; description?: string; descriptionEn?: string; tech?: string;
+          }, i: number) => (
+            <div key={i} className="relative pl-5 border-l-2 border-border/50">
+              {item.current && (
+                <span className="absolute -left-[9px] top-0 w-4 h-4 bg-green-500 rounded-full border-2 border-background flex items-center justify-center">
+                  <span className="w-1.5 h-1.5 bg-background rounded-full" />
+                </span>
+              )}
+              <div className="flex items-start justify-between gap-2 mb-0.5">
+                <p className="text-[11px] font-bold text-foreground leading-tight">
+                  {lang === 'en' && item.roleEn ? item.roleEn : item.role}
+                  {item.current && (
+                    <span className="ml-1.5 text-[9px] font-medium text-green-400 bg-green-500/10 px-1.5 py-0.5 rounded-full">
+                      {lang === 'en' ? 'Current' : 'Actual'}
+                    </span>
                   )}
-                  <span className={`absolute left-0 top-1.5 w-2.5 h-2.5 rounded-full border-2 ${
-                    item.current
-                      ? 'bg-green-500 border-green-400'
-                      : 'bg-muted border-border'
-                  }`} />
-                  <div>
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="text-[10px] font-semibold text-indigo-400">{displayPeriod}</span>
-                      {item.current && (
-                        <span className="text-[9px] font-bold bg-green-500/20 text-green-400 border border-green-500/30 px-1.5 py-0.5 rounded-full">
-                          {lang === 'en' ? 'Current' : 'Actual'}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs font-semibold text-foreground mt-0.5">{displayRole}</p>
-                    <div className="flex items-center gap-1 mt-0.5">
-                      {isEducation
-                        ? <GraduationCap className="w-3 h-3 text-muted-foreground flex-shrink-0" />
-                        : <Briefcase className="w-3 h-3 text-muted-foreground flex-shrink-0" />}
-                      <span className="text-[11px] text-muted-foreground">{displayCompany}</span>
-                    </div>
-                    {displayYears && (
-                      <span className="text-[10px] text-muted-foreground/70">{displayYears}</span>
-                    )}
-                    {displayDescription && (
-                      <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">{displayDescription}</p>
-                    )}
-                    {item.tech && (
-                      <div className="flex flex-wrap gap-1 mt-1.5">
-                        {item.tech.split(',').map((t: string) => (
-                          <span key={t} className="text-[9px] font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-1.5 py-0.5 rounded-full">{t.trim()}</span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                </p>
+                <span className="text-[9px] text-muted-foreground whitespace-nowrap flex-shrink-0">
+                  {lang === 'en' && item.periodEn ? item.periodEn : item.period}
+                </span>
+              </div>
+              <p className="text-[10px] text-muted-foreground font-medium">
+                {lang === 'en' && item.companyEn ? item.companyEn : item.company}
+              </p>
+              {item.description && (
+                <p className="text-[10px] text-foreground/70 mt-1 leading-relaxed">
+                  {lang === 'en' && item.descriptionEn ? item.descriptionEn : item.description}
+                </p>
+              )}
+              {item.tech && (
+                <div className="flex flex-wrap gap-1 mt-1.5">
+                  {item.tech.split(',').map((t: string) => (
+                    <span key={t.trim()} className="text-[9px] font-medium bg-foreground/5 border border-border/50 px-1.5 py-0.5 rounded-md text-foreground/70">
+                      {t.trim()}
+                    </span>
+                  ))}
                 </div>
-              );
-            })}
-          </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     );
@@ -260,6 +241,8 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const avail = toolInvocation.result as any;
+    const displayAvailFrom = lang === 'en' && avail.availableFromEn ? avail.availableFromEn : avail.availableFrom;
+    const displayWorkMode = lang === 'en' && avail.workModeEn ? avail.workModeEn : avail.workMode;
     return (
       <div key={toolInvocation.toolCallId} className="w-full sm:min-w-[260px] max-w-[300px] rounded-2xl border border-indigo-500/20 bg-background overflow-hidden shadow-lg animate-in fade-in slide-in-from-bottom-2 mt-1">
         <div className={`px-4 py-3 border-b border-border/50 flex items-center gap-2 ${avail.available ? 'bg-gradient-to-r from-green-500/10 to-emerald-500/10' : 'bg-gradient-to-r from-orange-500/10 to-red-500/10'}`}>
@@ -280,7 +263,7 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
           <div className="space-y-1.5 text-xs text-muted-foreground">
             <div className="flex items-center gap-2">
               <Clock className="w-3 h-3" />
-              <span>{lang === 'en' ? 'From:' : 'Desde:'} <span className="font-medium text-foreground">{avail.availableFrom}</span></span>
+              <span>{lang === 'en' ? 'From:' : 'Desde:'} <span className="font-medium text-foreground">{displayAvailFrom}</span></span>
             </div>
             <div className="flex items-center gap-2">
               <MapPin className="w-3 h-3" />
@@ -298,7 +281,7 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
           <div>
             <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">{lang === 'en' ? 'Work mode' : 'Modalidad'}</p>
             <div className="flex flex-wrap gap-1.5">
-              {avail.workMode?.map((mode: string) => (
+              {displayWorkMode?.map((mode: string) => (
                 <span key={mode} className="text-[10px] font-medium bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded-md text-indigo-400">{mode}</span>
               ))}
             </div>
@@ -394,6 +377,9 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
       return <ToolSkeleton lines={5} />;
     }
     const rec = toolInvocation.result as any;
+    const displayStrengths = lang === 'en' && rec.strengthsEn ? rec.strengthsEn : rec.strengths;
+    const displayIdealFor = lang === 'en' && rec.idealForEn ? rec.idealForEn : rec.idealFor;
+    const displayDifferentiators = lang === 'en' && rec.differentiatorsEn ? rec.differentiatorsEn : rec.differentiators;
     return (
       <div key={toolInvocation.toolCallId} className="w-full sm:min-w-[300px] max-w-[350px] rounded-2xl border border-emerald-500/20 bg-background overflow-hidden shadow-lg animate-in fade-in slide-in-from-bottom-2 mt-1">
         <div className="bg-gradient-to-r from-emerald-500/10 to-teal-500/10 px-4 py-3 border-b border-border/50 flex items-center gap-2">
@@ -405,7 +391,7 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
           <div>
             <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-400 mb-1.5">{lang === 'en' ? 'Key Strengths' : 'Fortalezas'}</p>
             <div className="space-y-1">
-              {rec.strengths?.map((s: string, i: number) => (
+              {displayStrengths?.map((s: string, i: number) => (
                 <p key={i} className="text-[11px] text-foreground/80">• {s}</p>
               ))}
             </div>
@@ -413,7 +399,7 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
           <div>
             <p className="text-[10px] font-bold uppercase tracking-widest text-blue-400 mb-1.5">{lang === 'en' ? 'Ideal For' : 'Ideal para'}</p>
             <div className="flex flex-wrap gap-1.5">
-              {rec.idealFor?.map((item: string) => (
+              {displayIdealFor?.map((item: string) => (
                 <span key={item} className="text-[10px] font-medium bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded-md text-blue-400">{item}</span>
               ))}
             </div>
@@ -421,7 +407,7 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
           <div>
             <p className="text-[10px] font-bold uppercase tracking-widest text-purple-400 mb-1.5">{lang === 'en' ? 'What Sets Him Apart' : 'Lo que lo diferencia'}</p>
             <div className="space-y-1">
-              {rec.differentiators?.map((d: string, i: number) => (
+              {displayDifferentiators?.map((d: string, i: number) => (
                 <p key={i} className="text-[11px] text-foreground/80">• {d}</p>
               ))}
             </div>
@@ -437,6 +423,10 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
       return <ToolSkeleton lines={4} />;
     }
     const profile = toolInvocation.result as any;
+    const displayFocus = lang === 'en' && profile.focusEn ? profile.focusEn : profile.focus;
+    const displayExperience = lang === 'en' && profile.experienceEn ? profile.experienceEn : profile.experience;
+    const displayAvailableFrom = lang === 'en' && profile.availableFromEn ? profile.availableFromEn : profile.availableFrom;
+    const displayWorkMode = lang === 'en' && profile.workModeEn ? profile.workModeEn : profile.workMode;
     return (
       <div key={toolInvocation.toolCallId} className="w-full sm:min-w-[280px] max-w-[320px] rounded-2xl border border-indigo-500/20 bg-background overflow-hidden shadow-lg animate-in fade-in slide-in-from-bottom-2 mt-1">
         <div className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 px-4 py-3 border-b border-border/50">
@@ -448,7 +438,7 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
             <MapPin className="w-3 h-3" />
             <span>{profile.location}</span>
           </div>
-          <p className="text-xs text-muted-foreground leading-relaxed">{profile.focus}</p>
+          <p className="text-xs text-muted-foreground leading-relaxed">{displayFocus}</p>
           <div className="space-y-1">
             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{lang === 'en' ? 'Stack' : 'Stack'}</p>
             {profile.stack?.map((s: string, i: number) => (
@@ -461,7 +451,13 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
               ? (lang === 'en' ? 'Available' : 'Disponible')
               : (lang === 'en' ? 'Not available' : 'No disponible')}
             </span>
-            <span className="text-muted-foreground">— {profile.availableFrom}</span>
+            <span className="text-muted-foreground">— {displayAvailableFrom}</span>
+          </div>
+          <p className="text-[10px] text-muted-foreground">{displayExperience}</p>
+          <div className="flex flex-wrap gap-1.5">
+            {displayWorkMode?.map((mode: string) => (
+              <span key={mode} className="text-[10px] font-medium bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded-md text-indigo-400">{mode}</span>
+            ))}
           </div>
         </div>
       </div>
@@ -497,13 +493,17 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
             <div key={si}>
               <p className="text-[11px] font-bold text-foreground mb-2">{section.title}</p>
               <div className="space-y-1">
-                {section.layers?.map((layer: any, li: number) => (
-                  <div key={li} className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-medium border ${layerColors[layer.color] ?? 'bg-foreground/5 text-foreground/80 border-border/50'}`}>
-                    <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-current opacity-70" />
-                    <span className="font-semibold flex-shrink-0">{layer.name}:</span>
-                    <span className="opacity-80">{layer.tech}</span>
-                  </div>
-                ))}
+                {section.layers?.map((layer: any, li: number) => {
+                  const displayLayerName = lang === 'en' && layer.nameEn ? layer.nameEn : layer.name;
+                  const displayTech = lang === 'en' && layer.techEn ? layer.techEn : layer.tech;
+                  return (
+                    <div key={li} className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-medium border ${layerColors[layer.color] ?? 'bg-foreground/5 text-foreground/80 border-border/50'}`}>
+                      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-current opacity-70" />
+                      <span className="font-semibold flex-shrink-0">{displayLayerName}:</span>
+                      <span className="opacity-80">{displayTech}</span>
+                    </div>
+                  );
+                })}
               </div>
               <div className="mt-2 flex items-center gap-1 text-[10px] text-muted-foreground">
                 <span className="font-medium text-foreground/70">{lang === 'en' ? 'Flow' : 'Flujo'}:</span>
