@@ -37,6 +37,7 @@ export default function CommentsSection() {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
   const [translationsMap, setTranslationsMap] = useState<Record<number, { text: string; loading: boolean }>>({});
+  const translateCountRef = useRef({ count: 0, reset: Date.now() + 60_000 });
 
   useEffect(() => {
     fetch("/api/comments")
@@ -57,6 +58,15 @@ export default function CommentsSection() {
       setTranslationsMap(prev => { const next = { ...prev }; delete next[index]; return next; });
       return;
     }
+    const now = Date.now();
+    if (now > translateCountRef.current.reset) {
+      translateCountRef.current = { count: 0, reset: now + 60_000 };
+    }
+    if (translateCountRef.current.count >= 10) {
+      setTranslationsMap(prev => ({ ...prev, [index]: { text: lang === 'en' ? 'Wait a minute to translate again.' : 'Esperá un minuto para traducir de nuevo.', loading: false } }));
+      return;
+    }
+    translateCountRef.current.count++;
     setTranslationsMap(prev => ({ ...prev, [index]: { text: '', loading: true } }));
     try {
       const targetLang = lang === 'en' ? 'es' : 'en';
