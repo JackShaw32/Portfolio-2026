@@ -32,9 +32,7 @@ export const GET: APIRoute = async () => {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await res.json();
-    const raw = data.result;
-    const comments: Comment[] = Array.isArray(raw) ? raw : (typeof raw === 'string' ? JSON.parse(raw) : []);
-    return new Response(JSON.stringify(comments), {
+    return new Response(JSON.stringify({ raw: data, status: res.status }), {
       headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
     });
   } catch {
