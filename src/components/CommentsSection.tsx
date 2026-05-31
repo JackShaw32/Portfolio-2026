@@ -38,6 +38,11 @@ export default function CommentsSection() {
   const [loading, setLoading] = useState(true);
   const [translationsMap, setTranslationsMap] = useState<Record<number, { text: string; loading: boolean }>>({});
   const translateCountRef = useRef({ count: 0, reset: Date.now() + 60_000 });
+  const [page, setPage] = useState(0);
+
+  const pageSize = typeof window !== 'undefined' && window.innerWidth < 640 ? 1 : 3;
+  const totalPages = Math.ceil(comments.length / pageSize);
+  const visibleComments = comments.slice(page * pageSize, (page + 1) * pageSize);
 
   useEffect(() => {
     fetch("/api/comments")
@@ -122,30 +127,33 @@ export default function CommentsSection() {
         ) : comments.length === 0 ? (
           <p className="text-center text-muted-foreground">{t.empty}</p>
         ) : (
-          <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {comments.map((comment, i) => (
-              <div
-                key={i}
-                className="rounded-2xl bg-card border border-border overflow-hidden"
-              >
-                <div className="flex flex-col p-6 space-y-4">
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {translationsMap[i]?.text || comment.message}
-                  </p>
-
-                  <button
-                    onClick={() => translateComment(i, comment.message)}
-                    disabled={translationsMap[i]?.loading}
-                    className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors w-fit"
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {visibleComments.map((comment, i) => {
+                const globalIndex = page * pageSize + i;
+                return (
+                  <div
+                    key={globalIndex}
+                    className="rounded-2xl bg-card border border-border overflow-hidden"
                   >
-                    <Languages size={14} />
-                    {translationsMap[i]?.loading
-                      ? (lang === 'en' ? 'Translating...' : 'Traduciendo...')
-                      : translationsMap[i]?.text
-                        ? (lang === 'en' ? 'Show original' : 'Ver original')
-                        : (lang === 'en' ? 'Translate' : 'Traducir')
-                    }
-                  </button>
+                    <div className="flex flex-col p-6 space-y-4">
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {translationsMap[globalIndex]?.text || comment.message}
+                      </p>
+
+                      <button
+                        onClick={() => translateComment(globalIndex, comment.message)}
+                        disabled={translationsMap[globalIndex]?.loading}
+                        className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors w-fit"
+                      >
+                        <Languages size={14} />
+                        {translationsMap[globalIndex]?.loading
+                          ? (lang === 'en' ? 'Translating...' : 'Traduciendo...')
+                          : translationsMap[globalIndex]?.text
+                            ? (lang === 'en' ? 'Show original' : 'Ver original')
+                            : (lang === 'en' ? 'Translate' : 'Traducir')
+                        }
+                      </button>
 
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-3">
@@ -185,7 +193,31 @@ export default function CommentsSection() {
                   </div>
                 </div>
               </div>
-            ))}
+              );
+            })}
+            </div>
+
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-3 mt-8">
+                <button
+                  onClick={() => setPage(p => Math.max(0, p - 1))}
+                  disabled={page === 0}
+                  className="px-3 py-1.5 rounded-lg text-sm font-medium border border-border bg-muted/30 hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                >
+                  ←
+                </button>
+                <span className="text-sm text-muted-foreground">
+                  {page + 1} / {totalPages}
+                </span>
+                <button
+                  onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+                  disabled={page >= totalPages - 1}
+                  className="px-3 py-1.5 rounded-lg text-sm font-medium border border-border bg-muted/30 hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                >
+                  →
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

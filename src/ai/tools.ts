@@ -121,10 +121,13 @@ export function getToolsDefinition(lang: string) {
     execute: async () => ({
       items: [
         {
-          period:  es ? '2023 – Presente' : '2023 – Present',
+          period:  '2023 – Presente',
+          periodEn: '2023 – Present',
           role:    'Freelance Full-Stack Developer',
-          company: es ? 'Proyectos propios y para clientes' : 'Own and client projects',
-          years:   es ? '3+ años' : '3+ years',
+          company: 'Proyectos propios y para clientes',
+          companyEn: 'Own and client projects',
+          years:   '3+ años',
+          yearsEn: '3+ years',
           current: true,
         },
         {
@@ -133,28 +136,31 @@ export function getToolsDefinition(lang: string) {
           company: 'Gearthlogic LLC',
           years:   '',
           current: false,
-          description: es
-            ? 'Resolución de problemas críticos en producción, refactorización en React + TypeScript y optimización de APIs Node/Express. Sincronización en tiempo real con Firestore y Cloud Functions. Strapi v5 como CMS e integración de IA (Gemini 2.5) para autocompletado de formularios dinámicos.'
-            : 'Resolved critical production issues, refactored React + TypeScript code, and optimized Node/Express APIs. Real-time Firestore sync with Cloud Functions. Strapi v5 CMS and Gemini 2.5 AI integration for dynamic form autocompletion.',
+          description: 'Resolución de problemas críticos en producción, refactorización en React + TypeScript y optimización de APIs Node/Express. Sincronización en tiempo real con Firestore y Cloud Functions. Strapi v5 como CMS e integración de IA (Gemini 2.5) para autocompletado de formularios dinámicos.',
+          descriptionEn: 'Resolved critical production issues, refactored React + TypeScript code, and optimized Node/Express APIs. Real-time Firestore sync with Cloud Functions. Strapi v5 CMS and Gemini 2.5 AI integration for dynamic form autocompletion.',
           tech: 'React.js, TypeScript, Node.js, Firebase, GCP, Strapi',
         },
         {
-          period:  es ? 'Dic. 2023' : 'Dec. 2023',
+          period:  'Dic. 2023',
+          periodEn: 'Dec. 2023',
           role:    'Full Stack Web Developer',
           company: 'DevSchool Academia',
           years:   '',
           current: false,
         },
         {
-          period:  es ? 'Jul. 2022' : 'Jul. 2022',
+          period:  'Jul. 2022',
           role:    'Frontend Developer Bootcamp',
-          company: es ? 'Primera Edición en Código en Casa' : 'First Edition at Código en Casa',
+          company: 'Primera Edición en Código en Casa',
+          companyEn: 'First Edition at Código en Casa',
           years:   '',
           current: false,
         },
         {
-          period:  es ? 'Ene. 2022' : 'Jan. 2022',
-          role:    es ? 'Programación desde Cero' : 'Programming from Scratch',
+          period:  'Ene. 2022',
+          periodEn: 'Jan. 2022',
+          role:    'Programación desde Cero',
+          roleEn:  'Programming from Scratch',
           company: 'Egg Live',
           years:   '',
           current: false,

@@ -187,10 +187,15 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
         <div className="p-4">
           <div className="relative ml-3 space-y-0">
             {exp.items?.map((item: {
-              period: string; role: string; company: string;
-              years: string; current: boolean;
-              description?: string; tech?: string;
+              period: string; periodEn?: string; role: string; roleEn?: string;
+              company: string; companyEn?: string; years: string; yearsEn?: string;
+              current: boolean; description?: string; descriptionEn?: string; tech?: string;
             }, i: number) => {
+              const displayPeriod = lang === 'en' && item.periodEn ? item.periodEn : item.period;
+              const displayRole = lang === 'en' && item.roleEn ? item.roleEn : item.role;
+              const displayCompany = lang === 'en' && item.companyEn ? item.companyEn : item.company;
+              const displayYears = lang === 'en' && item.yearsEn ? item.yearsEn : item.years;
+              const displayDescription = lang === 'en' && item.descriptionEn ? item.descriptionEn : item.description;
               const isEducation = item.company.includes('Bootcamp') ||
                 item.company.includes('Academia') ||
                 item.company.includes('DevSchool') ||
@@ -211,25 +216,25 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
                   }`} />
                   <div>
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="text-[10px] font-semibold text-indigo-400">{item.period}</span>
+                      <span className="text-[10px] font-semibold text-indigo-400">{displayPeriod}</span>
                       {item.current && (
                         <span className="text-[9px] font-bold bg-green-500/20 text-green-400 border border-green-500/30 px-1.5 py-0.5 rounded-full">
                           {lang === 'en' ? 'Current' : 'Actual'}
                         </span>
                       )}
                     </div>
-                    <p className="text-xs font-semibold text-foreground mt-0.5">{item.role}</p>
+                    <p className="text-xs font-semibold text-foreground mt-0.5">{displayRole}</p>
                     <div className="flex items-center gap-1 mt-0.5">
                       {isEducation
                         ? <GraduationCap className="w-3 h-3 text-muted-foreground flex-shrink-0" />
                         : <Briefcase className="w-3 h-3 text-muted-foreground flex-shrink-0" />}
-                      <span className="text-[11px] text-muted-foreground">{item.company}</span>
+                      <span className="text-[11px] text-muted-foreground">{displayCompany}</span>
                     </div>
-                    {item.years && (
-                      <span className="text-[10px] text-muted-foreground/70">{item.years}</span>
+                    {displayYears && (
+                      <span className="text-[10px] text-muted-foreground/70">{displayYears}</span>
                     )}
-                    {item.description && (
-                      <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">{item.description}</p>
+                    {displayDescription && (
+                      <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">{displayDescription}</p>
                     )}
                     {item.tech && (
                       <div className="flex flex-wrap gap-1 mt-1.5">
