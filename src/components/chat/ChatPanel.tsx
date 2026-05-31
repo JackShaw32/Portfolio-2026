@@ -51,6 +51,7 @@ export default function ChatPanel({
     { cmd: '/arch',       descEs: 'Arquitectura',      descEn: 'Architecture' },
     { cmd: '/profile',   descEs: 'Sobre Eduardo',     descEn: 'About Eduardo' },
     { cmd: '/hire',      descEs: 'Por qué contratar', descEn: 'Why hire' },
+    { cmd: '/comment',   descEs: 'Dejar comentario',  descEn: 'Leave comment' },
     { cmd: '/game',      descEs: 'Simón Dice',        descEn: 'Simon Says' },
     { cmd: '/go',        descEs: 'Ir a sección',      descEn: 'Go to section' },
     { cmd: '/goto',      descEs: 'Abrir proyecto',    descEn: 'Open project' },

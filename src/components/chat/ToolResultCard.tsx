@@ -552,6 +552,57 @@ export default function ToolResultCard({ toolInvocation, lang }: ToolResultCardP
     );
   }
 
+  // showCommentForm
+  if (toolInvocation.toolName === 'showCommentForm') {
+    return (
+      <div key={toolInvocation.toolCallId} className="w-full sm:min-w-[260px] max-w-[300px] rounded-2xl border border-indigo-500/20 bg-background overflow-hidden shadow-lg animate-in fade-in slide-in-from-bottom-2 mt-1">
+        <div className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 px-4 py-3 border-b border-border/50 flex items-center gap-2">
+          <Star className="w-4 h-4 text-indigo-400" />
+          <h4 className="font-bold text-sm text-foreground">{lang === 'en' ? 'Leave a Review' : 'Dejar una Reseña'}</h4>
+        </div>
+        <div className="p-4">
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            {lang === 'en'
+              ? 'Tell me your name, how many stars (1-5), and your comment. I\'ll submit it for you!'
+              : 'Decime tu nombre, cuántas estrellas (1-5) y tu comentario. ¡Lo envío por vos!'}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // submitComment
+  if (toolInvocation.toolName === 'submitComment') {
+    if (!toolInvocation.result) {
+      return (
+        <div key={toolInvocation.toolCallId} className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-lg animate-pulse mt-1">
+          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+          <span>{lang === 'en' ? 'Submitting review...' : 'Enviando reseña...'}</span>
+        </div>
+      );
+    }
+    const res = toolInvocation.result as any;
+    return (
+      <div key={toolInvocation.toolCallId} className={`w-full max-w-[300px] rounded-2xl border overflow-hidden shadow-lg animate-in fade-in slide-in-from-bottom-2 mt-1 ${res.success ? 'border-green-500/20' : 'border-red-500/20'} bg-background`}>
+        <div className={`px-4 py-3 border-b border-border/50 flex items-center gap-2 ${res.success ? 'bg-gradient-to-r from-green-500/10 to-emerald-500/10' : 'bg-gradient-to-r from-red-500/10 to-orange-500/10'}`}>
+          {res.success ? <CheckCircle2 className="w-4 h-4 text-green-400" /> : <XCircle className="w-4 h-4 text-red-400" />}
+          <h4 className="font-bold text-sm text-foreground">
+            {res.success
+              ? (lang === 'en' ? 'Review submitted!' : '¡Reseña enviada!')
+              : (lang === 'en' ? 'Could not submit' : 'No se pudo enviar')}
+          </h4>
+        </div>
+        <div className="p-4">
+          <p className="text-xs text-muted-foreground">
+            {res.success
+              ? (lang === 'en' ? `Thanks, ${res.name}! Your review has been saved.` : `¡Gracias, ${res.name}! Tu reseña fue guardada.`)
+              : (lang === 'en' ? 'There was an error. Please try again.' : 'Hubo un error. Intentá de nuevo.')}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   // showGame
   if (toolInvocation.toolName === 'showGame') {
     return <SimonGame lang={lang} />;
