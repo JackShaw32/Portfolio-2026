@@ -446,12 +446,16 @@ export function getToolsDefinition(lang: string) {
           headers: { Authorization: `Bearer ${token}` },
         });
         const getData = await getRes.json();
-        const comments: { name: string; stars: number; message: string; date: string }[] =
-          Array.isArray(getData.result) ? getData.result : [];
+        let comments: { name: string; stars: number; message: string; date: string }[] = [];
+        if (Array.isArray(getData.result)) {
+          comments = getData.result;
+        } else if (typeof getData.result === 'string') {
+          try { comments = JSON.parse(getData.result); } catch { /* ignore */ }
+        }
 
         comments.push({ name: safeName, stars: safeStars, message: safeMessage, date: new Date().toISOString() });
 
-        const setRes =         await fetch(`${url}/set/portfolio:comments`, {
+        await fetch(`${url}/set/portfolio:comments`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -459,9 +463,8 @@ export function getToolsDefinition(lang: string) {
           },
           body: JSON.stringify(comments),
         });
-        const setData = await setRes.json();
 
-        return { success: true, name: safeName, count: comments.length, setResult: setData.result };
+        return { success: true, name: safeName, count: comments.length };
       } catch (err) {
         return { success: false, reason: 'save_error', error: String(err) };
       }
