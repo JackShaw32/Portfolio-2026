@@ -199,33 +199,34 @@ export const POST: APIRoute = async ({ request }) => {
   function buildStreamResponse(
     result: Awaited<ReturnType<typeof streamText<any>>>,
     tools?: typeof toolsDefinition,
-  ) {
-    return new ReadableStream({
-      async start(controller) {
-        let toolCallsEmitted = 0;
-  console.log(`[EduBot] #${reqId} Model path: forcedTool=${forcedTool}, lastQ=${lastQuestion?.slice(0, 60)}`);
-  try {
-          await pipeStreamToController(
-            result, controller, encoderForStream, tools,
-            () => { toolCallsEmitted++; },
-          );
-        } catch (streamErr) {
-          console.error('[EduBot] Stream error:', (streamErr as any)?.message);
-          const isRateLimit = (streamErr as any)?.statusCode === 429 ||
-                              String((streamErr as any)?.message).includes('Rate limit') ||
-                              String((streamErr as any)?.message).includes('rate_limit');
-
-          if (isRateLimit) {
-            markKeyCooldown(getKeyIdx(), streamErr);
-            rotateKey();
-          }
-
-          const finalMsg = isRateLimit ? rateLimitMessage : errorMessage;
-          controller.enqueue(encoder.encode(`0:${JSON.stringify(finalMsg)}\n`));
-        } finally {
-          controller.close();
+  ): Promise<Response> {
+    return new Promise(async (resolve) => {
+      const parts: string[] = [];
+      let toolCallsEmitted = 0;
+      try {
+        await pipeStreamToController(
+          result, { enqueue: (chunk: Uint8Array) => { parts.push(new TextDecoder().decode(chunk)); } } as any,
+          new TextEncoder(), tools,
+          () => { toolCallsEmitted++; },
+        );
+      } catch (streamErr) {
+        console.error('[EduBot] Stream error:', (streamErr as any)?.message);
+        const isRateLimit = (streamErr as any)?.statusCode === 429 ||
+                            String((streamErr as any)?.message).includes('Rate limit') ||
+                            String((streamErr as any)?.message).includes('rate_limit');
+        if (isRateLimit) {
+          markKeyCooldown(getKeyIdx(), streamErr);
+          rotateKey();
         }
+        const finalMsg = isRateLimit ? rateLimitMessage : errorMessage;
+        parts.push(`0:${JSON.stringify(finalMsg)}\n`);
       }
+      resolve(new Response(parts.join(''), {
+        headers: {
+          ...streamResponseHeaders(),
+          'X-Request-Id': `${reqId}_${Date.now()}`,
+        }
+      }));
     });
   }
 
@@ -277,6 +278,7 @@ export const POST: APIRoute = async ({ request }) => {
     }
   }
 
+  console.log(`[EduBot] #${reqId} Model path: forcedTool=${forcedTool}, lastQ=${lastQuestion?.slice(0, 60)}`);
   try {
     const result = await streamText({
       model:      getGroq()(FALLBACK_MODEL),
@@ -294,9 +296,7 @@ export const POST: APIRoute = async ({ request }) => {
       prepareStep: buildPrepareStep(stepOpts),
     });
 
-    return new Response(buildStreamResponse(result, activeTools as typeof toolsDefinition), {
-      headers: streamResponseHeaders(),
-    });
+    return await buildStreamResponse(result, activeTools as typeof toolsDefinition);
 
   } catch (err: any) {
     console.error('[EduBot] Error:', err?.message);
