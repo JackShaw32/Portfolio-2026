@@ -430,9 +430,21 @@ export function useChatLogic(lang: string, defaultWelcomeMsg: string, pageSlug?:
     }
   };
 
-  const submitComment = (data: { name: string; stars: number; message: string }) => {
-    const text = `submitComment(${data.name}, ${data.stars} stars, ${data.message})`;
-    mandarMensaje(undefined, text);
+  const submitComment = async (data: { name: string; stars: number; message: string }) => {
+    try {
+      const res = await fetch('/api/comments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const result = await res.json();
+      const msg = result.success
+        ? (lang === 'en' ? `Thanks, ${data.name}! Your review has been saved.` : `¡Gracias, ${data.name}! Tu reseña fue guardada.`)
+        : (lang === 'en' ? 'There was an error saving your review.' : 'Hubo un error al guardar tu reseña.');
+      setMessages(prev => [...prev, { id: genId(), role: 'assistant', content: msg }]);
+    } catch {
+      setMessages(prev => [...prev, { id: genId(), role: 'assistant', content: lang === 'en' ? 'Error saving review.' : 'Error al guardar la reseña.' }]);
+    }
   };
 
   return {
