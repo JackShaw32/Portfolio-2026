@@ -8,7 +8,10 @@ const COMMENTS_KEY = 'portfolio:comments';
 
 function getRedis(): Redis | null {
   try {
-    return Redis.fromEnv();
+    const url = process.env.KV_REST_API_URL;
+    const token = process.env.KV_REST_API_TOKEN;
+    if (!url || !token) return null;
+    return new Redis({ url, token });
   } catch {
     return null;
   }
