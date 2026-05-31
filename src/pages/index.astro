@@ -6,6 +6,7 @@ import About from "@/components/About";
 import Skills from "@/components/Skills";
 import Projects from "@/components/Projects";
 import Optimizations from "@/components/Optimizations";
+import CommentsSection from "@/components/CommentsSection";
 import ChatAI from "@/components/ChatAI";
 import Footer from "@/components/Footer";
 ---
@@ -25,6 +26,7 @@ import Footer from "@/components/Footer";
       <Projects client:visible />
       <Optimizations client:visible />
       <About client:idle />
+      <CommentsSection client:visible />
     </main>
     
     <Footer client:idle />

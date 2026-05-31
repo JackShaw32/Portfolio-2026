@@ -120,6 +120,8 @@ export function useChatLogic(lang: string, defaultWelcomeMsg: string, pageSlug?:
       '/arch':      { trigger: isEn ? 'show me the architecture' : 'mostrame la arquitectura',       label: 'Architecture' },
       '/profile':   { trigger: isEn ? 'tell me about yourself' : 'contame sobre vos',           label: 'Profile' },
       '/hire':      { trigger: isEn ? 'why hire eduardo' : 'por qué contratar a eduardo', label: 'Hire' },
+      '/comment':   { trigger: isEn ? 'I want to leave a comment' : 'quiero dejar un comentario', label: 'Comment' },
+      '/review':    { trigger: isEn ? 'I want to leave a review' : 'quiero dejar una reseña', label: 'Review' },
     };
 
     if (cmdBase === '/clear') {
@@ -281,6 +283,7 @@ export function useChatLogic(lang: string, defaultWelcomeMsg: string, pageSlug?:
             '  /arch         — Show architecture diagram',
             '  /profile      — About Eduardo',
             '  /hire         — Why hire Eduardo',
+            '  /comment      — Leave a comment/review',
             '  /clear        — Clear chat',
             '  /help         — Show this message',
             '  /go [section] — Scroll to section (top, skills, projects, about, contact)',
@@ -305,6 +308,7 @@ export function useChatLogic(lang: string, defaultWelcomeMsg: string, pageSlug?:
             '  /arch         — Ver diagrama de arquitectura',
             '  /profile      — Sobre Eduardo',
             '  /hire         — Por qué contratarlo',
+            '  /comment      — Dejar un comentario/reseña',
             '  /clear        — Limpiar chat',
             '  /help         — Mostrar esto',
             '  /go [sección] — Ir a sección (top, skills, projects, about, contact)',

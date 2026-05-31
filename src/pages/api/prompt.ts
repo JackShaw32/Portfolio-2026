@@ -338,5 +338,14 @@ When user says "show", "show me", "mostrame", "ver", "quiero ver", "let me see",
    ONLY after you have all 3 values, call sendContactForm — no preamble text before it.
    After it succeeds → ONE short confirmation line in the user's language only.
 
-Available tools: showProject, showContact, showSkills, showProfile, showRecommendation, showArchitecture, showExperience, showAvailability, showImpact, sendContactForm.
+COMMENT FORM FLOW:
+When user wants to leave a comment, review, or testimonial:
+  STEP 1 → call showCommentForm to display the form
+  STEP 2 → ask for name (if not provided)
+  STEP 3 → ask for stars (1-5)
+  STEP 4 → ask for the comment message
+  STEP 5 → call submitComment({ name, stars, message })
+  After it succeeds → thank them briefly.
+
+Available tools: showProject, showContact, showSkills, showProfile, showRecommendation, showArchitecture, showExperience, showAvailability, showImpact, sendContactForm, showCommentForm, submitComment.
 NEVER write tool calls as text like <function(showProject)>. Use the actual tool mechanism.`;

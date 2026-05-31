@@ -9,6 +9,7 @@ const SHOW_INTENTS: Array<{ pattern: RegExp; tool: string }> = [
   { pattern: /(?:por\s*qu[eé]\s*contratar|why\s*(?:should\s*I\s*)?hire|recomi[eé]ndame|recomendaci[oó]n|would\s*(?:you\s*)?recommend|es\s*bueno\s*para|is\s*(?:he|eduardo)\s*a\s*good\s*fit|qu[eé]\s*opinas|what\s*do\s*you\s*think|lo\s*recomiendas|recomiendo|hiring|contratarlo)/i, tool: 'showRecommendation' },
   { pattern: /(?:arquitectur|architectur|diagrama|diagram|flujo|flow\s*(?:de|of|del)|c[oó]mo\s*(?:est[aá]|estructur)|how\s*(?:is|does)\s*(?:it|the)\s*(?:structured|connected|built)|stack\s*diagram|componentes\s*del\s*sistema|system\s*architecture)/i, tool: 'showArchitecture' },
   { pattern: /(?:impacto|impact|m[eé]trica|metrics?|logros|achievements|resultados|results|lighthouse)/i, tool: 'showImpact' },
+  { pattern: /(?:comentar|comment|dejar.*comentario|leave.*comment|review|rese[ñn]a|testimonio|testimonial|valorar|rate|opini[oó]n|feedback)/i, tool: 'showCommentForm' },
 ];
 
 const PROJECT_OVERRIDE = /(?:mostrame|show me|ver|muéstrame|muestrame|quiero ver|puedo ver|dejame ver|podés mostrarme|can you show|show me|dame)\s+(?:el\s+)?(?:proyecto|project)?\s*(?:de\s+)?/i;

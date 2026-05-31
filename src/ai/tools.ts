@@ -399,6 +399,57 @@ export function getToolsDefinition(lang: string) {
         : { success: false, reason: result.reason };
     },
   },
+
+  showCommentForm: {
+    description: es
+      ? 'Muestra un formulario para dejar un comentario o reseña sobre Eduardo. Llamar cuando el usuario quiere dejar un comentario, review, testimonio o valoración.'
+      : 'Shows a form to leave a comment or review about Eduardo. Call when the user wants to leave a comment, review, testimonial or rating.',
+    inputSchema: jsonSchema<Record<string, never>>({
+      type: 'object',
+      properties: {},
+    }),
+    execute: async () => ({
+      showForm: true,
+    }),
+  },
+
+  submitComment: {
+    description: es
+      ? 'Envía un comentario/reseña del usuario. Llamar SOLO cuando el usuario proporcionó nombre, estrellas (1-5) y mensaje.'
+      : 'Submits a user comment/review. Call ONLY when the user provided name, stars (1-5) and message.',
+    inputSchema: jsonSchema<{ name: string; stars: number; message: string }>({
+      type: 'object',
+      properties: {
+        name:    { type: 'string', description: es ? 'Nombre del usuario' : 'User name' },
+        stars:   { type: 'number', description: es ? 'Estrellas (1-5)' : 'Stars (1-5)' },
+        message: { type: 'string', description: es ? 'Comentario' : 'Comment' },
+      },
+      required: ['name', 'stars', 'message'],
+    }),
+    execute: async (args: { name: string; stars: number; message: string }) => {
+      const safeName    = sanitizeStr(args.name).slice(0, 100);
+      const safeStars   = Math.min(5, Math.max(1, Number(args.stars) || 5));
+      const safeMessage = sanitizeStr(args.message).slice(0, 1000);
+
+      if (!safeName || !safeMessage) {
+        return { success: false, reason: 'missing_fields' };
+      }
+
+      try {
+        const res = await fetch(`${process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : 'http://localhost:4321'}/api/comments`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: safeName, stars: safeStars, message: safeMessage }),
+        });
+        const result = await res.json();
+        return result.success
+          ? { success: true, name: safeName }
+          : { success: false, reason: 'send_error' };
+      } catch {
+        return { success: false, reason: 'network_error' };
+      }
+    },
+  },
 };
 }
 

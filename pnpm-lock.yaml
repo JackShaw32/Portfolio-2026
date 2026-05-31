@@ -22,7 +22,7 @@ importers:
         version: 3.7.0
       '@astrojs/vercel':
         specifier: ^9.0.4
-        version: 9.0.4(astro@5.18.0(@vercel/functions@2.2.13)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.59.0)(typescript@5.9.3))(react@19.2.4)(rollup@4.59.0)
+        version: 9.0.4(astro@5.18.0(@upstash/redis@1.38.0)(@vercel/functions@2.2.13)(@vercel/kv@3.0.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.59.0)(typescript@5.9.3))(react@19.2.4)(rollup@4.59.0)
       '@fontsource-variable/inter':
         specifier: ^5.2.8
         version: 5.2.8
@@ -125,6 +125,9 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.14)
+      '@upstash/redis':
+        specifier: ^1.38.0
+        version: 1.38.0
       '@vercel/og':
         specifier: ^0.11.1
         version: 0.11.1
@@ -133,7 +136,7 @@ importers:
         version: 6.0.106(zod@4.3.6)
       astro:
         specifier: ^5.17.1
-        version: 5.18.0(@vercel/functions@2.2.13)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.59.0)(typescript@5.9.3)
+        version: 5.18.0(@upstash/redis@1.38.0)(@vercel/functions@2.2.13)(@vercel/kv@3.0.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.59.0)(typescript@5.9.3)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -1944,6 +1947,9 @@ packages:
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
 
+  '@upstash/redis@1.38.0':
+    resolution: {integrity: sha512-wu+dZBptlLy0+MCUEoHmzrY/TnmgDey3+c7EbIGwrLqAvkP8yi5MWZHYGIFtAygmL4Bkz2TdFu+eU0vFPncIcg==}
+
   '@vercel/analytics@1.6.1':
     resolution: {integrity: sha512-oH9He/bEM+6oKlv3chWuOOcp8Y6fo6/PSro8hEkgCW3pu9/OiCXiUpRUogDh3Fs3LH2sosDrx8CxeOLBEE+afg==}
     peerDependencies:
@@ -1978,6 +1984,11 @@ packages:
     peerDependenciesMeta:
       '@aws-sdk/credential-provider-web-identity':
         optional: true
+
+  '@vercel/kv@3.0.0':
+    resolution: {integrity: sha512-pKT8fRnfyYk2MgvyB6fn6ipJPCdfZwiKDdw7vB+HL50rjboEBHDVBEcnwfkEpVSp2AjNtoaOUH7zG+bVC/rvSg==}
+    engines: {node: '>=14.6'}
+    deprecated: 'Vercel KV is deprecated. If you had an existing KV store, it should have moved to Upstash Redis which you will see under Vercel Integrations. For new projects, install a Redis integration from Vercel Marketplace: https://vercel.com/marketplace?category=storage&search=redis'
 
   '@vercel/nft@0.30.4':
     resolution: {integrity: sha512-wE6eAGSXScra60N2l6jWvNtVK0m+sh873CpfZW4KI2v8EHuUQp+mSEi4T+IcdPCSEDgCdAS/7bizbhQlkjzrSA==}
@@ -3921,14 +3932,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/vercel@9.0.4(astro@5.18.0(@vercel/functions@2.2.13)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.59.0)(typescript@5.9.3))(react@19.2.4)(rollup@4.59.0)':
+  '@astrojs/vercel@9.0.4(astro@5.18.0(@upstash/redis@1.38.0)(@vercel/functions@2.2.13)(@vercel/kv@3.0.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.59.0)(typescript@5.9.3))(react@19.2.4)(rollup@4.59.0)':
     dependencies:
       '@astrojs/internal-helpers': 0.7.5
       '@vercel/analytics': 1.6.1(react@19.2.4)
       '@vercel/functions': 2.2.13
       '@vercel/nft': 0.30.4(rollup@4.59.0)
       '@vercel/routing-utils': 5.3.3
-      astro: 5.18.0(@vercel/functions@2.2.13)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.59.0)(typescript@5.9.3)
+      astro: 5.18.0(@upstash/redis@1.38.0)(@vercel/functions@2.2.13)(@vercel/kv@3.0.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.59.0)(typescript@5.9.3)
       esbuild: 0.25.12
       tinyglobby: 0.2.15
     transitivePeerDependencies:
@@ -5403,6 +5414,10 @@ snapshots:
 
   '@ungap/structured-clone@1.3.0': {}
 
+  '@upstash/redis@1.38.0':
+    dependencies:
+      uncrypto: 0.1.3
+
   '@vercel/analytics@1.6.1(react@19.2.4)':
     optionalDependencies:
       react: 19.2.4
@@ -5410,6 +5425,11 @@ snapshots:
   '@vercel/functions@2.2.13':
     dependencies:
       '@vercel/oidc': 2.0.2
+
+  '@vercel/kv@3.0.0':
+    dependencies:
+      '@upstash/redis': 1.38.0
+    optional: true
 
   '@vercel/nft@0.30.4(rollup@4.59.0)':
     dependencies:
@@ -5563,7 +5583,7 @@ snapshots:
 
   assertion-error@2.0.1: {}
 
-  astro@5.18.0(@vercel/functions@2.2.13)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.59.0)(typescript@5.9.3):
+  astro@5.18.0(@upstash/redis@1.38.0)(@vercel/functions@2.2.13)(@vercel/kv@3.0.0)(jiti@2.6.1)(lightningcss@1.31.1)(rollup@4.59.0)(typescript@5.9.3):
     dependencies:
       '@astrojs/compiler': 2.13.1
       '@astrojs/internal-helpers': 0.7.5
@@ -5618,7 +5638,7 @@ snapshots:
       ultrahtml: 1.6.0
       unifont: 0.7.4
       unist-util-visit: 5.1.0
-      unstorage: 1.17.4(@vercel/functions@2.2.13)
+      unstorage: 1.17.4(@upstash/redis@1.38.0)(@vercel/functions@2.2.13)(@vercel/kv@3.0.0)
       vfile: 6.0.3
       vite: 6.4.1(jiti@2.6.1)(lightningcss@1.31.1)
       vitefu: 1.1.2(vite@6.4.1(jiti@2.6.1)(lightningcss@1.31.1))
@@ -7308,7 +7328,7 @@ snapshots:
       unist-util-is: 6.0.1
       unist-util-visit-parents: 6.0.2
 
-  unstorage@1.17.4(@vercel/functions@2.2.13):
+  unstorage@1.17.4(@upstash/redis@1.38.0)(@vercel/functions@2.2.13)(@vercel/kv@3.0.0):
     dependencies:
       anymatch: 3.1.3
       chokidar: 5.0.0
@@ -7319,7 +7339,9 @@ snapshots:
       ofetch: 1.5.1
       ufo: 1.6.3
     optionalDependencies:
+      '@upstash/redis': 1.38.0
       '@vercel/functions': 2.2.13
+      '@vercel/kv': 3.0.0
 
   update-browserslist-db@1.2.3(browserslist@4.28.1):
     dependencies:
