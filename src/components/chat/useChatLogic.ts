@@ -435,12 +435,16 @@ export function useChatLogic(lang: string, defaultWelcomeMsg: string, pageSlug?:
       const res = await fetch('/api/comments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, honeypot: '' }),
       });
       const result = await res.json();
       const msg = result.success
         ? (lang === 'en' ? `Thanks, ${data.name}! Your review has been saved.` : `¡Gracias, ${data.name}! Tu reseña fue guardada.`)
-        : (lang === 'en' ? 'There was an error saving your review.' : 'Hubo un error al guardar tu reseña.');
+        : result.error === 'rate_limited'
+          ? (lang === 'en' ? 'Too many comments. Please wait an hour.' : 'Demasiados comentarios. Esperá una hora.')
+          : result.error === 'duplicate'
+            ? (lang === 'en' ? 'This comment already exists.' : 'Este comentario ya existe.')
+            : (lang === 'en' ? 'There was an error saving your review.' : 'Hubo un error al guardar tu reseña.');
       setMessages(prev => [...prev, { id: genId(), role: 'assistant', content: msg }]);
     } catch {
       setMessages(prev => [...prev, { id: genId(), role: 'assistant', content: lang === 'en' ? 'Error saving review.' : 'Error al guardar la reseña.' }]);
