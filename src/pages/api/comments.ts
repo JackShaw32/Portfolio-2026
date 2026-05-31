@@ -32,7 +32,8 @@ export const GET: APIRoute = async () => {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await res.json();
-    const comments: Comment[] = Array.isArray(data.result) ? data.result : [];
+    const raw = data.result;
+    const comments: Comment[] = Array.isArray(raw) ? raw : (typeof raw === 'string' ? JSON.parse(raw) : []);
     return new Response(JSON.stringify(comments), {
       headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
     });
@@ -85,7 +86,7 @@ export const POST: APIRoute = async ({ request }) => {
       date: new Date().toISOString(),
     });
 
-    await fetch(`${url}/set/${COMMENTS_KEY}`, {
+    const setRes = await fetch(`${url}/set/${COMMENTS_KEY}`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -93,8 +94,9 @@ export const POST: APIRoute = async ({ request }) => {
       },
       body: JSON.stringify(JSON.stringify(comments)),
     });
+    const setText = await setRes.text();
 
-    return new Response(JSON.stringify({ success: true, count: comments.length }), {
+    return new Response(JSON.stringify({ success: true, count: comments.length, setStatus: setRes.status, setResponse: setText }), {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (err) {
