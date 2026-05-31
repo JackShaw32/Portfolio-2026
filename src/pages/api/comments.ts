@@ -90,7 +90,7 @@ export const POST: APIRoute = async ({ request }) => {
       date: new Date().toISOString(),
     });
 
-    const setRes = await fetch(`${url}/set/${COMMENTS_KEY}`, {
+    await fetch(`${url}/set/${COMMENTS_KEY}`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -98,9 +98,8 @@ export const POST: APIRoute = async ({ request }) => {
       },
       body: JSON.stringify(comments),
     });
-    const setText = await setRes.text();
 
-    return new Response(JSON.stringify({ success: true, count: comments.length, setStatus: setRes.status, setResponse: setText }), {
+    return new Response(JSON.stringify({ success: true, count: comments.length }), {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (err) {

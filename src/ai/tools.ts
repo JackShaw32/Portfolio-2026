@@ -457,7 +457,7 @@ export function getToolsDefinition(lang: string) {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(JSON.stringify(comments)),
+          body: JSON.stringify(comments),
         });
         const setData = await setRes.json();
 
