@@ -16,6 +16,7 @@ export default defineConfig({
   adapter: vercel({
     isr: {
       expiration: 600,
+      exclude: [/^\/api\/.+/],
     },
     imageService: true,
   }),
