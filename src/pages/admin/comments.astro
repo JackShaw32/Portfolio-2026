@@ -1,0 +1,89 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout
+  title="Admin Comments"
+  description="Admin panel for comments"
+  keywords=""
+  type="website"
+>
+  <div class="min-h-screen bg-background p-8">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-3xl font-bold mb-8">Admin Comments</h1>
+
+      <div id="login" class="mb-8">
+        <div class="flex gap-2">
+          <input type="password" id="token" placeholder="Admin token" class="bg-muted border border-border rounded-lg px-4 py-2 text-sm flex-1" />
+          <button onclick="loadComments()" class="bg-foreground text-background px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer">Cargar</button>
+        </div>
+      </div>
+
+      <div id="status" class="text-sm text-muted-foreground mb-4"></div>
+      <div id="comments-list" class="space-y-4"></div>
+    </div>
+  </div>
+
+  <script is:inline>
+    let adminToken = '';
+
+    async function loadComments() {
+      adminToken = document.getElementById('token').value;
+      if (!adminToken) { alert('Ingresá el token'); return; }
+
+      document.getElementById('status').textContent = 'Cargando...';
+      try {
+        const res = await fetch('/api/comments');
+        const comments = await res.json();
+        renderComments(comments);
+        document.getElementById('status').textContent = `${comments.length} comentarios`;
+      } catch (err) {
+        document.getElementById('status').textContent = 'Error al cargar';
+      }
+    }
+
+    function renderComments(comments) {
+      const list = document.getElementById('comments-list');
+      if (comments.length === 0) {
+        list.innerHTML = '<p class="text-muted-foreground">No hay comentarios.</p>';
+        return;
+      }
+      list.innerHTML = comments.map((c, i) => `
+        <div class="bg-card border border-border rounded-xl p-4 flex justify-between items-start gap-4">
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="font-semibold">${escapeHtml(c.name)}</span>
+              <span class="text-yellow-400">${'★'.repeat(c.stars)}${'☆'.repeat(5 - c.stars)}</span>
+              <span class="text-xs text-muted-foreground">${new Date(c.date).toLocaleDateString('es-AR')}</span>
+            </div>
+            <p class="text-sm text-muted-foreground">${escapeHtml(c.message)}</p>
+          </div>
+          <button onclick="deleteComment(${i})" class="bg-red-500/10 text-red-400 border border-red-500/20 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-500/20 cursor-pointer whitespace-nowrap">Eliminar</button>
+        </div>
+      `).join('');
+    }
+
+    async function deleteComment(index) {
+      if (!confirm('¿Eliminar este comentario?')) return;
+      try {
+        const res = await fetch('/api/comments', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
+          body: JSON.stringify({ index }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          loadComments();
+        } else {
+          alert('Error: ' + data.error);
+        }
+      } catch (err) {
+        alert('Error de red');
+      }
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+  </script>
+</Layout>
