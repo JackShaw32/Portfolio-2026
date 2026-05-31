@@ -24,7 +24,7 @@ interface Comment {
 export const GET: APIRoute = async () => {
   const redis = getRedis();
   if (!redis) {
-    return new Response(JSON.stringify([]), {
+    return new Response(JSON.stringify({ error: 'db_not_configured' }), {
       headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
     });
   }
@@ -36,7 +36,7 @@ export const GET: APIRoute = async () => {
       headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
     });
   } catch (err) {
-    return new Response(JSON.stringify([]), {
+    return new Response(JSON.stringify({ error: String(err) }), {
       headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
     });
   }
@@ -81,11 +81,11 @@ export const POST: APIRoute = async ({ request }) => {
     });
     await redis.set(COMMENTS_KEY, comments);
 
-    return new Response(JSON.stringify({ success: true }), {
+    return new Response(JSON.stringify({ success: true, count: comments.length }), {
       headers: { 'Content-Type': 'application/json' },
     });
-  } catch {
-    return new Response(JSON.stringify({ success: false, error: 'save_error' }), {
+  } catch (err) {
+    return new Response(JSON.stringify({ success: false, error: String(err) }), {
       status: 500, headers: { 'Content-Type': 'application/json' },
     });
   }
