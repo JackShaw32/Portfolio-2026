@@ -55,7 +55,7 @@ export function getToolsDefinition(lang: string) {
           en: 'B2B corporate website built with HTML5, CSS3 and Vanilla JavaScript for a logistics and transportation company. No heavy frameworks, focused on load speed, technical SEO and lead generation.',
         },
       };
-      const safeDesc = projectDescs[safeImage]?.[lang] ?? sanitizeStr(args.description);
+      const safeDesc = projectDescs[safeImage]?.[lang as 'es' | 'en'] ?? sanitizeStr(args.description);
       const safeTech = safeImage === '/projects/14milla.webp'
         ? 'React 18, Vite 6, Tailwind CSS 3, Framer Motion, Swiper, Express 4, MongoDB, Mongoose, JWT, bcrypt, Google OAuth, Cloudinary, MercadoPago API, Meta Pixel, Meta Conversions API, Helmet, Vitest, Playwright, Netlify, Render'
         : (args.tech ?? '');
@@ -372,10 +372,14 @@ export function getToolsDefinition(lang: string) {
     }),
     execute: async (args: { name: string; email: string; message: string }) => {
       const safeName    = sanitizeStr(args.name).slice(0, 100);
-      const safeEmail   = args.email.replace(/[<>"'`\s]/g, '').slice(0, 200);
+      const rawEmail    = args.email.replace(/[<>"'`\s]/g, '').slice(0, 200);
       const safeMessage = sanitizeStr(args.message).slice(0, 1000);
 
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(safeEmail)) {
+      if (/[^\x00-\x7F]/.test(rawEmail)) {
+        return { success: false, reason: 'email_non_ascii' };
+      }
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawEmail)) {
         return { success: false, reason: 'invalid_email' };
       }
 
@@ -385,7 +389,7 @@ export function getToolsDefinition(lang: string) {
 
       const result = await sendEmail({
         name:    safeName,
-        email:   safeEmail,
+        email:   rawEmail,
         message: safeMessage,
         source:  'EduBot',
       });

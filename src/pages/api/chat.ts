@@ -12,14 +12,10 @@ import { getToolsDefinition }                          from '../../ai/tools';
 import { pipeStreamToController }                      from '../../ai/streamPipeline';
 import { FALLBACK_MODEL }               from '../../ai/model';
 
-let requestCounter = 0;
-
 export const maxDuration = 30;
 export const POST: APIRoute = async ({ request }) => {
-  const reqId = ++requestCounter;
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
              request.headers.get('x-real-ip') || '0.0.0.0';
-  console.log(`[EduBot] === Request #${reqId} from ${ip} ===`);
 
   const rateCheck = checkRateLimit(ip);
   if (!rateCheck.allowed) {
@@ -194,23 +190,18 @@ export const POST: APIRoute = async ({ request }) => {
 
   const stepOpts = { forcedTool, multiProject, isSendMsg, isDataCollectionTurn, isContactMessageStep };
 
-  const encoderForStream = encoder;
-
   function buildStreamResponse(
     result: Awaited<ReturnType<typeof streamText<any>>>,
     tools?: typeof toolsDefinition,
   ): Promise<Response> {
     return new Promise(async (resolve) => {
       const parts: string[] = [];
-      let toolCallsEmitted = 0;
       try {
         await pipeStreamToController(
           result, { enqueue: (chunk: Uint8Array) => { parts.push(new TextDecoder().decode(chunk)); } } as any,
           new TextEncoder(), tools,
-          () => { toolCallsEmitted++; },
         );
       } catch (streamErr) {
-        console.error('[EduBot] Stream error:', (streamErr as any)?.message);
         const isRateLimit = (streamErr as any)?.statusCode === 429 ||
                             String((streamErr as any)?.message).includes('Rate limit') ||
                             String((streamErr as any)?.message).includes('rate_limit');
@@ -218,15 +209,9 @@ export const POST: APIRoute = async ({ request }) => {
           markKeyCooldown(getKeyIdx(), streamErr);
           rotateKey();
         }
-        const finalMsg = isRateLimit ? rateLimitMessage : errorMessage;
-        parts.push(`0:${JSON.stringify(finalMsg)}\n`);
+        parts.push(`0:${JSON.stringify(isRateLimit ? rateLimitMessage : errorMessage)}\n`);
       }
-      resolve(new Response(parts.join(''), {
-        headers: {
-          ...streamResponseHeaders(),
-          'X-Request-Id': `${reqId}_${Date.now()}`,
-        }
-      }));
+      resolve(new Response(parts.join(''), { headers: streamResponseHeaders() }));
     });
   }
 
@@ -244,7 +229,6 @@ export const POST: APIRoute = async ({ request }) => {
   if (forcedTool && !multiProject) {
     const toolName = forcedTool;
     const tool = (activeTools as any)[toolName];
-    console.log(`[EduBot] #${reqId} Forced tool: toolName=${toolName}, lastQ=${lastQuestion?.slice(0, 60)}`);
     if (tool?.execute) {
       try {
         let toolArgs: Record<string, unknown> = {};
@@ -264,21 +248,14 @@ export const POST: APIRoute = async ({ request }) => {
 
         const body = `9:${JSON.stringify({ toolCallId, toolName, args: toolArgs })}\na:${JSON.stringify({ toolCallId, result: toolResult })}\n`;
 
-        return new Response(body, {
-          headers: {
-            ...streamResponseHeaders(),
-            'X-Request-Id': `${reqId}_${Date.now()}`,
-          }
-        });
+        return new Response(body, { headers: streamResponseHeaders() });
 
       } catch (toolErr) {
-        console.error('[EduBot] Tool execution error:', toolErr);
-        return new Response(errorStream(errorMessage), { headers: streamResponseHeaders() });
+        return new Response(errorMessage, { headers: streamResponseHeaders() });
       }
     }
   }
 
-  console.log(`[EduBot] #${reqId} Model path: forcedTool=${forcedTool}, lastQ=${lastQuestion?.slice(0, 60)}`);
   try {
     const result = await streamText({
       model:      getGroq()(FALLBACK_MODEL),
@@ -290,16 +267,12 @@ export const POST: APIRoute = async ({ request }) => {
       maxOutputTokens:  600,
       maxRetries: 2,
       temperature: 0.3,
-      onError: ({ error }) => {
-        console.error('[EduBot] streamText onError:', error);
-      },
       prepareStep: buildPrepareStep(stepOpts),
     });
 
     return await buildStreamResponse(result, activeTools as typeof toolsDefinition);
 
-  } catch (err: any) {
-    console.error('[EduBot] Error:', err?.message);
+  } catch {
     return new Response(errorStream(errorMessage), {
       headers: streamResponseHeaders(),
     });

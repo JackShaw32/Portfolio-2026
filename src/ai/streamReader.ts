@@ -40,13 +40,11 @@ export async function readStream(
         } else if (prefix === '9') {
           const toolCall = JSON.parse(data);
           if (toolCall?.toolCallId && toolCall?.toolName) {
-            console.log('[readStream] tool-call:', toolCall.toolName, toolCall.toolCallId);
             onToolCall({ toolCallId: toolCall.toolCallId, toolName: toolCall.toolName, args: toolCall.args ?? {} });
           }
         } else if (prefix === 'a') {
           const toolResult = JSON.parse(data);
           if (toolResult?.toolCallId) {
-            console.log('[readStream] tool-result:', toolResult.toolCallId);
             onToolResult({ toolCallId: toolResult.toolCallId, result: toolResult.result });
           }
         }

@@ -261,6 +261,16 @@ RULES:
     before or instead of the tool call. The tool call IS the action. Zero preamble text.
   • After sendContactForm succeeds → reply with ONE short confirmation line only,
     in the user's language. Nothing else.
+  • If sendContactForm returns { success: false, reason: 'email_non_ascii' } →
+    tell the user their email has special characters (ñ, á, é, etc.) and ask them
+    to use a standard email without accents or special characters. Example:
+    "Tu email tiene caracteres especiales (ñ, á, etc.) que no son válidos. Usá un email sin acentos, por ejemplo: lololano0022@gmail.com"
+  • If sendContactForm returns { success: false, reason: 'invalid_email' } →
+    ask the user to provide a valid email address.
+  • If sendContactForm returns { success: false, reason: 'missing_message' } →
+    ask the user to write a longer message (at least 10 characters).
+  • If sendContactForm returns { success: false, reason: 'send_error' } →
+    tell the user there was an error and suggest contacting Eduardo directly.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 COMPOUND QUESTIONS & RECOMMENDATIONS

@@ -32,9 +32,13 @@ export async function sendEmail({
     return { success: true };
   }
 
-  const safeName    = escapeHtml(name);
-  const safeEmail   = escapeHtml(email);
-  const safeMessage = escapeHtml(message).replace(/\n/g, '<br>');
+    const safeName    = escapeHtml(name);
+    const safeEmail   = escapeHtml(email).replace(/[^\x00-\x7F]/g, '');
+    const safeMessage = escapeHtml(message).replace(/\n/g, '<br>');
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(safeEmail)) {
+      return { success: false, reason: 'invalid_email' };
+    }
 
   try {
     const res = await fetch('https://api.resend.com/emails', {
