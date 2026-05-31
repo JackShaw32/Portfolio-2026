@@ -8,16 +8,31 @@ interface ToolResultCardProps {
   onSubmitComment?: (data: { name: string; stars: number; message: string }) => void;
 }
 
+function ToolSkeleton({ lines = 3 }: { lines?: number }) {
+  return (
+    <div className="w-full sm:min-w-[260px] max-w-[320px] rounded-2xl border border-border bg-background overflow-hidden mt-1">
+      <div className="bg-muted/30 px-4 py-3 border-b border-border/50">
+        <div className="h-4 bg-muted rounded w-32 animate-pulse" />
+      </div>
+      <div className="p-4 space-y-3">
+        {Array.from({ length: lines }, (_, i) => (
+          <div key={i} className={`h-3 bg-muted rounded animate-pulse ${i === lines - 1 ? 'w-3/5' : 'w-full'}`} />
+        ))}
+        <div className="flex gap-1.5 pt-1">
+          <div className="h-5 w-14 bg-muted rounded-md animate-pulse" />
+          <div className="h-5 w-16 bg-muted rounded-md animate-pulse" />
+          <div className="h-5 w-12 bg-muted rounded-md animate-pulse" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }: ToolResultCardProps) {
   // showProject
   if (toolInvocation.toolName === 'showProject') {
     if (!toolInvocation.result) {
-      return (
-        <div key={toolInvocation.toolCallId} className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-lg animate-pulse mt-1">
-          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-          <span>{lang === 'en' ? 'Generating project view...' : 'Generando vista del proyecto...'}</span>
-        </div>
-      );
+      return <ToolSkeleton lines={4} />;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const project = toolInvocation.result as any;
@@ -79,12 +94,7 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
   // showContact
   if (toolInvocation.toolName === 'showContact') {
     if (!toolInvocation.result) {
-      return (
-        <div key={toolInvocation.toolCallId} className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-lg animate-pulse mt-1">
-          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-          <span>{lang === 'en' ? 'Loading contact info...' : 'Cargando datos de contacto...'}</span>
-        </div>
-      );
+      return <ToolSkeleton lines={3} />;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const contact = toolInvocation.result as any;
@@ -123,12 +133,7 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
   // showSkills
   if (toolInvocation.toolName === 'showSkills') {
     if (!toolInvocation.result) {
-      return (
-        <div key={toolInvocation.toolCallId} className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-lg animate-pulse mt-1">
-          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-          <span>{lang === 'en' ? 'Loading tech stack...' : 'Cargando tech stack...'}</span>
-        </div>
-      );
+      return <ToolSkeleton lines={4} />;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const skills = toolInvocation.result as any;
@@ -167,12 +172,7 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
   // showExperience
   if (toolInvocation.toolName === 'showExperience') {
     if (!toolInvocation.result) {
-      return (
-        <div key={toolInvocation.toolCallId} className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-lg animate-pulse mt-1">
-          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-          <span>{lang === 'en' ? 'Loading experience...' : 'Cargando experiencia...'}</span>
-        </div>
-      );
+      return <ToolSkeleton lines={5} />;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const exp = toolInvocation.result as any;
@@ -251,12 +251,7 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
   // showAvailability
   if (toolInvocation.toolName === 'showAvailability') {
     if (!toolInvocation.result) {
-      return (
-        <div key={toolInvocation.toolCallId} className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-lg animate-pulse mt-1">
-          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-          <span>{lang === 'en' ? 'Checking availability...' : 'Verificando disponibilidad...'}</span>
-        </div>
-      );
+      return <ToolSkeleton lines={3} />;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const avail = toolInvocation.result as any;
@@ -311,12 +306,7 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
   // sendContactForm
   if (toolInvocation.toolName === 'sendContactForm') {
     if (!toolInvocation.result) {
-      return (
-        <div key={toolInvocation.toolCallId} className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-lg animate-pulse mt-1">
-          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-          <span>{lang === 'en' ? 'Sending message...' : 'Enviando mensaje...'}</span>
-        </div>
-      );
+      return <ToolSkeleton lines={2} />;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const form = toolInvocation.result as any;
@@ -348,12 +338,7 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
   // showImpact
   if (toolInvocation.toolName === 'showImpact') {
     if (!toolInvocation.result) {
-      return (
-        <div key={toolInvocation.toolCallId} className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-lg animate-pulse mt-1">
-          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-          <span>{lang === 'en' ? 'Loading metrics...' : 'Cargando métricas...'}</span>
-        </div>
-      );
+      return <ToolSkeleton lines={4} />;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const impact = toolInvocation.result as any;
@@ -401,12 +386,7 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
   // showRecommendation
   if (toolInvocation.toolName === 'showRecommendation') {
     if (!toolInvocation.result) {
-      return (
-        <div key={toolInvocation.toolCallId} className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-lg animate-pulse mt-1">
-          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-          <span>{lang === 'en' ? 'Analyzing profile...' : 'Analizando perfil...'}</span>
-        </div>
-      );
+      return <ToolSkeleton lines={5} />;
     }
     const rec = toolInvocation.result as any;
     return (
@@ -449,12 +429,7 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
   // showProfile
   if (toolInvocation.toolName === 'showProfile') {
     if (!toolInvocation.result) {
-      return (
-        <div key={toolInvocation.toolCallId} className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-lg animate-pulse mt-1">
-          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-          <span>{lang === 'en' ? 'Loading profile...' : 'Cargando perfil...'}</span>
-        </div>
-      );
+      return <ToolSkeleton lines={4} />;
     }
     const profile = toolInvocation.result as any;
     return (
@@ -491,12 +466,7 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
   // showArchitecture
   if (toolInvocation.toolName === 'showArchitecture') {
     if (!toolInvocation.result) {
-      return (
-        <div key={toolInvocation.toolCallId} className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-lg animate-pulse mt-1">
-          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-          <span>{lang === 'en' ? 'Loading architecture...' : 'Cargando arquitectura...'}</span>
-        </div>
-      );
+      return <ToolSkeleton lines={4} />;
     }
     const arch = toolInvocation.result as any;
     const layerColors: Record<string, string> = {
@@ -561,12 +531,7 @@ export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }
   // submitComment
   if (toolInvocation.toolName === 'submitComment') {
     if (!toolInvocation.result) {
-      return (
-        <div key={toolInvocation.toolCallId} className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-lg animate-pulse mt-1">
-          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-          <span>{lang === 'en' ? 'Submitting review...' : 'Enviando reseña...'}</span>
-        </div>
-      );
+      return <ToolSkeleton lines={2} />;
     }
     const res = toolInvocation.result as any;
     return (

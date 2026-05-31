@@ -396,9 +396,9 @@ export const es = {
     },
     comments: {
       title: "Lo que dicen",
-      titleHighlight: "sobre mí",
-      subtitle: "Cada comentario cuenta una pequeña historia de colaboración.",
-      empty: "Aún no hay comentarios. ¡Sé el primero en dejar uno!",
+      titleHighlight: "quienes confiaron",
+      subtitle: "Cada proyecto es una historia feliz.",
+      empty: "Aún no hay testimonios. ¡Sé el primero en dejar uno!",
       loading: "Cargando...",
       verified: "Comentario verificado",
     },

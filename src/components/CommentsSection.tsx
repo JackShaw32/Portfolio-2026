@@ -86,13 +86,39 @@ export default function CommentsSection() {
             {t.title}{" "}
             <span className="text-primary">{t.titleHighlight}</span>
           </h2>
-          <p className="text-muted-foreground text-base sm:text-lg text-center mt-3">
+          <p className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-foreground to-pink-500 max-w-2xl mx-auto font-medium text-sm sm:text-base md:text-lg text-center mt-3">
             {t.subtitle}
           </p>
         </div>
 
         {loading ? (
-          <p className="text-center text-muted-foreground">{t.loading}</p>
+          <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {Array.from({ length: 3 }, (_, i) => (
+              <div key={i} className="rounded-2xl bg-card border border-border overflow-hidden">
+                <div className="flex flex-col p-6 space-y-4">
+                  <div className="space-y-2">
+                    <div className="h-3 bg-muted rounded w-full animate-pulse" />
+                    <div className="h-3 bg-muted rounded w-4/5 animate-pulse" />
+                    <div className="h-3 bg-muted rounded w-3/5 animate-pulse" />
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-full bg-muted animate-pulse" />
+                      <div className="space-y-1.5">
+                        <div className="h-3 bg-muted rounded w-20 animate-pulse" />
+                        <div className="h-2.5 bg-muted rounded w-14 animate-pulse" />
+                      </div>
+                    </div>
+                    <div className="flex gap-1">
+                      {Array.from({ length: 5 }, (_, j) => (
+                        <div key={j} className="h-4 w-4 bg-muted rounded animate-pulse" />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         ) : comments.length === 0 ? (
           <p className="text-center text-muted-foreground">{t.empty}</p>
         ) : (
