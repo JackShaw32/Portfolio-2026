@@ -440,14 +440,15 @@ export function getToolsDefinition(lang: string) {
         const url = process.env.KV_REST_API_URL;
         const token = process.env.KV_REST_API_TOKEN;
         if (!url || !token) {
-          return { success: false, reason: 'db_not_configured' };
+          return { success: false, reason: 'db_not_configured', hasUrl: !!url, hasToken: !!token };
         }
         const redis = new Redis({ url, token });
         const raw = await redis.get('portfolio:comments');
         const comments: { name: string; stars: number; message: string; date: string }[] = Array.isArray(raw) ? raw : [];
         comments.push({ name: safeName, stars: safeStars, message: safeMessage, date: new Date().toISOString() });
         await redis.set('portfolio:comments', comments);
-        return { success: true, name: safeName, count: comments.length };
+        const verify = await redis.get('portfolio:comments');
+        return { success: true, name: safeName, count: comments.length, verifyCount: Array.isArray(verify) ? verify.length : 0 };
       } catch (err) {
         return { success: false, reason: 'save_error', error: String(err) };
       }
