@@ -40,7 +40,13 @@ export default function CommentsSection() {
   useEffect(() => {
     fetch("/api/comments")
       .then((res) => res.json())
-      .then((data) => setComments(Array.isArray(data) ? data : []))
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setComments(data);
+        } else if (data.comments) {
+          setComments(data.comments);
+        }
+      })
       .catch(() => setComments([]))
       .finally(() => setLoading(false));
   }, []);

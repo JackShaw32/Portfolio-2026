@@ -7,8 +7,8 @@ const sanitize = (s: string) =>
 const COMMENTS_KEY = 'portfolio:comments';
 
 function getRedis(): Redis | null {
-  const url = import.meta.env.KV_REST_API_URL;
-  const token = import.meta.env.KV_REST_API_TOKEN;
+  const url = process.env.KV_REST_API_URL;
+  const token = process.env.KV_REST_API_TOKEN;
   if (!url || !token) return null;
   return new Redis({ url, token });
 }
@@ -23,7 +23,7 @@ interface Comment {
 export const GET: APIRoute = async () => {
   const redis = getRedis();
   if (!redis) {
-    return new Response(JSON.stringify([]), {
+    return new Response(JSON.stringify({ error: 'db_not_configured', comments: [] }), {
       headers: { 'Content-Type': 'application/json' },
     });
   }
@@ -33,8 +33,8 @@ export const GET: APIRoute = async () => {
     return new Response(JSON.stringify(comments ?? []), {
       headers: { 'Content-Type': 'application/json' },
     });
-  } catch {
-    return new Response(JSON.stringify([]), {
+  } catch (err) {
+    return new Response(JSON.stringify({ error: 'read_error', comments: [] }), {
       headers: { 'Content-Type': 'application/json' },
     });
   }
@@ -78,10 +78,10 @@ export const POST: APIRoute = async ({ request }) => {
     });
     await redis.set(COMMENTS_KEY, comments);
 
-    return new Response(JSON.stringify({ success: true }), {
+    return new Response(JSON.stringify({ success: true, count: comments.length }), {
       headers: { 'Content-Type': 'application/json' },
     });
-  } catch {
+  } catch (err) {
     return new Response(JSON.stringify({ success: false, error: 'save_error' }), {
       status: 500, headers: { 'Content-Type': 'application/json' },
     });
