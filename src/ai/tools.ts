@@ -1,38 +1,6 @@
 import { jsonSchema } from 'ai';
 import { sendEmail } from '../services/emailService';
 
-const COMMENTS_KEY = 'portfolio:comments';
-
-async function getCommentsFromDb(): Promise<{ name: string; stars: number; message: string; date: string }[]> {
-  const url = process.env.KV_REST_API_URL;
-  const token = process.env.KV_REST_API_TOKEN;
-  if (!url || !token) return [];
-  try {
-    const res = await fetch(`${url}/get/${COMMENTS_KEY}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const data = await res.json();
-    if (Array.isArray(data.result)) return data.result;
-    if (typeof data.result === 'string') { try { return JSON.parse(data.result); } catch { return []; } }
-    return [];
-  } catch { return []; }
-}
-
-async function saveCommentsToDb(comments: { name: string; stars: number; message: string; date: string }[]): Promise<boolean> {
-  const url = process.env.KV_REST_API_URL;
-  const token = process.env.KV_REST_API_TOKEN;
-  if (!url || !token) return false;
-  try {
-    const res = await fetch(`${url}/set/${COMMENTS_KEY}`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(comments),
-    });
-    const data = await res.json();
-    return data.result === 'OK';
-  } catch { return false; }
-}
-
 const sanitizeStr = (s: string) =>
   s.replace(/<[^>]*>/g, '').replace(/[<>"'`]/g, '').slice(0, 300);
 
@@ -468,13 +436,19 @@ export function getToolsDefinition(lang: string) {
       }
 
       try {
-        const comments = await getCommentsFromDb();
-        comments.push({ name: safeName, stars: safeStars, message: safeMessage, date: new Date().toISOString() });
-        const saved = await saveCommentsToDb(comments);
-        if (!saved) return { success: false, reason: 'save_failed' };
-        return { success: true, name: safeName, count: comments.length };
+        const host = process.env.VERCEL_URL || 'localhost:4321';
+        const protocol = process.env.VERCEL_URL ? 'https' : 'http';
+        const res = await fetch(`${protocol}://${host}/api/comments`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: safeName, stars: safeStars, message: safeMessage }),
+        });
+        const result = await res.json();
+        return result.success
+          ? { success: true, name: safeName, count: result.count }
+          : { success: false, reason: result.error || 'save_failed' };
       } catch (err) {
-        return { success: false, reason: 'save_error', error: String(err) };
+        return { success: false, reason: 'network_error', error: String(err) };
       }
     },
   },
