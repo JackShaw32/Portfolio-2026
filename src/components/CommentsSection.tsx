@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { Star, BadgeCheck } from "lucide-react";
+import { Star, BadgeCheck, Languages } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
-import { useReveal } from "@/hooks/useReveal";
+import { translations } from "@/lib/translations";
 
 interface Comment {
   name: string;
@@ -32,10 +32,11 @@ const avatarColors = [
 
 export default function CommentsSection() {
   const ref = useRef<HTMLElement>(null);
-  useReveal(ref);
   const { lang } = useLanguage();
+  const t = translations[lang].comments;
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [translationsMap, setTranslationsMap] = useState<Record<number, { text: string; loading: boolean }>>({});
 
   useEffect(() => {
     fetch("/api/comments")
@@ -51,29 +52,26 @@ export default function CommentsSection() {
       .finally(() => setLoading(false));
   }, []);
 
-  const t = {
-    es: {
-      title: "Lo que dicen",
-      titleHighlight: "sobre mí",
-      subtitle: "Cada comentario cuenta una pequeña historia de colaboración.",
-      empty: "Aún no hay comentarios. ¡Sé el primero en dejar uno!",
-      loading: "Cargando...",
-      verified: "Comentario verificado",
-    },
-    en: {
-      title: "What people say",
-      titleHighlight: "about me",
-      subtitle: "Every comment tells a little story of collaboration.",
-      empty: "No comments yet. Be the first to leave one!",
-      loading: "Loading...",
-      verified: "Verified review",
-    },
-  }[lang];
+  const translateComment = async (index: number, text: string) => {
+    if (translationsMap[index]?.text) {
+      setTranslationsMap(prev => { const next = { ...prev }; delete next[index]; return next; });
+      return;
+    }
+    setTranslationsMap(prev => ({ ...prev, [index]: { text: '', loading: true } }));
+    try {
+      const targetLang = lang === 'en' ? 'es' : 'en';
+      const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text.slice(0, 500))}&langpair=${targetLang === 'es' ? 'en|es' : 'es|en'}`);
+      const data = await res.json();
+      setTranslationsMap(prev => ({ ...prev, [index]: { text: data.responseData?.translatedText || text, loading: false } }));
+    } catch {
+      setTranslationsMap(prev => ({ ...prev, [index]: { text, loading: false } }));
+    }
+  };
 
   return (
     <section ref={ref} id="comments" className="py-24 relative">
       <div className="container mx-auto px-6">
-        <div className="max-w-6xl mx-auto mb-14 reveal">
+        <div className="max-w-6xl mx-auto mb-14">
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-center">
             {t.title}{" "}
             <span className="text-primary">{t.titleHighlight}</span>
@@ -96,8 +94,22 @@ export default function CommentsSection() {
               >
                 <div className="flex flex-col p-6 space-y-4">
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    {comment.message}
+                    {translationsMap[i]?.text || comment.message}
                   </p>
+
+                  <button
+                    onClick={() => translateComment(i, comment.message)}
+                    disabled={translationsMap[i]?.loading}
+                    className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors w-fit"
+                  >
+                    <Languages size={14} />
+                    {translationsMap[i]?.loading
+                      ? (lang === 'en' ? 'Translating...' : 'Traduciendo...')
+                      : translationsMap[i]?.text
+                        ? (lang === 'en' ? 'Show original' : 'Ver original')
+                        : (lang === 'en' ? 'Translate' : 'Traducir')
+                    }
+                  </button>
 
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-3">

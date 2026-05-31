@@ -34,6 +34,7 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
     { href: subPage ? "/" : "#projects",      sectionId: "projects",      label: t.nav.projects },
     { href: subPage ? "/" : "#optimizations", sectionId: "optimizations", label: t.nav.skills },
     { href: subPage ? "/" : "#about",         sectionId: "about",         label: t.nav.about },
+    { href: subPage ? "/" : "#comments",      sectionId: "comments",      label: t.nav.comments },
     { href: subPage ? "/" : "#contact",       sectionId: "contact",       label: t.nav.contact },
   ];
 
