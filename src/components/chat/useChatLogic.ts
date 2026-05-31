@@ -430,6 +430,11 @@ export function useChatLogic(lang: string, defaultWelcomeMsg: string, pageSlug?:
     }
   };
 
+  const submitComment = (data: { name: string; stars: number; message: string }) => {
+    const text = `submitComment(${data.name}, ${data.stars} stars, ${data.message})`;
+    mandarMensaje(undefined, text);
+  };
+
   return {
     open, setOpen,
     expanded, setExpanded,
@@ -442,5 +447,6 @@ export function useChatLogic(lang: string, defaultWelcomeMsg: string, pageSlug?:
     handleRobotClick,
     clearChat,
     mandarMensaje,
+    submitComment,
   };
 }

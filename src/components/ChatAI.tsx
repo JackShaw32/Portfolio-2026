@@ -21,6 +21,7 @@ export default function ChatAI({ slug }: { slug?: string }) {
     handleRobotClick,
     clearChat,
     mandarMensaje,
+    submitComment,
   } = useChatLogic(lang, ch.responses.default, slug);
 
   return (
@@ -49,6 +50,7 @@ export default function ChatAI({ slug }: { slug?: string }) {
         onClearChat={clearChat}
         onInputChange={setInput}
         onSend={mandarMensaje}
+        onSubmitComment={submitComment}
       />
     </>
   );

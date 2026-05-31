@@ -1,13 +1,14 @@
-import { Sparkles, ExternalLink, Mail, Linkedin, FileDown, Globe, Phone, Github, Briefcase, GraduationCap, CheckCircle2, XCircle, Clock, MapPin, TrendingUp, Play, Star } from "lucide-react";
-import React from "react";
+import { Sparkles, ExternalLink, Mail, Linkedin, FileDown, Globe, Phone, Github, Briefcase, GraduationCap, CheckCircle2, XCircle, Clock, MapPin, TrendingUp, Play, Star, Send, X } from "lucide-react";
+import React, { useState } from "react";
 import type { ToolInvocation } from "./types";
 
 interface ToolResultCardProps {
   toolInvocation: ToolInvocation;
   lang: 'es' | 'en';
+  onSubmitComment?: (data: { name: string; stars: number; message: string }) => void;
 }
 
-export default function ToolResultCard({ toolInvocation, lang }: ToolResultCardProps) {
+export default function ToolResultCard({ toolInvocation, lang, onSubmitComment }: ToolResultCardProps) {
   // showProject
   if (toolInvocation.toolName === 'showProject') {
     if (!toolInvocation.result) {
@@ -554,21 +555,7 @@ export default function ToolResultCard({ toolInvocation, lang }: ToolResultCardP
 
   // showCommentForm
   if (toolInvocation.toolName === 'showCommentForm') {
-    return (
-      <div key={toolInvocation.toolCallId} className="w-full sm:min-w-[260px] max-w-[300px] rounded-2xl border border-indigo-500/20 bg-background overflow-hidden shadow-lg animate-in fade-in slide-in-from-bottom-2 mt-1">
-        <div className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 px-4 py-3 border-b border-border/50 flex items-center gap-2">
-          <Star className="w-4 h-4 text-indigo-400" />
-          <h4 className="font-bold text-sm text-foreground">{lang === 'en' ? 'Leave a Review' : 'Dejar una Reseña'}</h4>
-        </div>
-        <div className="p-4">
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            {lang === 'en'
-              ? 'Tell me your name, how many stars (1-5), and your comment. I\'ll submit it for you!'
-              : 'Decime tu nombre, cuántas estrellas (1-5) y tu comentario. ¡Lo envío por vos!'}
-          </p>
-        </div>
-      </div>
-    );
+    return <CommentForm lang={lang} onSubmit={onSubmitComment} />;
   }
 
   // submitComment
@@ -609,6 +596,118 @@ export default function ToolResultCard({ toolInvocation, lang }: ToolResultCardP
   }
 
   return null;
+}
+
+function CommentForm({ lang, onSubmit }: { lang: string; onSubmit?: (data: { name: string; stars: number; message: string }) => void }) {
+  const [name, setName] = useState('');
+  const [stars, setStars] = useState(0);
+  const [hoverStars, setHoverStars] = useState(0);
+  const [message, setMessage] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = () => {
+    if (!name.trim() || !message.trim() || stars === 0) return;
+    onSubmit?.({ name: name.trim(), stars, message: message.trim() });
+    setSubmitted(true);
+  };
+
+  if (submitted) {
+    return (
+      <div className="w-full sm:min-w-[280px] max-w-[320px] rounded-2xl border border-green-500/20 bg-background overflow-hidden shadow-lg animate-in fade-in slide-in-from-bottom-2 mt-1">
+        <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 px-4 py-3 border-b border-border/50 flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 text-green-400" />
+          <h4 className="font-bold text-sm text-foreground">{lang === 'en' ? 'Review submitted!' : '¡Reseña enviada!'}</h4>
+        </div>
+        <div className="p-4">
+          <p className="text-xs text-muted-foreground">
+            {lang === 'en' ? `Thanks, ${name}!` : `¡Gracias, ${name}!`}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const canSubmit = name.trim() && message.trim() && stars > 0;
+
+  return (
+    <div className="w-full sm:min-w-[280px] max-w-[320px] rounded-2xl border border-indigo-500/20 bg-background overflow-hidden shadow-lg animate-in fade-in slide-in-from-bottom-2 mt-1">
+      <div className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 px-4 py-3 border-b border-border/50 flex items-center gap-2">
+        <Star className="w-4 h-4 text-indigo-400" />
+        <h4 className="font-bold text-sm text-foreground">{lang === 'en' ? 'Leave a Review' : 'Dejar una Reseña'}</h4>
+      </div>
+      <div className="p-4 space-y-3">
+        <div>
+          <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 block">
+            {lang === 'en' ? 'Stars' : 'Estrellas'}
+          </label>
+          <div className="flex gap-1">
+            {Array.from({ length: 5 }, (_, i) => (
+              <button
+                key={i}
+                type="button"
+                title={`${i + 1} ${lang === 'en' ? 'star' : 'estrella'}${i > 0 ? 's' : ''}`}
+                aria-label={`${i + 1} ${lang === 'en' ? 'star' : 'estrella'}${i > 0 ? 's' : ''}`}
+                onMouseEnter={() => setHoverStars(i + 1)}
+                onMouseLeave={() => setHoverStars(0)}
+                onClick={() => setStars(i + 1)}
+                className="p-0.5 transition-transform hover:scale-110"
+              >
+                <Star
+                  size={20}
+                  className={`transition-colors ${
+                    i < (hoverStars || stars)
+                      ? 'fill-yellow-400 text-yellow-400'
+                      : 'text-muted-foreground/30'
+                  }`}
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+        <div>
+          <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 block">
+            {lang === 'en' ? 'Name' : 'Nombre'}
+          </label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder={lang === 'en' ? 'Your name' : 'Tu nombre'}
+            maxLength={100}
+            className="w-full bg-muted/50 border border-border/50 rounded-lg px-3 py-2 text-xs text-foreground focus:outline-none focus:border-foreground/40 transition-all"
+          />
+        </div>
+        <div>
+          <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 block">
+            {lang === 'en' ? 'Comment' : 'Comentario'}
+          </label>
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder={lang === 'en' ? 'Write your review...' : 'Escribí tu reseña...'}
+            maxLength={1000}
+            rows={3}
+            className="w-full bg-muted/50 border border-border/50 rounded-lg px-3 py-2 text-xs text-foreground focus:outline-none focus:border-foreground/40 transition-all resize-none"
+          />
+        </div>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={!canSubmit}
+            className={`flex-1 flex items-center justify-center gap-1.5 text-xs font-bold py-2.5 rounded-xl transition-all ${
+              canSubmit
+                ? 'bg-foreground text-background hover:bg-foreground/90 cursor-pointer'
+                : 'bg-muted text-muted-foreground cursor-not-allowed'
+            }`}
+          >
+            <Send className="w-3 h-3" />
+            {lang === 'en' ? 'Submit' : 'Enviar'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function SimonGame({ lang }: { lang: string }) {

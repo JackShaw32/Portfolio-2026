@@ -21,6 +21,7 @@ interface ChatPanelProps {
   onClearChat: () => void;
   onInputChange: (v: string) => void;
   onSend: (e?: React.FormEvent, directText?: string) => void;
+  onSubmitComment?: (data: { name: string; stars: number; message: string }) => void;
 }
 
 export default function ChatPanel({
@@ -37,6 +38,7 @@ export default function ChatPanel({
   onClearChat,
   onInputChange,
   onSend,
+  onSubmitComment,
 }: ChatPanelProps) {
   const panelWidth  = expanded ? "sm:w-[1000px]" : "sm:w-[400px]";
   const panelHeight = expanded ? "sm:h-[85vh]"   : "sm:h-[520px]";
@@ -113,6 +115,7 @@ export default function ChatPanel({
                         key={toolInvocation.toolCallId}
                         toolInvocation={toolInvocation}
                         lang={lang}
+                        onSubmitComment={onSubmitComment}
                       />
                     ))}
                     {msg.content
