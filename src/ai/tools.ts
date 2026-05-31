@@ -1,6 +1,5 @@
 import { jsonSchema } from 'ai';
 import { sendEmail } from '../services/emailService';
-import { Redis } from '@upstash/redis';
 
 const sanitizeStr = (s: string) =>
   s.replace(/<[^>]*>/g, '').replace(/[<>"'`]/g, '').slice(0, 300);
@@ -437,14 +436,18 @@ export function getToolsDefinition(lang: string) {
       }
 
       try {
-        const redis = Redis.fromEnv();
-        const raw = await redis.get('portfolio:comments');
-        const comments: { name: string; stars: number; message: string; date: string }[] = Array.isArray(raw) ? raw : [];
-        comments.push({ name: safeName, stars: safeStars, message: safeMessage, date: new Date().toISOString() });
-        await redis.set('portfolio:comments', comments);
-        return { success: true, name: safeName, count: comments.length };
+        const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:4321';
+        const res = await fetch(`${baseUrl}/api/comments`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: safeName, stars: safeStars, message: safeMessage }),
+        });
+        const result = await res.json();
+        return result.success
+          ? { success: true, name: safeName, count: result.count }
+          : { success: false, reason: result.error || 'save_error' };
       } catch (err) {
-        return { success: false, reason: 'save_error', error: String(err) };
+        return { success: false, reason: 'network_error', error: String(err) };
       }
     },
   },
