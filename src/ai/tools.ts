@@ -1,6 +1,5 @@
 import { jsonSchema } from 'ai';
 import { sendEmail } from '../services/emailService';
-import { Redis } from '@upstash/redis';
 
 const sanitizeStr = (s: string) =>
   s.replace(/<[^>]*>/g, '').replace(/[<>"'`]/g, '').slice(0, 300);
@@ -440,15 +439,29 @@ export function getToolsDefinition(lang: string) {
         const url = process.env.KV_REST_API_URL;
         const token = process.env.KV_REST_API_TOKEN;
         if (!url || !token) {
-          return { success: false, reason: 'db_not_configured', hasUrl: !!url, hasToken: !!token };
+          return { success: false, reason: 'db_not_configured' };
         }
-        const redis = new Redis({ url, token });
-        const raw = await redis.get('portfolio:comments');
-        const comments: { name: string; stars: number; message: string; date: string }[] = Array.isArray(raw) ? raw : [];
+
+        const getRes = await fetch(`${url}/get/portfolio:comments`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const getData = await getRes.json();
+        const comments: { name: string; stars: number; message: string; date: string }[] =
+          Array.isArray(getData.result) ? getData.result : [];
+
         comments.push({ name: safeName, stars: safeStars, message: safeMessage, date: new Date().toISOString() });
-        await redis.set('portfolio:comments', comments);
-        const verify = await redis.get('portfolio:comments');
-        return { success: true, name: safeName, count: comments.length, verifyCount: Array.isArray(verify) ? verify.length : 0 };
+
+        const setRes = await fetch(`${url}/set/portfolio:comments`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(comments),
+        });
+        const setData = await setRes.json();
+
+        return { success: true, name: safeName, count: comments.length, setResult: setData.result };
       } catch (err) {
         return { success: false, reason: 'save_error', error: String(err) };
       }

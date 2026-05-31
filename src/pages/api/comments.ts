@@ -1,21 +1,9 @@
 import type { APIRoute } from 'astro';
-import { Redis } from '@upstash/redis';
 
 const sanitize = (s: string) =>
   s.replace(/<[^>]*>/g, '').replace(/[<>"'`]/g, '').trim();
 
 const COMMENTS_KEY = 'portfolio:comments';
-
-function getRedis(): Redis | null {
-  try {
-    const url = process.env.KV_REST_API_URL;
-    const token = process.env.KV_REST_API_TOKEN;
-    if (!url || !token) return null;
-    return new Redis({ url, token });
-  } catch {
-    return null;
-  }
-}
 
 interface Comment {
   name: string;
@@ -24,30 +12,40 @@ interface Comment {
   date: string;
 }
 
+function getEnv() {
+  return {
+    url: process.env.KV_REST_API_URL,
+    token: process.env.KV_REST_API_TOKEN,
+  };
+}
+
 export const GET: APIRoute = async () => {
-  const redis = getRedis();
-  if (!redis) {
-    return new Response(JSON.stringify({ error: 'db_not_configured' }), {
+  const { url, token } = getEnv();
+  if (!url || !token) {
+    return new Response(JSON.stringify([]), {
       headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
     });
   }
 
   try {
-    const raw = await redis.get(COMMENTS_KEY);
-    const comments: Comment[] = Array.isArray(raw) ? raw : [];
+    const res = await fetch(`${url}/get/${COMMENTS_KEY}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    const comments: Comment[] = Array.isArray(data.result) ? data.result : [];
     return new Response(JSON.stringify(comments), {
       headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
     });
-  } catch (err) {
-    return new Response(JSON.stringify({ error: String(err) }), {
+  } catch {
+    return new Response(JSON.stringify([]), {
       headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
     });
   }
 };
 
 export const POST: APIRoute = async ({ request }) => {
-  const redis = getRedis();
-  if (!redis) {
+  const { url, token } = getEnv();
+  if (!url || !token) {
     return new Response(JSON.stringify({ success: false, error: 'db_not_configured' }), {
       status: 500, headers: { 'Content-Type': 'application/json' },
     });
@@ -74,15 +72,27 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   try {
-    const raw = await redis.get(COMMENTS_KEY);
-    const comments: Comment[] = Array.isArray(raw) ? raw : [];
+    const getRes = await fetch(`${url}/get/${COMMENTS_KEY}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const getData = await getRes.json();
+    const comments: Comment[] = Array.isArray(getData.result) ? getData.result : [];
+
     comments.push({
       name: safeName,
       stars: safeStars,
       message: safeMessage,
       date: new Date().toISOString(),
     });
-    await redis.set(COMMENTS_KEY, comments);
+
+    await fetch(`${url}/set/${COMMENTS_KEY}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(comments),
+    });
 
     return new Response(JSON.stringify({ success: true, count: comments.length }), {
       headers: { 'Content-Type': 'application/json' },
