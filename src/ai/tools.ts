@@ -442,9 +442,9 @@ export function getToolsDefinition(lang: string) {
         const comments: { name: string; stars: number; message: string; date: string }[] = Array.isArray(raw) ? raw : [];
         comments.push({ name: safeName, stars: safeStars, message: safeMessage, date: new Date().toISOString() });
         await redis.set('portfolio:comments', comments);
-        return { success: true, name: safeName };
-      } catch {
-        return { success: false, reason: 'save_error' };
+        return { success: true, name: safeName, count: comments.length };
+      } catch (err) {
+        return { success: false, reason: 'save_error', error: String(err) };
       }
     },
   },

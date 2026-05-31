@@ -35,7 +35,7 @@ export const GET: APIRoute = async () => {
     return new Response(JSON.stringify(comments), {
       headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
     });
-  } catch {
+  } catch (err) {
     return new Response(JSON.stringify([]), {
       headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
     });
