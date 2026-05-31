@@ -32,7 +32,13 @@ export const GET: APIRoute = async () => {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await res.json();
-    return new Response(JSON.stringify({ raw: data, status: res.status }), {
+    let comments: Comment[] = [];
+    if (Array.isArray(data.result)) {
+      comments = data.result;
+    } else if (typeof data.result === 'string') {
+      try { comments = JSON.parse(data.result); } catch { /* ignore */ }
+    }
+    return new Response(JSON.stringify(comments), {
       headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
     });
   } catch {
@@ -90,7 +96,7 @@ export const POST: APIRoute = async ({ request }) => {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(JSON.stringify(comments)),
+      body: JSON.stringify(comments),
     });
     const setText = await setRes.text();
 
