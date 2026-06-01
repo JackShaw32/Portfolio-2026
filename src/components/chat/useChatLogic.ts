@@ -438,6 +438,9 @@ export function useChatLogic(lang: string, defaultWelcomeMsg: string, pageSlug?:
         body: JSON.stringify({ ...data, honeypot: '' }),
       });
       const result = await res.json();
+      if (result.success) {
+        window.dispatchEvent(new CustomEvent('comment-submitted'));
+      }
       const msg = result.success
         ? (lang === 'en' ? `Thanks, ${data.name}! Your review has been saved.` : `¡Gracias, ${data.name}! Tu reseña fue guardada.`)
         : result.error === 'rate_limited'

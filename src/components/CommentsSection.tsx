@@ -58,6 +58,23 @@ export default function CommentsSection() {
       .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    const handler = () => {
+      fetch("/api/comments")
+        .then((res) => res.json())
+        .then((data) => {
+          if (Array.isArray(data)) {
+            setComments(data);
+          } else if (data.comments) {
+            setComments(data.comments);
+          }
+        })
+        .catch(() => {});
+    };
+    window.addEventListener("comment-submitted", handler);
+    return () => window.removeEventListener("comment-submitted", handler);
+  }, []);
+
   const translateComment = async (index: number, text: string) => {
     if (translationsMap[index]?.text) {
       setTranslationsMap(prev => { const next = { ...prev }; delete next[index]; return next; });
