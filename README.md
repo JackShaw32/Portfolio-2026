@@ -63,7 +63,7 @@ Astro renderiza el HTML en el servidor. Solo los componentes React que necesitan
 | Directiva | Cuándo hidrata | Usado en |
 |---|---|---|
 | `client:load` | Inmediatamente | Navbar, Hero, ChatAI |
-| `client:visible` | Al hacer scroll | Skills, Projects, About, Contact |
+| `client:visible` | Al hacer scroll | Skills, Projects, About, Contact, CommentsSection |
 | `client:idle` | Cuando el browser está libre | Footer |
 
 Esto resulta en un sitio con carga inicial muy rápida, ya que la mayoría del contenido llega como HTML puro sin JS.
@@ -100,8 +100,9 @@ educcabral/
 │   │   ├── Optimizations.tsx        # Scores de Lighthouse + tech stack visual
 │   │   ├── About.tsx                # Biografía y foto
 │   │   ├── Contact.tsx              # Formulario y datos de contacto
-│   │   ├── Footer.tsx               # Pie de página
 │   │   ├── ContactModal.tsx         # Modal de contacto reutilizable
+│   │   ├── CommentsSection.tsx      # Sección de reseñas con estrellas
+│   │   ├── Footer.tsx               # Pie de página
 │   │   ├── ProjectDetail.tsx        # Página de detalle de proyecto
 │   │   ├── OGImage.tsx              # Imagen Open Graph generada en el servidor
 │   │   ├── ChatAI.tsx               # Orquestador del chat
@@ -131,10 +132,13 @@ educcabral/
 │   ├── pages/
 │   │   ├── index.astro              # Página principal del portfolio
 │   │   ├── 404.astro                # Página 404 personalizada
+│   │   ├── admin/
+│   │   │   └── comments.astro       # Panel de admin para reseñas
 │   │   ├── projects/
 │   │   │   └── [slug].astro         # Página dinámica de detalle de proyecto
 │   │   └── api/
 │   │       ├── chat.ts              # Endpoint del chatbot con IA
+│   │       ├── comments.ts          # Endpoint CRUD de reseñas (Redis)
 │   │       ├── contact.ts           # Endpoint del formulario de contacto
 │   │       ├── og.ts                # Endpoint de imagen Open Graph
 │   │       └── prompt.ts            # System prompt y constantes del chatbot
@@ -164,11 +168,11 @@ educcabral/
 
 El sitio se compone de una sola página (`/`) con secciones continuas, más páginas de detalle por proyecto (`/projects/[slug]`).
 
-**Hero** — Primera impresión del sitio. Tiene un efecto typewriter que cicla entre 4 roles profesionales y botones de llamada a la acción (ver proyectos y LinkedIn). El fondo combina orbes aurora (violeta/rosa/índigo) con una textura de ruido/grano generada por SVG `feTurbulence + feColorMatrix` que simula partículas difuminadas. En modo oscuro los orbes se ocultan y las partículas se vuelven blancas sobre fondo negro puro, al estilo bun.com. Incluye un badge de disponibilidad laboral.
+**Hero** — Primera impresión del sitio. Tiene un efecto typewriter que cicla entre 4 roles profesionales y botones de llamada a la acción (ver proyectos y LinkedIn). El fondo combina orbes aurora (violeta/rosa/índigo) con una textura de ruido/grano generada por SVG `feTurbulence + feColorMatrix` que simula partículas difuminadas. El heading usa "Construyendo productos web modernos y escalables" / "Building modern and scalable web products" con fuente semibold. En modo oscuro los orbes se ocultan y las partículas se vuelven blancas sobre fondo negro puro, al estilo bun.com. Incluye un badge de disponibilidad laboral.
 
-**Navbar** — Barra fija con auto-ocultamiento al scrollear. Implementa toggle de tema oscuro/claro (guardado en `localStorage`), toggle de idioma ES/EN (sincronizado por `CustomEvent` entre todos los componentes), menú hamburguesa para mobile con panel deslizable, enlace de descarga de CV y botón que abre el `ContactModal`. En desktop muestra un ícono `Terminal` de Lucide como logo personal en la izquierda (en mobile muestra la foto de perfil circular).
+**Navbar** — Barra fija con auto-ocultamiento al scrollear. Implementa toggle de tema oscuro/claro (guardado en `localStorage`), toggle de idioma ES/EN (sincronizado por `CustomEvent` entre todos los componentes), menú hamburguesa para mobile con panel deslizable, enlace de descarga de CV y botón que abre el `ContactModal`. En desktop muestra un ícono `Terminal` de Lucide como logo personal en la izquierda (en mobile muestra la foto de perfil circular). Los links de navegación en mobile usan `<button>` con JS scroll para ocultar `#` de la barra de estado. En sub-páginas (`/projects/[slug]`), los links navegan a `/#seccion` usando View Transitions de Astro. Incluye un manejador global de mousemove que actualiza `--glow-x`/`--glow-y` en elementos `.glass` y `.glow-card` para el efecto de glow que sigue al cursor.
 
-**Skills** — Línea de tiempo de experiencia laboral (Gearthlogic LLC, Freelance) con educación, stats (años de experiencia, idiomas) y botones de contacto rápido (WhatsApp, CV). Incluye tarjetas KPI con sparklines animados (RAF + ease-out cúbico): la línea SVG, los puntos y el contador numérico se sincronizan en el mismo loop de animación usando `pathLength="1000"` y distancias euclidianas acumuladas para el timing de cada punto. El botón "Contactame" abre el `ContactModal` directamente desde la sección.
+**Skills** — Línea de tiempo de experiencia laboral (Gearthlogic LLC, Freelance) con educación, stats (años de experiencia, idiomas) y botones de contacto rápido (WhatsApp, CV, LinkedIn, GitHub). Incluye tarjetas KPI con sparklines animados (RAF + ease-out cúbico): la línea SVG, los puntos y el contador numérico se sincronizan en el mismo loop de animación usando `pathLength="1000"` y distancias euclidianas acumuladas para el timing de cada punto. El botón "Contactame" abre el `ContactModal` directamente desde la sección. Las tarjetas de experiencia, educación y stats tienen la clase `glow-card` con el mismo efecto de glow que sigue al cursor.
 
 **Projects** — Grid de tarjetas de proyectos con animaciones de entrada usando GSAP ScrollTrigger. Cada tarjeta tiene un mockup de browser con imagen interactiva al hover. Los botones llevan al detalle del proyecto o al sitio en producción.
 
@@ -176,9 +180,11 @@ El sitio se compone de una sola página (`/`) con secciones continuas, más pág
 
 **About** — Biografía bilingüe, foto de perfil circular con zoom sutil al hover (`scale-[1.08]` interno, clippeado al círculo), badges flotantes de ubicación y rol, y links a redes sociales.
 
-**Contact** — Cards con datos de contacto (email, LinkedIn, GitHub, ubicación) y formulario completo que envía al endpoint `/api/contact`.
+**Contact** — Cards con datos de contacto (email, LinkedIn, GitHub, ubicación) y formulario completo que envía al endpoint `/api/contact`. Incluye un modal de contacto reutilizable (`ContactModal`) con validación por campo y botón con ícono `ArrowRight`.
 
-**Footer** — Logo, descripción, iconos sociales, links de navegación, lista de tecnologías.
+**CommentsSection** — Sección de reseñas con sistema de estrellas (1-5). Los comentarios se almacenan en Upstash Redis y se muestran con paginación (3 por desktop, 1 por mobile). Cada tarjeta muestra iniciales del autor con avatar de color aleatorio, fecha formateada, badge de "Verified review" y botón de traducción automática ES/EN via MyMemory API. Al enviar un nuevo comentario desde el chat, la sección se actualiza automáticamente sin recargar la página.
+
+**Footer** — Logo, descripción, iconos sociales, links de navegación, lista de tecnologías (incluye Redis).
 
 **EduBot (ChatAI)** — Botón robot SVG animado en la esquina inferior derecha que abre un panel de chat completo con streaming de IA en tiempo real.
 
@@ -189,6 +195,10 @@ El hook `useLanguage` actúa como estado global sin necesitar un store externo. 
 ### Sistema de temas
 
 El tema se detecta al inicio con un script inline en el `<head>` (antes de que el DOM se pinte) para evitar el flash de tema incorrecto. El toggle guarda el valor en `localStorage` y coordina con el `ClientRouter` de Astro para que el tema no se pierda al navegar.
+
+### Efecto de glow que sigue al cursor
+
+Las tarjetas con clase `.glass` (y las targetas con clase `.glow-card`) tienen un pseudo-elemento `::before` con un `radial-gradient` de 350px que sigue al cursor. Un único manejador global de `mousemove` en la Navbar actualiza las propiedades CSS `--glow-x` y `--glow-y` en el elemento `.glass` o `.glow-card` más cercano al cursor. El glow solo es visible al hacer hover (`opacity: 1` en `:hover::before`), manteniendo la interfaz limpia en reposo. El chat AI usa una clase `glass-no-glow` que desactiva tanto el glow como el `cursor: crosshair`.
 
 ### Smooth Scroll (Lenis)
 
@@ -212,8 +222,10 @@ Cuando el usuario vuelve desde una página de detalle de proyecto, se omiten tod
 
 Cuando el usuario navega a un proyecto y regresa, el sitio:
 1. Lee `sessionStorage['return-to-project']` para saber a qué tarjeta de proyecto hacer scroll
-2. Lee `sessionStorage['scroll-to-section']` para navegación desde sub-páginas
+2. Lee `sessionStorage['scroll-to-section']` para navegación desde sub-páginas (legacy)
 3. Usa `data-project-slug` en las tarjetas para encontrar el elemento exacto al que scrollear
+
+Desde sub-páginas, los links de navegación usan `<a href="/#seccion">` para que Astro intercepte el click con View Transitions. En el evento `astro:after-swap` y en la carga inicial, se lee `location.hash` para scrollear suavemente a la sección correspondiente usando Lenis.
 
 ### Página de detalle de proyecto (`/projects/[slug]`)
 
@@ -299,6 +311,14 @@ Response: text/plain streaming
 3. Validación de formato de email con regex
 4. Llamada a `sendEmail()` → Resend API → email a `jackshaw@live.com.ar`
 
+### `GET/POST/DELETE /api/comments` — Reseñas
+
+Gestiona las reseñas de usuarios usando **Upstash Redis** (Vercel KV):
+
+- **GET**: Devuelve el array de comentarios almacenado en la key `portfolio:comments`
+- **POST**: Guarda un nuevo comentario. Incluye rate limiting (1/hora por IP), honeypot anti-bot, sanitización de HTML, detección de duplicados, y validación de campos (nombre ≤100, mensaje ≤1000, estrellas 1-5)
+- **DELETE** (admin): Requiere token `COMMENTS_ADMIN_TOKEN` en header `Authorization`
+
 ### `GET /api/og` — Open Graph dinámico
 
 Genera una imagen PNG de 1200×630px en el servidor usando `@vercel/og` (Edge Function). Renderiza el componente React `OGImage` con degradado metálico y badges de tecnología. Cacheable por CDN.
@@ -345,6 +365,8 @@ EduBot tiene 10 herramientas que el LLM puede invocar. Los resultados se muestra
 | `showRecommendation` | "Por qué contratarlo" con score y secciones (Strengths, Ideal For, Differentiators) |
 | `showArchitecture` | Diagrama de arquitectura por capas del portfolio y proyectos |
 | `sendContactForm` | Recopila nombre/email/mensaje del usuario y envía el email |
+| `showCommentForm` | Renderiza formulario de reseña con estrellas |
+| `submitComment` | Guarda la reseña en Redis |
 
 ### Modelo dual (8b + 70b)
 
@@ -368,6 +390,7 @@ Escribí `/help` en el chat o presioná `/` para ver el menú de comandos dispon
 | `/arch` | Diagrama de arquitectura | API tool |
 | `/profile` | Perfil completo | API tool |
 | `/hire` | Por qué contratarlo | API tool |
+| `/comment` | Dejar reseña | API tool |
 | `/clear` | Limpiar chat | Cliente |
 | `/help` | Mostrar comandos | Cliente |
 | `/go [sección]` | Scroll a sección | Cliente |
@@ -377,6 +400,7 @@ Escribí `/help` en el chat o presioná `/` para ver el menú de comandos dispon
 | `/menu` | Menú navegación | Cliente |
 | `/contactform` | Formulario contacto | Cliente |
 | `/cv` | Descargar CV | Cliente |
+| `/game` | Jugar Simón Dice! | Cliente |
 
 ### Detección de intenciones (`src/ai/intentDetection.ts`)
 
@@ -512,6 +536,10 @@ Genera imágenes PNG en el servidor (Edge Function) desde componentes React. Eli
 
 Más rápido que npm/yarn en instalaciones gracias al store global con hard links. El flag `shamefully-hoist=true` en `.npmrc` garantiza compatibilidad con herramientas que esperan la estructura `node_modules` flat tradicional.
 
+### Upstash Redis — Almacenamiento de reseñas
+
+Base de datos Redis serverless integrada via Vercel KV. Almacena los comentarios de usuarios como un array JSON en una sola key (`portfolio:comments`). Sin conexiones persistentes, sin servidor que mantener, con latencia <5ms.
+
 ### Vercel — Despliegue
 
 Plataforma elegida por su integración nativa con Astro (adaptador oficial), experiencia de deploy zero-config, Edge Functions para el endpoint de OG, y CDN global para todos los assets estáticos. La variable `maxDuration: 30` en el endpoint de chat evita que el timeout por defecto de Vercel (10s) corte el stream de la IA.
@@ -533,6 +561,13 @@ RESEND_API_KEY=re_...
 # Disponibilidad laboral (leído en tiempo real por el chatbot)
 EDUARDO_AVAILABLE=true        # "true" o "false"
 AVAILABLE_FROM=               # Fecha si no está disponible aún
+
+# Upstash Redis (Vercel KV) — Reseñas
+KV_REST_API_URL=https://...   # URL de la API REST de KV
+KV_REST_API_TOKEN=...         # Token de acceso
+
+# Admin — Reseñas
+COMMENTS_ADMIN_TOKEN=...      # Token para eliminar reseñas
 
 # Entorno
 NODE_ENV=development          # Desactiva rate limiting en dev
