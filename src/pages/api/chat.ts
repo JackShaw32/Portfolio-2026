@@ -70,8 +70,8 @@ export const POST: APIRoute = async ({ request }) => {
 
   const errorMessage    = safeLang === 'en' ? ERROR_EN : ERROR_ES;
   const rateLimitMessage = safeLang === 'en'
-    ? '⚠️ The assistant is temporarily busy. Please wait a few seconds and try again.'
-    : '⚠️ El asistente está ocupado en este momento. Esperá unos segundos y volvé a intentarlo.';
+    ? '⚠️ The assistant has reached its daily usage limit. Please try again in about an hour.'
+    : '⚠️ El asistente alcanzó su límite de uso diario. Por favor intentá de nuevo en aproximadamente una hora.';
   const langLock = safeLang === 'en'
     ? '\n\n⚡ LANGUAGE LOCK: This session is in ENGLISH. EVERY response MUST be in English — even for math, greetings, or short answers. Example: "2+2=4. Want to know about Eduardo\'s profile?" NOT "¿Querés saber?". No Spanish. Zero exceptions.'
     : '\n\n⚡ IDIOMA LOCK: Esta sesión es en ESPAÑOL RIOPLATENSE. TODA respuesta debe ser en español con "vos". Ejemplo: "2+2=4. ¿Querés saber algo sobre el perfil de Eduardo?". Sin excepciones.';
