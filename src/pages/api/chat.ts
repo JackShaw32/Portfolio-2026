@@ -190,29 +190,27 @@ export const POST: APIRoute = async ({ request }) => {
 
   const stepOpts = { forcedTool, multiProject, isSendMsg, isDataCollectionTurn, isContactMessageStep };
 
-  function buildStreamResponse(
+  async function buildStreamResponse(
     result: Awaited<ReturnType<typeof streamText<any>>>,
     tools?: typeof toolsDefinition,
   ): Promise<Response> {
-    return new Promise(async (resolve) => {
-      const parts: string[] = [];
-      try {
-        await pipeStreamToController(
-          result, { enqueue: (chunk: Uint8Array) => { parts.push(new TextDecoder().decode(chunk)); } } as any,
-          new TextEncoder(), tools,
-        );
-      } catch (streamErr) {
-        const isRateLimit = (streamErr as any)?.statusCode === 429 ||
-                            String((streamErr as any)?.message).includes('Rate limit') ||
-                            String((streamErr as any)?.message).includes('rate_limit');
-        if (isRateLimit) {
-          markKeyCooldown(getKeyIdx(), streamErr);
-          rotateKey();
-        }
-        parts.push(`0:${JSON.stringify(isRateLimit ? rateLimitMessage : errorMessage)}\n`);
+    const parts: string[] = [];
+    try {
+      await pipeStreamToController(
+        result, { enqueue: (chunk: Uint8Array) => { parts.push(new TextDecoder().decode(chunk)); } } as any,
+        new TextEncoder(), tools,
+      );
+    } catch (streamErr) {
+      const isRateLimit = (streamErr as any)?.statusCode === 429 ||
+                          String((streamErr as any)?.message).includes('Rate limit') ||
+                          String((streamErr as any)?.message).includes('rate_limit');
+      if (isRateLimit) {
+        markKeyCooldown(getKeyIdx(), streamErr);
+        rotateKey();
       }
-      resolve(new Response(parts.join(''), { headers: streamResponseHeaders() }));
-    });
+      parts.push(`0:${JSON.stringify(isRateLimit ? rateLimitMessage : errorMessage)}\n`);
+    }
+    return new Response(parts.join(''), { headers: streamResponseHeaders() });
   }
 
   function streamResponseHeaders() {
@@ -254,6 +252,12 @@ export const POST: APIRoute = async ({ request }) => {
         return new Response(errorMessage, { headers: streamResponseHeaders() });
       }
     }
+  }
+
+  if (!primaryKeySlot && groqKeyPool.length > 0) {
+    return new Response(errorStream(rateLimitMessage), {
+      headers: streamResponseHeaders(),
+    });
   }
 
   try {
