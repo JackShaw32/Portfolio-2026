@@ -4,11 +4,8 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { translations } from "@/lib/translations";
 
 const roles = [
-  "Software Engineer",
-  "Full Stack Developer",
-  "React & Next.js Developer",
-  "Node.js Backend Developer",
-  "E-commerce Developer"
+  "Full Stack Software Engineer",
+  "Building Web Products"
 ];
 
 export default function Hero() {
@@ -51,11 +48,11 @@ export default function Hero() {
       </div>
 
       <div
-        className="hero-noise-light dark:hidden absolute inset-0 pointer-events-none opacity-[0.6]"
+        className="hero-noise-light dark:hidden absolute inset-0 pointer-events-none opacity-[0.7]"
         aria-hidden="true"
       />
       <div
-        className="hero-noise-dark hidden dark:block absolute inset-0 pointer-events-none opacity-[0.4]"
+        className="hero-noise-dark hidden dark:block absolute inset-0 pointer-events-none opacity-[0.5]"
         aria-hidden="true"
       />
 
@@ -73,7 +70,7 @@ export default function Hero() {
 
           <div className="mb-4">
             <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-4">
-              <span className="scroll-m-20 text-5xl font-heading font-bold lg:text-7xl text-balance max-w-screen-lg text-metallic inline-block leading-tight">
+              <span className="scroll-m-20 text-5xl font-heading font-semibold lg:text-7xl text-balance max-w-screen-lg text-metallic inline-block leading-tight lg:leading-[1]">
                 {t.hero.heading}
               </span>
             </h1>
@@ -87,24 +84,12 @@ export default function Hero() {
             </div>
           </div>
 
-          <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-12 font-light text-balance">
-            {lang === 'es' ? <>
-              <span className="text-foreground/80 font-medium">Software Engineer</span> especializado en{" "}
-              <span className="text-foreground/80 font-medium">Full Stack Development</span>,{" "}
-              <span className="text-foreground/80 font-medium">e-commerce</span> y{" "}
-              <span className="text-foreground/80 font-medium">productos web modernos</span>.
-            </> : <>
-              <span className="text-foreground/80 font-medium">Software Engineer</span> specialized in{" "}
-              <span className="text-foreground/80 font-medium">Full Stack Development</span>,{" "}
-              <span className="text-foreground/80 font-medium">e-commerce</span> and{" "}
-              <span className="text-foreground/80 font-medium">modern web products</span>.
-            </>}
-          </p>
+
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
             <a
               href="#projects"
-              className="group/btn bg-foreground text-background hover:opacity-85 font-bold px-8 py-4 rounded-2xl text-sm inline-flex items-center justify-center gap-2 transition-all duration-300 ease-out cursor-pointer"
+              className="group/btn bg-foreground text-background hover:opacity-85 font-bold px-6 py-3 rounded-2xl text-sm inline-flex items-center justify-center gap-2 transition-all duration-300 ease-out cursor-pointer"
             >
               {t.hero.viewProjects}
               <ArrowRight className="w-4 h-4 transition-transform duration-300 ease-out group-hover/btn:translate-x-1" />
@@ -113,7 +98,7 @@ export default function Hero() {
               href="https://www.linkedin.com/in/raul-eduardo-cabral/"
               target="_blank"
               rel="noopener noreferrer"
-              className="group/linkedin glass hover:bg-foreground/5 text-foreground font-bold px-8 py-4 rounded-2xl text-sm inline-flex items-center justify-center transition-all duration-300 ease-out gap-2 border border-border/50 hover:border-foreground/30 cursor-pointer"
+              className="group/linkedin glass hover:bg-foreground/5 text-foreground font-bold px-6 py-3 rounded-2xl text-sm inline-flex items-center justify-center transition-all duration-300 ease-out gap-2 border border-border/50 hover:border-foreground/30 cursor-pointer"
             >
               <Linkedin className="w-4 h-4 transition-transform duration-300 ease-out group-hover/linkedin:scale-110" />
               {t.hero.connectLinkedIn}

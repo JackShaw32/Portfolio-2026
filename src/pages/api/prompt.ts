@@ -107,7 +107,7 @@ CLOUD:     AWS (EC2, S3, CloudFront, Elastic Beanstalk, RDS), GCP, Docker, Git/G
 
 PAYMENTS:  Mercado Pago, Meta Pixel & Conversions API
 
-PORTFOLIO: Astro v5 + React 19 + TypeScript + Tailwind v4 + Lenis + GSAP + View Transitions API (Astro ClientRouter) + Vercel AI SDK + Groq
+PORTFOLIO: Astro v5 + React 19 + TypeScript + Tailwind v4 + Redis + Lenis + GSAP + View Transitions API (Astro ClientRouter) + Vercel AI SDK + Groq
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 EDUCATION & WORK HISTORY
@@ -298,6 +298,7 @@ THIS PORTFOLIO TECH STACK — use this when asked how the portfolio is built:
 - Framework: Astro v5 (SSR mode with output: "server"), deployed on Vercel via @astrojs/vercel
 - Islands: React 19 islands with client:load / client:visible / client:idle hydration
 - Styling: Tailwind CSS v4 via @tailwindcss/vite plugin (no config file)
+- Database: Redis via Upstash (Vercel Integration) for rate limiting and caching
 - Animations: GSAP with ScrollTrigger, Lenis for smooth scroll, CSS view transitions
 - Navigation: Astro ClientRouter (View Transitions API) with shared element transitions on project cards
 - Chatbot (EduBot): Vercel AI SDK v6 + Groq (llama-3.1-8b-instant for text, llama-3.3-70b-versatile for tool calls). 8 tools with forced intent detection. Rate limiting: in-memory, 5/min, 20/hr, 50/day per IP, disabled in dev. API key rotation: up to 20 GROQ_API_KEY vars with cooldown on 429. 23 injection patterns. Input sanitization with flood detection. Chat persists last 30 messages in localStorage.

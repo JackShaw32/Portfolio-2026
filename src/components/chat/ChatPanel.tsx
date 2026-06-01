@@ -78,7 +78,7 @@ export default function ChatPanel({
           {isLoading && <div className="absolute -inset-[3px] rounded-3xl pointer-events-none animate-siri-glow-pulse siri-glow-border" />}
           <div className="absolute inset-[1.5px] rounded-[23px] bg-background" />
 
-          <div className="glass rounded-[23px] overflow-hidden flex flex-col relative z-10 h-full w-full">
+          <div className="glass glass-no-glow rounded-[23px] overflow-hidden flex flex-col relative z-10 h-full w-full">
             <div className="flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 border-b border-border/50 bg-muted/30 flex-shrink-0">
               <div className="flex items-center gap-3">
                 <div className="relative">
@@ -122,7 +122,7 @@ export default function ChatPanel({
                       && !/<?function[=(\/]/.test(msg.content)
                       && !/^\s*(sendContactForm|showProject|showContact|showSkills|showExperience|showAvailability|submitComment)\b/.test(msg.content)
                       && (
-                        <div className={`rounded-2xl px-4 py-3 text-[13px] sm:text-sm leading-relaxed font-light whitespace-pre-wrap ${msg.role === "assistant" ? "bg-muted/50 text-foreground rounded-tl-sm" : "bg-foreground/10 text-foreground border border-foreground/10 rounded-tr-sm break-words"}`}>
+                        <div className={`rounded-2xl px-4 py-3 text-[13px] sm:text-sm leading-relaxed font-light whitespace-pre-wrap ${msg.role === "assistant" ? "bg-muted/50 text-foreground rounded-tl-sm font-mono" : "bg-foreground/10 text-foreground border border-foreground/10 rounded-tr-sm break-words"}`}>
                           {msg.content}
                         </div>
                       )}

@@ -1,12 +1,12 @@
 export const en = {
     nav: {
       home: "Home",
-      about: "About me",
+      about: "About Me",
       skills: "Skills",
       projects: "Projects",
       chat: "AI Chat",
       contact: "Contact",
-      comments: "Comments",
+      comments: "Feedback",
       downloadCV: "Download CV",
       contactBtn: "Contact",
       navigation: "Navigation",
@@ -18,7 +18,7 @@ export const en = {
     },
     hero: {
       available: "Available for new challenges",
-      heading: "Scalable web solutions with impact",
+      heading: "Building modern and scalable web products",
       description:
         "Software Engineer specialized in Full Stack Development, e-commerce and modern web products.",
       viewProjects: "View my projects",
@@ -26,7 +26,7 @@ export const en = {
     },
     about: {
       title: "About",
-      titleHighlight: "me",
+      titleHighlight: "Me",
       bio1: "My name is Eduardo Cabral and I'm a software developer based in Argentina. I got into programming out of curiosity: I wanted to understand how applications work under the hood and how the systems we use every day on the internet are built.",
       bio2: "Today I work mainly with JavaScript, React and Node.js, building full-stack web applications and digital products. One of my standout projects is an e-commerce platform built from scratch with full-stack architecture, secure authentication and online payments.",
       bio3: "When I'm not coding, I'm usually learning new technologies or working on personal projects. My goal is to keep growing as a developer and contribute to projects that solve real problems with technology.",
@@ -79,10 +79,10 @@ export const en = {
       ],
     },
     projects: {
-      title: "My Projects.. ",
-      titleHighlight: "My Work",
+      title: "Featured Projects",
+      titleHighlight: "",
       subtitle:
-        "Every project is a challenge; my approach, a solid and scalable solution.",
+        "Selected applications and digital products I’ve built.",
       keyFeatures: "Key Features:",
       visitSite: "Visit live website",
       viewProject: "View Project",
@@ -390,15 +390,15 @@ export const en = {
         { name: "Skills", href: "#optimizations" },
         { name: "Projects", href: "#projects" },
         { name: "About Me", href: "#about" },
-        { name: "Comments", href: "#comments" },
+        { name: "Feedback", href: "#comments" },
         { name: "Contact", href: "#contact" },
       ],
     },
     comments: {
-      title: "What they say",
-      titleHighlight: "about working with me",
-      subtitle: "Every project is a story with a happy ending.",
-      empty: "No testimonials yet. Be the first to leave one!",
+      title: "Feedback",
+      titleHighlight: "",
+      subtitle: "",
+      empty: "",
       loading: "Loading...",
       verified: "Verified review",
     },

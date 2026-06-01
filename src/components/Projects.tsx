@@ -95,11 +95,11 @@ export default function Projects() {
     <section ref={sectionRef} id="projects" className="py-16 md:py-32 relative">
       <div className="container mx-auto px-6 relative z-10">
 
-        <div className="projects-heading opacity-0 text-center mb-16 md:mb-28 flex flex-col items-center">
-          <h2 className="text-[clamp(1.2rem,6vw,2rem)] sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-foreground mb-4 md:mb-6 whitespace-nowrap">
+        <div className="projects-heading opacity-0 text-center mb-10 md:mb-12 flex flex-col items-center">
+          <h2 className="text-[clamp(1.2rem,6vw,2rem)] sm:text-4xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-1 md:mb-1 leading-tight whitespace-nowrap">
               {pr.title}<span className="text-primary">{pr.titleHighlight}</span>
           </h2>
-          <p className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-foreground to-pink-500 text-sm sm:text-base md:text-lg max-w-2xl mx-auto font-medium leading-relaxed">
+          <p className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-foreground to-violet-500 text-sm sm:text-base md:text-lg max-w-2xl mx-auto font-medium leading-relaxed">
             {pr.subtitle}
           </p>
         </div>
@@ -181,7 +181,7 @@ export default function Projects() {
                   <div className="flex flex-row items-center gap-2">
                     <a
                       href={`/projects/${project.slug}`}
-                      className="flex-1 flex items-center justify-center gap-2 bg-foreground text-background hover:bg-foreground/90 px-4 py-2.5 sm:px-6 sm:py-3.5 rounded-2xl text-xs sm:text-sm font-bold transition-all duration-300 shadow-xl shadow-foreground/10 group/btn"
+                      className="flex-1 flex items-center justify-center gap-2 bg-foreground text-background hover:bg-foreground/90 px-4 py-2.5 sm:px-6 sm:py-3.5 rounded-2xl text-xs sm:text-sm font-bold transition-all duration-300 shadow-xl shadow-foreground/10 group/btn cursor-pointer"
                       aria-label={`${pr.viewDetails} - ${project.title}`}
                     >
                       {pr.viewDetails}
@@ -191,7 +191,7 @@ export default function Projects() {
                       href={project.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 flex items-center justify-center gap-2 glass hover:bg-foreground/5 text-foreground border border-border/50 hover:border-foreground/30 px-4 py-2.5 sm:px-6 sm:py-3.5 rounded-2xl text-xs sm:text-sm font-bold transition-all duration-300"
+                      className="flex-1 flex items-center justify-center gap-2 glass hover:bg-foreground/5 text-foreground border border-border/50 hover:border-foreground/30 px-4 py-2.5 sm:px-6 sm:py-3.5 rounded-2xl text-xs sm:text-sm font-bold transition-all duration-300 cursor-pointer"
                       aria-label={`${pr.visitSite} - ${project.title}`}
                     >
                       <ExternalLink className="w-3.5 h-3.5" />

@@ -1,4 +1,4 @@
-const techStack = ['React', 'Node.js', 'TypeScript', 'MongoDB', 'Next.js'];
+const techStack = ['React', 'Node.js', 'TypeScript', 'Redis', 'MongoDB', 'Next.js'];
 
 export function OGImage({ lang = 'es' }: { lang?: string }) {
   const isEn = lang === 'en';
@@ -23,7 +23,7 @@ export function OGImage({ lang = 'es' }: { lang?: string }) {
         </div>
 
         <div tw="flex text-3xl text-white/50 leading-relaxed max-w-[760px]">
-          {isEn ? 'Scalable Web Solutions with Impact' : 'Soluciones Web Escalables con Impacto'}
+          {isEn ? 'Building modern and scalable web products' : 'Construyendo productos web modernos y escalables'}
         </div>
 
         <div tw="flex gap-2.5 mt-2">

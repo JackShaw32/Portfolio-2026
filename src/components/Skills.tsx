@@ -167,7 +167,7 @@ export default function Skills() {
             href="https://api.whatsapp.com/send/?phone=5493518588034&text&type=phone_number&app_absent=0"
             target="_blank"
             rel="noopener noreferrer"
-            className="glass flex items-center gap-4 px-6 py-5 rounded-3xl border border-foreground/10 hover:border-green-500/40 hover:bg-green-500/5 transition-all duration-300 group"
+            className="glass flex items-center gap-4 px-6 py-5 rounded-3xl border border-foreground/10 hover:border-green-500/40 hover:bg-green-500/5 transition-all duration-300 group cursor-pointer"
           >
             <div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center group-hover:bg-green-500/20 transition-colors flex-shrink-0">
               <svg className="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="currentColor">
@@ -214,7 +214,7 @@ export default function Skills() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8 reveal">
-            <div className="bg-background hover:bg-foreground/5 dark:bg-white/[0.04] dark:backdrop-blur-xl rounded-3xl p-8 border border-foreground/5 hover:border-foreground/10 transition-all duration-300 h-full">
+            <div className="glow-card bg-background hover:bg-foreground/5 dark:bg-white/[0.04] dark:backdrop-blur-xl rounded-3xl p-8 border border-foreground/5 hover:border-foreground/10 transition-all duration-300 h-full">
               <div className="flex items-center gap-3 mb-8">
                 <Briefcase className="w-5 h-5 text-primary" />
                 <h2 className="font-mono text-sm font-bold uppercase tracking-wider">{sk.workExperience}</h2>
@@ -270,7 +270,7 @@ export default function Skills() {
             </div>
 
             <div className="flex flex-col gap-6">
-              <div className="bg-background hover:bg-foreground/5 dark:bg-white/[0.04] dark:backdrop-blur-xl rounded-3xl p-8 border border-foreground/5 hover:border-foreground/10 transition-all duration-300 h-full">
+              <div className="glow-card bg-background hover:bg-foreground/5 dark:bg-white/[0.04] dark:backdrop-blur-xl rounded-3xl p-8 border border-foreground/5 hover:border-foreground/10 transition-all duration-300 h-full">
                 <div className="flex items-center gap-3 mb-8">
                   <GraduationCap className="w-5 h-5 text-primary" />
                   <h2 className="font-mono text-sm font-bold uppercase tracking-wider">{sk.education}</h2>
@@ -292,11 +292,11 @@ export default function Skills() {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-background hover:bg-foreground/5 dark:bg-white/[0.04] dark:backdrop-blur-xl rounded-2xl p-6 flex flex-col justify-center items-center text-center border border-foreground/5 transition-all duration-300 hover:bg-primary/5">
+                <div className="glow-card bg-background hover:bg-foreground/5 dark:bg-white/[0.04] dark:backdrop-blur-xl rounded-2xl p-6 flex flex-col justify-center items-center text-center border border-foreground/5 transition-all duration-300 hover:bg-primary/5">
                   <span className="text-4xl font-black mb-1">3+</span>
                   <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">{sk.yearsExp}</span>
                 </div>
-                <div className="bg-background hover:bg-foreground/5 dark:bg-white/[0.04] dark:backdrop-blur-xl rounded-2xl p-6 flex flex-col justify-center items-center text-center border border-foreground/5 transition-all duration-300 hover:bg-primary/5">
+                <div className="glow-card bg-background hover:bg-foreground/5 dark:bg-white/[0.04] dark:backdrop-blur-xl rounded-2xl p-6 flex flex-col justify-center items-center text-center border border-foreground/5 transition-all duration-300 hover:bg-primary/5">
                   <Languages className="w-6 h-6 text-primary mb-2" />
                   <span className="text-xs text-muted-foreground leading-tight font-medium">{sk.languages}</span>
                 </div>

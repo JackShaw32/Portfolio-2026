@@ -154,7 +154,7 @@ export default function Optimizations() {
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16 reveal flex flex-col items-center">
-          <h2 className="text-[clamp(1.5rem,7vw,3rem)] md:text-5xl font-bold mb-4 md:mb-6 tracking-tight whitespace-nowrap">
+          <h2 className="text-[clamp(1.5rem,7vw,3rem)] md:text-5xl font-bold mb-1 md:mb-2 tracking-tight whitespace-nowrap">
             <span>{op.title}</span><span className="text-green-500">{op.titleHighlight}</span>
           </h2>
           <p className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-foreground to-green-500 max-w-2xl mx-auto font-medium text-sm sm:text-base md:text-lg drop-shadow-sm">
@@ -234,7 +234,7 @@ export default function Optimizations() {
                   <div
                     key={tech.name}
                     title={tech.name}
-                    className="flex flex-col items-center gap-1.5 p-2 rounded-xl hover:bg-foreground/5 transition-colors cursor-default group"
+                    className="flex flex-col items-center gap-1.5 p-2 rounded-xl hover:bg-foreground/5 transition-colors cursor-crosshair group"
                   >
                     {tech.icon2 ? (
                       <div className="flex items-center gap-0.5 [@media(hover:hover)]:opacity-40 [@media(hover:hover)]:grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-200 group-hover:scale-110">

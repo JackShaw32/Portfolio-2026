@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { X, Send, Mail, Linkedin, Github, CheckCircle, Lock } from "lucide-react";
+import { X, Mail, Linkedin, Github, CheckCircle, Lock, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { translations } from "@/lib/translations";
 
@@ -10,6 +10,7 @@ interface ContactModalProps {
 
 export default function ContactModal({ open, onClose }: ContactModalProps) {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [errors, setErrors] = useState<{ name?: string; email?: string; message?: string }>({});
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -31,6 +32,22 @@ export default function ContactModal({ open, onClose }: ContactModalProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrors({});
+
+    const newErrors: typeof errors = {};
+    if (!form.name.trim()) newErrors.name = lang === "es" ? "El nombre es obligatorio" : "Name is required";
+    if (!form.email.trim()) {
+      newErrors.email = lang === "es" ? "El correo es obligatorio" : "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
+      newErrors.email = lang === "es" ? "Correo inválido" : "Invalid email";
+    }
+    if (!form.message.trim()) newErrors.message = lang === "es" ? "El mensaje es obligatorio" : "Message is required";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     setIsLoading(true);
     setError("");
     try {
@@ -55,6 +72,7 @@ export default function ContactModal({ open, onClose }: ContactModalProps) {
   const reset = () => {
     setSubmitted(false);
     setError("");
+    setErrors({});
     setForm({ name: "", email: "", message: "" });
   };
 
@@ -113,12 +131,13 @@ export default function ContactModal({ open, onClose }: ContactModalProps) {
                   </label>
                   <input
                     type="text"
-                    required
                     value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+
+                    onChange={(e) => { setForm({ ...form, name: e.target.value }); setErrors({ ...errors, name: undefined }); }}
                     placeholder={ct.namePlaceholder}
                     className="w-full bg-muted/50 border border-border/50 rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-foreground/40 focus:ring-1 focus:ring-foreground/20 transition-all"
                   />
+                  {errors.name && <p className="text-xs text-red-500 mt-1.5">{errors.name}</p>}
                 </div>
                 <div>
                   <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 block">
@@ -126,12 +145,13 @@ export default function ContactModal({ open, onClose }: ContactModalProps) {
                   </label>
                   <input
                     type="email"
-                    required
                     value={form.email}
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+
+                    onChange={(e) => { setForm({ ...form, email: e.target.value }); setErrors({ ...errors, email: undefined }); }}
                     placeholder={ct.emailPlaceholder}
                     className="w-full bg-muted/50 border border-border/50 rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-foreground/40 focus:ring-1 focus:ring-foreground/20 transition-all"
                   />
+                  {errors.email && <p className="text-xs text-red-500 mt-1.5">{errors.email}</p>}
                 </div>
               </div>
               <div>
@@ -139,13 +159,14 @@ export default function ContactModal({ open, onClose }: ContactModalProps) {
                   {ct.messageLabel}
                 </label>
                 <textarea
-                  required
                   value={form.message}
-                  onChange={(e) => setForm({ ...form, message: e.target.value })}
+
+                  onChange={(e) => { setForm({ ...form, message: e.target.value }); setErrors({ ...errors, message: undefined }); }}
                   placeholder={ct.messagePlaceholder}
                   rows={4}
                   className="w-full bg-muted/50 border border-border/50 rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-foreground/40 focus:ring-1 focus:ring-foreground/20 transition-all resize-none"
                 />
+                {errors.message && <p className="text-xs text-red-500 mt-1.5">{errors.message}</p>}
               </div>
 
               <div className="flex items-center gap-3 pt-1">
@@ -173,10 +194,10 @@ export default function ContactModal({ open, onClose }: ContactModalProps) {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="bg-foreground text-background hover:bg-foreground/90 disabled:opacity-60 font-medium px-7 py-3 rounded-xl text-sm inline-flex items-center gap-2 transition-all duration-300 group"
+                  className="group/btn bg-foreground text-background hover:opacity-85 disabled:opacity-60 font-medium px-5 py-2.5 rounded-xl text-sm inline-flex items-center gap-2 transition-all duration-300 cursor-pointer"
                 >
                   {isLoading ? ct.sendingBtn : ct.sendBtn}
-                  <Send className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
                 </button>
               </div>
             </form>

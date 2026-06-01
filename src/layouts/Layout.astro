@@ -275,6 +275,42 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
 
       initLenis();
 
+      function scrollToHash() {
+        var section = sessionStorage.getItem('scroll-to-section');
+        if (section) {
+          sessionStorage.removeItem('scroll-to-section');
+          sessionStorage.removeItem('return-to-project');
+          setTimeout(function() {
+            var l = window.lenis;
+            if (!l) return;
+            if (section === 'top') {
+              l.scrollTo(0, { immediate: true });
+            } else {
+              var sectionEl = document.getElementById(section!);
+              if (sectionEl) { l.scrollTo(sectionEl, { immediate: true }); }
+            }
+          }, 100);
+          return;
+        }
+
+        var hash = location.hash;
+        if (hash && hash !== '#') {
+          var target = hash.slice(1);
+          setTimeout(function() {
+            var l = window.lenis;
+            if (!l) return;
+            if (target === 'top') {
+              l.scrollTo(0, { immediate: true });
+            } else {
+              var sectionEl = document.getElementById(target);
+              if (sectionEl) { l.scrollTo(sectionEl, { immediate: true }); }
+            }
+          }, 100);
+        }
+      }
+
+      scrollToHash();
+
       document.addEventListener('astro:before-swap', destroyLenis);
       document.addEventListener('astro:after-swap', initLenis);
     </script>
@@ -365,6 +401,22 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
               l.scrollTo(0, { immediate: true });
             } else {
               var sectionEl = document.getElementById(section!);
+              if (sectionEl) { l.scrollTo(sectionEl, { immediate: true }); }
+            }
+          }, 100);
+          return;
+        }
+
+        var hash = location.hash;
+        if (hash && hash !== '#') {
+          var target = hash.slice(1);
+          setTimeout(function() {
+            var l = window.lenis;
+            if (!l) return;
+            if (target === 'top') {
+              l.scrollTo(0, { immediate: true });
+            } else {
+              var sectionEl = document.getElementById(target);
               if (sectionEl) { l.scrollTo(sectionEl, { immediate: true }); }
             }
           }, 100);

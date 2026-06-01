@@ -360,10 +360,57 @@
     backdrop-filter: blur(16px);
     border: 1px solid hsl(var(--glass-border));
     box-shadow: var(--shadow-card);
+    position: relative;
+    cursor: crosshair;
   }
+
+  .glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(350px circle at var(--glow-x, 50%) var(--glow-y, 50%), color-mix(in srgb, var(--foreground) 8%, transparent), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .glass:hover::before {
+    opacity: 1;
+  }
+
+  .glow-card {
+    position: relative;
+    cursor: crosshair;
+  }
+
+  .glow-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(350px circle at var(--glow-x, 50%) var(--glow-y, 50%), color-mix(in srgb, var(--foreground) 8%, transparent), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .glow-card:hover::before {
+    opacity: 1;
+  }
+
   .glass:hover {
-    background: hsl(var(--glass-hover));
-    border-color: hsl(0, 0%, 100%, 0.15);
+    border-color: hsl(var(--glass-border-hover));
+  }
+
+  .glass-no-glow {
+    cursor: default;
+    border: none;
+  }
+  .glass-no-glow::before {
+    display: none;
   }
 
   .gradient-text {
@@ -374,6 +421,11 @@
   }
 
   .text-metallic {
+    color: #000;
+  }
+
+  .dark .text-metallic {
+    color: transparent;
     background: var(--gradient-metallic);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -460,6 +512,7 @@
   .nav-delay-3 { transition-delay: 250ms; }
   .nav-delay-4 { transition-delay: 300ms; }
   .nav-delay-5 { transition-delay: 350ms; }
+  .nav-delay-6 { transition-delay: 400ms; }
   .nav-delay-none { transition-delay: 0ms; }
 
   .delay-0   { transition-delay: 0ms; }

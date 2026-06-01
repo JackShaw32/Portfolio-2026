@@ -29,14 +29,37 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
   ];
 
   const mobileNavLinks = [
-    { href: subPage ? "/" : "#top",           sectionId: "top",           label: t.nav.home },
-    { href: subPage ? "/" : "#skills",        sectionId: "skills",        label: t.nav.trajectory },
-    { href: subPage ? "/" : "#projects",      sectionId: "projects",      label: t.nav.projects },
-    { href: subPage ? "/" : "#optimizations", sectionId: "optimizations", label: t.nav.skills },
-    { href: subPage ? "/" : "#about",         sectionId: "about",         label: t.nav.about },
-    { href: subPage ? "/" : "#comments",      sectionId: "comments",      label: t.nav.comments },
-    { href: subPage ? "/" : "#contact",       sectionId: "contact",       label: t.nav.contact },
+    { href: subPage ? "/#top" : "#top",           sectionId: "top",           label: t.nav.home },
+    { href: subPage ? "/#skills" : "#skills",     sectionId: "skills",        label: t.nav.trajectory },
+    { href: subPage ? "/#projects" : "#projects", sectionId: "projects",      label: t.nav.projects },
+    { href: subPage ? "/#optimizations" : "#optimizations", sectionId: "optimizations", label: t.nav.skills },
+    { href: subPage ? "/#about" : "#about",       sectionId: "about",         label: t.nav.about },
+    { href: subPage ? "/#comments" : "#comments", sectionId: "comments",      label: t.nav.comments },
+    { href: subPage ? "/#contact" : "#contact",   sectionId: "contact",       label: t.nav.contact },
   ];
+
+  const navigateHome = (sectionId: string) => {
+    const a = document.createElement("a");
+    a.href = "/#" + sectionId;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  const scrollToSection = (sectionId: string) => {
+    if (subPage) {
+      navigateHome(sectionId);
+    } else {
+      const lenis = (window as any).lenis;
+      if (lenis) {
+        lenis.scrollTo(`#${sectionId}`, sectionId === "top" ? { immediate: true } : { duration: 1.2 });
+      } else {
+        const el = document.getElementById(sectionId);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+    setMenuOpen(false);
+  };
 
   const saveSectionAndClose = (sectionId: string) => {
     if (subPage) sessionStorage.setItem('scroll-to-section', sectionId);
@@ -77,6 +100,18 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
   }, [menuOpen]);
 
   useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      const el = (e.target as HTMLElement).closest<HTMLElement>('.glass, .glow-card');
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      el.style.setProperty('--glow-x', `${((e.clientX - r.left) / r.width) * 100}%`);
+      el.style.setProperty('--glow-y', `${((e.clientY - r.top) / r.height) * 100}%`);
+    };
+    document.addEventListener('mousemove', handler, { passive: true });
+    return () => document.removeEventListener('mousemove', handler);
+  }, []);
+
+  useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
@@ -109,7 +144,7 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
       >
         <div className="w-full px-4 lg:px-6 py-4 flex flex-row items-center justify-between">
 
-          <a className="flex items-center gap-3 group" href={subPage ? "/" : "#top"} onClick={() => saveSectionAndClose('top')}>
+          <button className="flex items-center gap-3 group cursor-pointer" onClick={() => scrollToSection('top')}>
             <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full block md:hidden bg-foreground/10 flex items-center justify-center group-hover:bg-foreground/20 transition-colors">
               <img
                 src="/20220924_233024.webp"
@@ -123,17 +158,16 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
             <span className="hidden md:flex relative h-10 w-10 shrink-0 rounded-xl bg-foreground/10 items-center justify-center group-hover:bg-foreground/15 transition-colors border border-foreground/[0.08] group-hover:border-foreground/20">
               <Terminal className="w-4 h-4 text-foreground" />
             </span>
-            <div className="flex flex-col gap-0">
-              <div className="font-semibold text-base lg:text-xl text-foreground tracking-tight">Eduardo Cabral</div>
-              <p className="text-xs text-muted-foreground font-medium">Full Stack Software Engineer</p>
+            <div className="flex flex-col items-start">
+              <span className="font-semibold text-base lg:text-xl text-foreground leading-tight">Eduardo Cabral</span>
+              <span className="text-xs text-muted-foreground font-medium leading-tight">Full Stack Software Engineer</span>
             </div>
-          </a>
+          </button>
 
-          <a
-            className="hidden md:flex items-center justify-center absolute left-1/2 -translate-x-1/2 group"
-            href={subPage ? "/" : "#top"}
+          <button
+            className="hidden md:flex items-center justify-center absolute left-1/2 -translate-x-1/2 group cursor-pointer"
+            onClick={() => scrollToSection('top')}
             aria-label="Ir al inicio"
-            onClick={() => saveSectionAndClose('top')}
             title="Go to top"
           >
             <span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full bg-foreground/10 flex items-center justify-center group-hover:scale-105 group-hover:bg-foreground/20 transition-all duration-300">
@@ -144,7 +178,7 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
                 className="w-full h-full object-cover"
               />
             </span>
-          </a>
+          </button>
 
           <div className="inline-flex gap-2 items-center">
             <a
@@ -158,7 +192,7 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
             <button
               type="button"
               onClick={() => { setMenuOpen(false); setContactOpen(true); }}
-              className="hidden sm:inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all duration-300 ease-out bg-foreground text-background hover:opacity-85 h-9 rounded-md px-4 cursor-pointer"
+              className="hidden sm:inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all duration-300 ease-out bg-foreground text-background hover:opacity-85 h-8 rounded-md px-3 cursor-pointer"
             >
               {t.nav.contactBtn}
             </button>
@@ -227,12 +261,12 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
                     {link.label}
                   </span>
                 </button>
-              ) : (
+              ) : subPage ? (
                 <a
                   key={link.sectionId}
                   href={link.href}
-                  onClick={() => saveSectionAndClose(link.sectionId)}
-                  className={`text-3xl font-semibold w-fit transition-all duration-300 ${
+                  onClick={() => setMenuOpen(false)}
+                  className={`text-3xl font-semibold w-fit transition-all duration-300 text-left cursor-pointer ${
                     menuOpen ? `opacity-100 translate-x-0 nav-delay-${i}` : "opacity-0 translate-x-8 nav-delay-none"
                   }`}
                 >
@@ -240,6 +274,18 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
                     {link.label}
                   </span>
                 </a>
+              ) : (
+                <button
+                  key={link.sectionId}
+                  onClick={() => scrollToSection(link.sectionId)}
+                  className={`text-3xl font-semibold w-fit transition-all duration-300 text-left cursor-pointer ${
+                    menuOpen ? `opacity-100 translate-x-0 nav-delay-${i}` : "opacity-0 translate-x-8 nav-delay-none"
+                  }`}
+                >
+                  <span className="text-foreground/70 hover:text-foreground transition-colors duration-200">
+                    {link.label}
+                  </span>
+                </button>
               )
             )}
           </nav>

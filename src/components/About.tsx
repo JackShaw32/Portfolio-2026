@@ -20,7 +20,7 @@ export default function About() {
       <section ref={ref} id="about" className="py-24 relative">
         <div className="container mx-auto px-6">
 
-          <div className="max-w-6xl mx-auto mb-14 reveal">
+          <div className="max-w-6xl mx-auto mb-8 md:mb-6 reveal">
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-center md:text-left">
               {ab.title} <span className="text-primary">{ab.titleHighlight}</span>
             </h2>
@@ -32,109 +32,55 @@ export default function About() {
               {lang === 'es' ? (
                 <>
                   <p>
-                    Soy <span className="text-foreground font-semibold">Software Engineer</span> con enfoque en desarrollo{" "}
-                    <span className="text-foreground font-semibold">Full Stack</span> y{" "}
-                    <span className="text-foreground font-semibold">Frontend</span>.{" "}
-                    Me especializo en construir{" "}
-                    <span className="text-foreground font-semibold">aplicaciones web modernas</span>,{" "}
-                    <span className="text-foreground font-semibold">e-commerce</span> y{" "}
-                    <span className="text-foreground font-semibold">productos digitales</span>{" "}
-                    utilizando <span className="text-foreground font-medium">React</span>,{" "}
-                    <span className="text-foreground font-medium">Next.js</span>,{" "}
-                    <span className="text-foreground font-medium">Node.js</span>,{" "}
-                    <span className="text-foreground font-medium">TypeScript</span> y{" "}
-                    <span className="text-foreground font-medium">JavaScript</span>.
+                    Me dedico a construir{" "}
+                    aplicaciones web, e-commerce y productos digitales que{" "}
+                    <span className="text-foreground font-semibold">realmente funcionen bien y escalen</span>.{" "}
+                    Mi ecosistema principal es JavaScript y TypeScript, usando herramientas como{" "}
+                    <span className="text-foreground font-medium">React</span>,{" "}
+                    <span className="text-foreground font-medium">Next.js</span> y{" "}
+                    <span className="text-foreground font-medium">Node.js</span>.
                   </p>
                   <p>
-                    Disfruto trabajar en productos completos, desde la{" "}
-                    <span className="text-foreground font-semibold">interfaz de usuario</span> hasta{" "}
-                    <span className="text-foreground font-medium">APIs</span>,{" "}
-                    <span className="text-foreground font-medium">autenticación</span>,{" "}
-                    <span className="text-foreground font-medium">bases de datos</span>,{" "}
-                    <span className="text-foreground font-medium">pagos online</span>{" "}
-                    e integraciones necesarias para llevar una{" "}
-                    <span className="text-foreground font-semibold">idea a producción</span>.
+                    Lo que más me atrapa es meterme en{" "}
+                    <span className="text-foreground font-semibold">todo el ciclo de un producto</span>:{" "}
+                    desde maquetar una interfaz fluida hasta armar APIs robustas, integrar pasarelas de pago,
+                    autenticación o bases de datos. Me gusta que las cosas pasen del{" "}
+                    <span className="text-foreground font-medium">diseño a producción</span>{" "}
+                    aportando <span className="text-foreground font-semibold">valor real</span>.
                   </p>
                   <p>
-                    He desarrollado aplicaciones <span className="text-foreground font-semibold">full stack</span> y{" "}
-                    plataformas <span className="text-foreground font-semibold">e-commerce</span>{" "}
-                    con funcionalidades reales de negocio, incluyendo{" "}
-                    <span className="text-foreground font-medium">paneles administrativos</span>,{" "}
-                    <span className="text-foreground font-medium">sistemas de autenticación</span>,{" "}
-                    <span className="text-foreground font-medium">procesamiento de pagos</span>,{" "}
-                    <span className="text-foreground font-medium">tracking de conversiones</span>,{" "}
-                    <span className="text-foreground font-medium">optimización de performance</span> y{" "}
-                    <span className="text-foreground font-medium">testing</span>.
-                  </p>
-                  <p>
-                    Me interesa crear software{" "}
-                    <span className="text-foreground font-semibold">útil</span>,{" "}
-                    <span className="text-foreground font-semibold">escalable</span> y{" "}
-                    <span className="text-foreground font-semibold">bien construido</span>,{" "}
-                    mientras sigo aprendiendo sobre{" "}
-                    <span className="text-foreground font-semibold">IA</span>,{" "}
-                    <span className="text-foreground font-medium">cloud</span>{" "}
-                    y arquitecturas modernas para aplicaciones web.
-                  </p>
-                  <p className="text-foreground/80">
-                    Actualmente estoy{" "}
-                    <span className="text-foreground font-semibold">disponible</span> para{" "}
-                    <span className="text-foreground font-semibold">proyectos freelance</span> y{" "}
-                    <span className="text-foreground font-semibold">oportunidades remotas</span>.
+                    Ya vengo sumando experiencia en e-commerce complejos con paneles de administración
+                    y tracking optimizado, y últimamente ando metido explorando la integración de{" "}
+                    <span className="text-foreground font-medium">IA</span> y{" "}
+                    <span className="text-foreground font-medium">soluciones cloud</span>{" "}
+                    para que el software sea cada vez más inteligente y eficiente.
                   </p>
                 </>
               ) : (
                 <>
                   <p>
-                    I'm a <span className="text-foreground font-semibold">Software Engineer</span> focused on{" "}
-                    <span className="text-foreground font-semibold">Full Stack</span> and{" "}
-                    <span className="text-foreground font-semibold">Frontend</span> development.{" "}
-                    I specialize in building{" "}
-                    <span className="text-foreground font-semibold">modern web applications</span>,{" "}
-                    <span className="text-foreground font-semibold">e-commerce</span> and{" "}
-                    <span className="text-foreground font-semibold">digital products</span>{" "}
-                    using <span className="text-foreground font-medium">React</span>,{" "}
-                    <span className="text-foreground font-medium">Next.js</span>,{" "}
-                    <span className="text-foreground font-medium">Node.js</span>,{" "}
-                    <span className="text-foreground font-medium">TypeScript</span> and{" "}
-                    <span className="text-foreground font-medium">JavaScript</span>.
+                    I build{" "}
+                    web applications, e-commerce and digital products that{" "}
+                    <span className="text-foreground font-semibold">actually work well and scale</span>.{" "}
+                    My main ecosystem is JavaScript and TypeScript, using tools like{" "}
+                    <span className="text-foreground font-medium">React</span>,{" "}
+                    <span className="text-foreground font-medium">Next.js</span> and{" "}
+                    <span className="text-foreground font-medium">Node.js</span>.
                   </p>
                   <p>
-                    I enjoy working on complete products, from the{" "}
-                    <span className="text-foreground font-semibold">user interface</span> to{" "}
-                    <span className="text-foreground font-medium">APIs</span>,{" "}
-                    <span className="text-foreground font-medium">authentication</span>,{" "}
-                    <span className="text-foreground font-medium">databases</span>,{" "}
-                    <span className="text-foreground font-medium">online payments</span>{" "}
-                    and integrations needed to take an{" "}
-                    <span className="text-foreground font-semibold">idea to production</span>.
+                    What I enjoy most is being involved in{" "}
+                    <span className="text-foreground font-semibold">the full product cycle</span>:{" "}
+                    from crafting a smooth interface to building robust APIs, integrating payment gateways,
+                    authentication and databases. I like taking things from{" "}
+                    <span className="text-foreground font-medium">design to production</span>{" "}
+                    delivering <span className="text-foreground font-semibold">real value</span>.
                   </p>
                   <p>
-                    I've built <span className="text-foreground font-semibold">full stack</span> applications and{" "}
-                    <span className="text-foreground font-semibold">e-commerce</span> platforms{" "}
-                    with real business features, including{" "}
-                    <span className="text-foreground font-medium">admin panels</span>,{" "}
-                    <span className="text-foreground font-medium">authentication systems</span>,{" "}
-                    <span className="text-foreground font-medium">payment processing</span>,{" "}
-                    <span className="text-foreground font-medium">conversion tracking</span>,{" "}
-                    <span className="text-foreground font-medium">performance optimization</span> and{" "}
-                    <span className="text-foreground font-medium">testing</span>.
-                  </p>
-                  <p>
-                    I'm interested in building software that is{" "}
-                    <span className="text-foreground font-semibold">useful</span>,{" "}
-                    <span className="text-foreground font-semibold">scalable</span> and{" "}
-                    <span className="text-foreground font-semibold">well-architected</span>,{" "}
-                    while continuing to learn about{" "}
-                    <span className="text-foreground font-semibold">AI</span>,{" "}
-                    <span className="text-foreground font-medium">cloud</span>{" "}
-                    and modern web application architectures.
-                  </p>
-                  <p className="text-foreground/80">
-                    I'm currently{" "}
-                    <span className="text-foreground font-semibold">available</span> for{" "}
-                    <span className="text-foreground font-semibold">freelance projects</span> and{" "}
-                    <span className="text-foreground font-semibold">remote opportunities</span>.
+                    I've been gaining experience building complex e-commerce platforms with admin panels
+                    and optimized tracking, and lately I've been exploring{" "}
+                    <span className="text-foreground font-medium">AI</span> and{" "}
+                    <span className="text-foreground font-medium">cloud solutions</span>{" "}
+                    to make software smarter and more efficient.
                   </p>
                 </>
               )}
@@ -182,7 +128,7 @@ export default function About() {
                   href="/Eduardo-Cabral-Full-Stack-Developer-ES.pdf"
                   download
                   title="Descargar CV en Español"
-                  className="flex-1 glass hover:bg-foreground/5 text-muted-foreground hover:text-foreground h-12 rounded-2xl flex items-center justify-center gap-1 transition-all duration-300 border border-border/50 hover:border-foreground/30"
+                  className="flex-1 glass hover:bg-foreground/5 text-muted-foreground hover:text-foreground h-12 rounded-2xl flex items-center justify-center gap-1 transition-all duration-300 border border-border/50 hover:border-foreground/30 cursor-pointer"
                 >
                   <FileDown className="w-4 h-4" />
                   <span className="text-[10px] font-semibold">ES</span>
@@ -191,19 +137,19 @@ export default function About() {
                   href="/Eduardo-Cabral-Full-Stack-Developer-EN.pdf"
                   download
                   title="Download CV in English"
-                  className="flex-1 glass hover:bg-foreground/5 text-muted-foreground hover:text-foreground h-12 rounded-2xl flex items-center justify-center gap-1 transition-all duration-300 border border-border/50 hover:border-foreground/30"
+                  className="flex-1 glass hover:bg-foreground/5 text-muted-foreground hover:text-foreground h-12 rounded-2xl flex items-center justify-center gap-1 transition-all duration-300 border border-border/50 hover:border-foreground/30 cursor-pointer"
                 >
                   <FileDown className="w-4 h-4" />
                   <span className="text-[10px] font-semibold">EN</span>
                 </a>
                 <a href="https://linkedin.com/in/raul-eduardo-cabral" target="_blank" rel="noopener noreferrer"
                   title="LinkedIn" aria-label="LinkedIn"
-                  className="flex-1 glass hover:bg-foreground/5 text-muted-foreground hover:text-foreground h-12 rounded-2xl flex items-center justify-center transition-all duration-300 border border-border/50 hover:border-foreground/30">
+                  className="flex-1 glass hover:bg-foreground/5 text-muted-foreground hover:text-foreground h-12 rounded-2xl flex items-center justify-center transition-all duration-300 border border-border/50 hover:border-foreground/30 cursor-pointer">
                   <Linkedin className="w-5 h-5" />
                 </a>
                 <a href="https://github.com/JackShaw32" target="_blank" rel="noopener noreferrer"
                   title="GitHub" aria-label="GitHub"
-                  className="flex-1 glass hover:bg-foreground/5 text-muted-foreground hover:text-foreground h-12 rounded-2xl flex items-center justify-center transition-all duration-300 border border-border/50 hover:border-foreground/30">
+                  className="flex-1 glass hover:bg-foreground/5 text-muted-foreground hover:text-foreground h-12 rounded-2xl flex items-center justify-center transition-all duration-300 border border-border/50 hover:border-foreground/30 cursor-pointer">
                   <Github className="w-5 h-5" />
                 </a>
               </div>
