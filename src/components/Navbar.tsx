@@ -170,7 +170,7 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
             aria-label="Ir al inicio"
             title="Go to top"
           >
-            <span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full bg-foreground/10 flex items-center justify-center group-hover:scale-105 group-hover:bg-foreground/20 transition-all duration-300">
+            <span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full bg-foreground/10 flex items-center justify-center group-hover:bg-foreground/20 transition-all duration-300">
               <img
                 src="/20220924_233024.webp"
                 alt="Eduardo Cabral"
