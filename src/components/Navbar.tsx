@@ -40,6 +40,7 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
 
   const navigateHome = (sectionId: string) => {
     sessionStorage.setItem("skip-scroll-restore", "1");
+    sessionStorage.setItem("scroll-to-section", sectionId);
     const a = document.createElement("a");
     a.href = sectionId === "top" ? "/" : "/#" + sectionId;
     document.body.appendChild(a);
