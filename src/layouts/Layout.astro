@@ -261,10 +261,11 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
         lenis.on('scroll', ScrollTrigger.update);
 
         var saved = sessionStorage.getItem('scroll-pos');
-        if (saved) {
+        if (saved && !sessionStorage.getItem('skip-scroll-restore')) {
           sessionStorage.removeItem('scroll-pos');
           lenis.scrollTo(Number(saved), { immediate: true });
         }
+        sessionStorage.removeItem('skip-scroll-restore');
         document.body.classList.remove('no-flicker');
       }
 
