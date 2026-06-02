@@ -81,9 +81,9 @@ export function getToolsDefinition(lang: string) {
     execute: async () => ({
       linkedin:  'https://linkedin.com/in/raul-eduardo-cabral',
       email:     'jackshaw@live.com.ar',
-      cvEs:      'https://jackshaw32.vercel.app/Eduardo-Cabral-Full-Stack-Developer-ES.pdf',
-      cvEn:      'https://jackshaw32.vercel.app/Eduardo-Cabral-Full-Stack-Developer-EN.pdf',
-      portfolio: 'https://jackshaw32.vercel.app/',
+      cvEs:      'https://jackshaw32.dev/Eduardo-Cabral-Full-Stack-Developer-ES.pdf',
+      cvEn:      'https://jackshaw32.dev/Eduardo-Cabral-Full-Stack-Developer-EN.pdf',
+      portfolio: 'https://jackshaw32.dev/',
       phone:     '+54 9 351 858-8034',
       github:    'https://github.com/JackShaw32',
     }),
@@ -314,7 +314,7 @@ export function getToolsDefinition(lang: string) {
         availableFromEn: import.meta.env.AVAILABLE_FROM ?? 'Immediate',
         workMode: ['Remoto', 'Híbrido'],
         workModeEn: ['Remote', 'Hybrid'],
-        portfolio: 'https://jackshaw32.vercel.app/',
+        portfolio: 'https://jackshaw32.dev/',
       };
     },
   },

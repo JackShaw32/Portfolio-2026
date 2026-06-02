@@ -36,7 +36,7 @@ export function OGImage({ lang = 'es' }: { lang?: string }) {
       </div>
 
       <div tw="absolute bottom-10 right-20 text-white/30 text-[17px] flex">
-        jackshaw32.vercel.app
+        jackshaw32.dev
       </div>
     </div>
   );
