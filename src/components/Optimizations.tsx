@@ -147,7 +147,7 @@ export default function Optimizations() {
   }, []);
 
   return (
-    <section ref={ref} id="optimizations" className="py-24 relative overflow-hidden">
+    <section ref={ref} id="optimizations" className="py-16 md:py-20 relative overflow-hidden">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl h-[600px] pointer-events-none flex justify-center opacity-30">
         <div className="absolute w-[600px] h-[300px] bg-gradient-to-r from-green-500/20 via-emerald-500/20 to-teal-500/20 blur-3xl mix-blend-normal dark:mix-blend-screen" />
       </div>

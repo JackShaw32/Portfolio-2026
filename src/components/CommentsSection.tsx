@@ -101,7 +101,7 @@ export default function CommentsSection() {
   };
 
   return (
-    <section ref={ref} id="comments" className="py-24 relative">
+    <section ref={ref} id="comments" className="py-16 md:py-20 relative">
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto mb-14">
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-center">

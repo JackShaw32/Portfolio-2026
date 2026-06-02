@@ -92,7 +92,7 @@ export default function Projects() {
   }, []);
 
   return (
-    <section ref={sectionRef} id="projects" className="py-16 md:py-32 relative">
+    <section ref={sectionRef} id="projects" className="py-16 md:py-20 relative">
       <div className="container mx-auto px-6 relative z-10">
 
         <div className="projects-heading opacity-0 text-center mb-10 md:mb-12 flex flex-col items-center">

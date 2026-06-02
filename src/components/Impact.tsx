@@ -58,7 +58,7 @@ export default function Impact() {
 
   return (
     <>
-      <section ref={ref} id="impact" className="py-24 relative overflow-hidden">
+      <section ref={ref} id="impact" className="py-16 md:py-20 relative overflow-hidden">
 
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
           <div className="w-[700px] h-[400px] bg-gradient-to-r from-indigo-500/8 via-blue-500/8 to-green-500/8 blur-3xl mix-blend-normal dark:mix-blend-screen" />

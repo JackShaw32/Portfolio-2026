@@ -32,6 +32,7 @@ export const en = {
       bio3: "When I'm not coding, I'm usually learning new technologies or working on personal projects. My goal is to keep growing as a developer and contribute to projects that solve real problems with technology.",
     },
     skills: {
+      title: "Career Path",
       contactMe: "Contact me",
       whatsappContact: "WhatsApp Contact",
       downloadCVSpanish: "Descargar CV en Español",

@@ -46,7 +46,7 @@ export default function Contact() {
   ];
 
   return (
-    <section ref={ref} id="contact" className="py-24 relative">
+    <section ref={ref} id="contact" className="py-16 md:py-20 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/20 to-transparent pointer-events-none" />
 
       <div className="container mx-auto px-6">

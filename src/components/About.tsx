@@ -17,7 +17,7 @@ export default function About() {
     <>
       <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
 
-      <section ref={ref} id="about" className="py-24 relative">
+      <section ref={ref} id="about" className="py-16 md:py-20 relative">
         <div className="container mx-auto px-6">
 
           <div className="max-w-6xl mx-auto mb-8 md:mb-6 reveal">

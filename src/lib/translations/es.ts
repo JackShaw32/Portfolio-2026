@@ -32,6 +32,7 @@ export const es = {
       bio3: "Cuando no estoy programando, suelo estar aprendiendo nuevas tecnologías o construyendo proyectos propios. Mi objetivo es seguir creciendo como desarrollador y contribuir a proyectos que resuelvan problemas reales con tecnología.",
     },
     skills: {
+      title: "Trayectoria",
       contactMe: "Contáctame",
       whatsappContact: "Contacto en WhatsApp",
       downloadCVSpanish: "Descargar CV en Español",
