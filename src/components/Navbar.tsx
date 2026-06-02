@@ -263,7 +263,7 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
                     {link.label}
                   </span>
                 </button>
-              ) : subPage ? (
+              ) : subPage && link.sectionId !== "top" ? (
                 <a
                   key={link.sectionId}
                   href={link.href}
