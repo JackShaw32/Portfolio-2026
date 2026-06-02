@@ -26,7 +26,7 @@ export default function Footer({ subPage = false }: { subPage?: boolean }) {
   const base = subPage ? "/" : "";
   const links = ft.links.map((l) => ({
     ...l,
-    href: l.href.startsWith("#") ? `${base}${l.href}` : l.href,
+    href: subPage && l.href === '#top' ? '/' : l.href.startsWith("#") ? `${base}${l.href}` : l.href,
     isContact: l.href === '#contact',
   }));
 
@@ -97,7 +97,7 @@ export default function Footer({ subPage = false }: { subPage?: boolean }) {
                       {link.name}
                       <ArrowUpRight className="w-3 h-3 opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300" />
                     </button>
-                  ) : subPage ? (
+                  ) : subPage && link.href !== '/' ? (
                     <a
                       href={link.href}
                       className="text-muted-foreground hover:text-primary transition-colors duration-300 flex items-center gap-1 group w-fit cursor-pointer"
@@ -108,12 +108,13 @@ export default function Footer({ subPage = false }: { subPage?: boolean }) {
                   ) : (
                     <button
                       onClick={() => {
-                        const sectionId = link.href.split("#").pop() || "";
+                        const rawSectionId = link.href.split("#").pop() || "";
+                        const sectionId = rawSectionId === "/" ? "top" : rawSectionId;
                         if (subPage) {
-                          sessionStorage.removeItem("scroll-pos");
+                          sessionStorage.setItem("skip-scroll-restore", "1");
                           sessionStorage.setItem("scroll-to-section", sectionId);
                           const a = document.createElement("a");
-                          a.href = "/";
+                          a.href = sectionId === "top" ? "/" : "/#" + sectionId;
                           document.body.appendChild(a);
                           a.click();
                           document.body.removeChild(a);
