@@ -29,7 +29,7 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
   ];
 
   const mobileNavLinks = [
-    { href: subPage ? "/#top" : "#top",           sectionId: "top",           label: t.nav.home },
+    { href: subPage ? "/" : "#top",                sectionId: "top",           label: t.nav.home },
     { href: subPage ? "/#skills" : "#skills",     sectionId: "skills",        label: t.nav.trajectory },
     { href: subPage ? "/#projects" : "#projects", sectionId: "projects",      label: t.nav.projects },
     { href: subPage ? "/#optimizations" : "#optimizations", sectionId: "optimizations", label: t.nav.skills },
