@@ -38,6 +38,65 @@ const siteURL = "https://jackshaw32.dev";
 const canonicalURL = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', siteURL).href;
 const ogImage = image.startsWith('http') ? image : `${siteURL}${image}${image === '/api/og' ? `?lang=${pageLang}` : ''}`;
 const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo Cabral`;
+
+const personDesc = "Software Engineer & Full Stack Developer" + (isEn ? " specialized in modern web applications, e-commerce and scalable products with React, Node.js and TypeScript." : " especializado en aplicaciones web modernas, e-commerce y productos escalables con React, Node.js y TypeScript.");
+const webSiteDesc = isEn
+  ? "Professional portfolio of Eduardo Cabral, Software Engineer & Full Stack Developer specialized in modern web applications and e-commerce."
+  : "Portafolio profesional de Eduardo Cabral, Software Engineer & Full Stack Developer especializado en aplicaciones web modernas y e-commerce.";
+const webPageDesc = isEn
+  ? "Eduardo Cabral's professional portfolio — Software Engineer & Full Stack Developer with experience in React, Node.js, TypeScript and scalable e-commerce."
+  : "Portfolio profesional de Eduardo Cabral — Software Engineer & Full Stack Developer con experiencia en React, Node.js, TypeScript y e-commerce escalable.";
+const homeLabel = isEn ? "Home" : "Inicio";
+
+const ldJson = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://jackshaw32.dev/#person",
+      name: "Eduardo Cabral",
+      url: "https://jackshaw32.dev",
+      image: { "@type": "ImageObject", url: "https://jackshaw32.dev/20220924_233024.webp", width: 800, height: 800 },
+      jobTitle: "Software Engineer & Full Stack Developer",
+      description: personDesc,
+      knowsAbout: ["JavaScript", "TypeScript", "React", "Node.js", "MongoDB", "Firebase", "Tailwind CSS", "E-commerce", "REST API"],
+      knowsLanguage: ["es", "en"],
+      nationality: { "@type": "Country", name: "Argentina" },
+      sameAs: ["https://www.linkedin.com/in/educcabral", "https://github.com/educcabral"],
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://jackshaw32.dev/#website",
+      url: "https://jackshaw32.dev",
+      name: "Eduardo Cabral — Software Engineer & Full Stack Developer",
+      description: webSiteDesc,
+      inLanguage: ["es", "en"],
+      author: { "@id": "https://jackshaw32.dev/#person" },
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://jackshaw32.dev/#webpage",
+      url: "https://jackshaw32.dev",
+      name: "Eduardo Cabral | Software Engineer & Full Stack Developer",
+      isPartOf: { "@id": "https://jackshaw32.dev/#website" },
+      about: { "@id": "https://jackshaw32.dev/#person" },
+      description: webPageDesc,
+      inLanguage: pageLang,
+      breadcrumb: {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: homeLabel, item: "https://jackshaw32.dev" },
+        ],
+      },
+    },
+    {
+      "@type": "ProfilePage",
+      dateCreated: "2024-01-01T00:00:00Z",
+      dateModified: "2026-03-08T00:00:00Z",
+      mainEntity: { "@id": "https://jackshaw32.dev/#person" },
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -87,79 +146,7 @@ const pageTitle = title.includes('Eduardo Cabral') ? title : `${title} | Eduardo
     <meta name="twitter:creator" content="@educcabral" />
     <meta name="twitter:site" content="@educcabral" />
 
-    <script type="application/ld+json" is:inline>
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "Person",
-            "@id": "https://jackshaw32.dev/#person",
-            "name": "Eduardo Cabral",
-            "url": "https://jackshaw32.dev",
-            "image": {
-              "@type": "ImageObject",
-              "url": "https://jackshaw32.dev/20220924_233024.webp",
-              "width": 800,
-              "height": 800
-            },
-            "jobTitle": "Software Engineer & Full Stack Developer",
-            "description": "Software Engineer & Full Stack Developer" + (isEn ? " specialized in modern web applications, e-commerce and scalable products with React, Node.js and TypeScript." : " especializado en aplicaciones web modernas, e-commerce y productos escalables con React, Node.js y TypeScript."),
-            "knowsAbout": ["JavaScript", "TypeScript", "React", "Node.js", "MongoDB", "Firebase", "Tailwind CSS", "E-commerce", "REST API"],
-            "knowsLanguage": ["es", "en"],
-            "nationality": {
-              "@type": "Country",
-              "name": "Argentina"
-            },
-            "sameAs": [
-              "https://www.linkedin.com/in/educcabral",
-              "https://github.com/educcabral"
-            ]
-          },
-          {
-            "@type": "WebSite",
-            "@id": "https://jackshaw32.dev/#website",
-            "url": "https://jackshaw32.dev",
-            "name": "Eduardo Cabral — Software Engineer & Full Stack Developer",
-            "description": (isEn
-              ? "Professional portfolio of Eduardo Cabral, Software Engineer & Full Stack Developer specialized in modern web applications and e-commerce."
-              : "Portafolio profesional de Eduardo Cabral, Software Engineer & Full Stack Developer especializado en aplicaciones web modernas y e-commerce."),
-            "inLanguage": ["es", "en"],
-            "author": {
-              "@id": "https://jackshaw32.dev/#person"
-            }
-          },
-          {
-            "@type": "WebPage",
-            "@id": "https://jackshaw32.dev/#webpage",
-            "url": "https://jackshaw32.dev",
-            "name": "Eduardo Cabral | Software Engineer & Full Stack Developer",
-            "isPartOf": { "@id": "https://jackshaw32.dev/#website" },
-            "about": { "@id": "https://jackshaw32.dev/#person" },
-            "description": isEn
-              ? "Eduardo Cabral's professional portfolio — Software Engineer & Full Stack Developer with experience in React, Node.js, TypeScript and scalable e-commerce."
-              : "Portfolio profesional de Eduardo Cabral — Software Engineer & Full Stack Developer con experiencia en React, Node.js, TypeScript y e-commerce escalable.",
-            "inLanguage": pageLang,
-            "breadcrumb": {
-              "@type": "BreadcrumbList",
-              "itemListElement": [
-                {
-                  "@type": "ListItem",
-                  "position": 1,
-                  "name": isEn ? "Home" : "Inicio",
-                  "item": "https://jackshaw32.dev"
-                }
-              ]
-            }
-          },
-          {
-            "@type": "ProfilePage",
-            "dateCreated": "2024-01-01T00:00:00Z",
-            "dateModified": "2026-03-08T00:00:00Z",
-            "mainEntity": { "@id": "https://jackshaw32.dev/#person" }
-          }
-        ]
-      }
-    </script>
+    <script type="application/ld+json" is:inline>{JSON.stringify(ldJson)}</script>
 
     <script is:inline>
       (function() {

@@ -57,17 +57,8 @@ export default function Hero() {
       />
 
       <div className="container mx-auto px-6 pt-20 relative z-30">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="flex justify-center mb-6">
-            <div className="flex items-center gap-2 glass px-5 py-2.5 rounded-full text-sm border-primary/10 hover:border-primary/30 transition-colors duration-300">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
-              </span>
-              <span className="text-white-foreground tracking-wide">{t.hero.available}</span>
-            </div>
-          </div>
-
+          <div className="max-w-4xl mx-auto text-center">
+          
           <div className="mb-4">
             <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-4">
               <span className="scroll-m-20 text-5xl font-heading font-semibold lg:text-7xl text-balance max-w-screen-lg text-metallic inline-block leading-tight lg:leading-[1]">

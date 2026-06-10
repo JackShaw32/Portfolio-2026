@@ -17,7 +17,6 @@ export const en = {
       hireMe: "Hire Me",
     },
     hero: {
-      available: "Available for new challenges",
       heading: "Building modern and scalable web products",
       description:
         "Software Engineer specialized in Full Stack Development, e-commerce and modern web products.",
