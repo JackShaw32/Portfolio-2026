@@ -393,7 +393,7 @@ export default function ProjectDetail({ slug }: Props) {
   return (
     <div ref={ref} className="min-h-screen">
 
-      <div className="pt-16 md:pt-24 pb-4 px-6 container mx-auto">
+      <div className="pt-24 pb-4 px-6 container mx-auto">
         <a
           href="/"
           onClick={() => { sessionStorage.setItem('return-to-project', slug); sessionStorage.removeItem('scroll-to-section'); }}
