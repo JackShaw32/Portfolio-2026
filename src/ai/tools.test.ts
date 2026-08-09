@@ -1,5 +1,10 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { toolsDefinition } from './tools';
+
+// Mock the email service so unit tests never send real emails via Resend.
+vi.mock('../services/emailService', () => ({
+  sendEmail: vi.fn(async () => ({ success: true })),
+}));
 
 describe('showProject', () => {
   const execute = toolsDefinition.showProject.execute as (args: any) => any;
