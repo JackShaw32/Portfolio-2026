@@ -9,16 +9,10 @@ export default function Hero() {
   return (
     <section id="top" className="relative min-h-screen flex items-center justify-center overflow-hidden w-full hero-tablet-short">
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        <div className="hero-aurora absolute inset-0" />
-
-        {/* Realistic black hole: tilted accretion disk + lensing front arc (dark theme only, keeps heading readable in light mode) */}
-        <div className="hero-blackhole hidden dark:block">
-          <div className="hero-blackhole-halo" />
-          <div className="hero-blackhole-disk" />
-          <div className="hero-blackhole-photon" />
-          <div className="hero-blackhole-core" />
-          <div className="hero-blackhole-front" />
-        </div>
+        {/* Premium mesh gradient: near-black base + blue/violet glows (static paint, subtle 45s transform drift) */}
+        <div className="hero-mesh absolute inset-0" />
+        {/* Faint blueprint grid, masked to fade out toward the edges */}
+        <div className="hero-grid absolute inset-0" />
       </div>
 
       <div

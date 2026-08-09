@@ -602,102 +602,34 @@
     background-size: 400px 400px;
   }
 
-  /* Hero aurora: layered radial gradients (no filter blur → cheap first paint) */
-  .hero-aurora {
+  /* Premium mesh gradient hero background: near-black base + blue/violet glows (no filter blur, no JS) */
+  .hero-mesh {
+    background-color: hsl(0 0% 98%);
     background-image:
-      radial-gradient(60% 55% at 50% 15%, rgba(139, 92, 246, 0.16), transparent 70%),
-      radial-gradient(45% 45% at 85% 40%, rgba(236, 72, 153, 0.12), transparent 70%),
-      radial-gradient(45% 45% at 10% 55%, rgba(99, 102, 241, 0.11), transparent 70%),
-      radial-gradient(55% 50% at 50% 95%, rgba(217, 70, 239, 0.10), transparent 70%);
-    animation: hero-aurora-drift 20s ease-in-out infinite alternate;
+      radial-gradient(55% 50% at 50% 12%, hsl(228 70% 45% / 0.08), transparent 72%),
+      radial-gradient(40% 45% at 88% 30%, hsl(262 80% 55% / 0.06), transparent 72%),
+      radial-gradient(40% 45% at 8% 45%, hsl(215 75% 40% / 0.05), transparent 72%),
+      radial-gradient(50% 55% at 55% 95%, hsl(268 75% 45% / 0.04), transparent 75%);
+    animation: hero-mesh-drift 45s ease-in-out infinite alternate;
     will-change: transform;
   }
 
-  .dark .hero-aurora {
+  .dark .hero-mesh {
+    background-color: #09090b;
     background-image:
-      radial-gradient(60% 55% at 50% 15%, rgba(139, 92, 246, 0.30), transparent 70%),
-      radial-gradient(45% 45% at 85% 40%, rgba(236, 72, 153, 0.22), transparent 70%),
-      radial-gradient(45% 45% at 10% 55%, rgba(99, 102, 241, 0.20), transparent 70%),
-      radial-gradient(55% 50% at 50% 95%, rgba(217, 70, 239, 0.18), transparent 70%);
+      radial-gradient(55% 50% at 50% 12%, hsl(228 70% 45% / 0.26), transparent 72%),
+      radial-gradient(40% 45% at 88% 30%, hsl(262 80% 55% / 0.19), transparent 72%),
+      radial-gradient(40% 45% at 8% 45%, hsl(215 75% 40% / 0.15), transparent 72%),
+      radial-gradient(50% 55% at 55% 95%, hsl(268 75% 45% / 0.13), transparent 75%);
   }
 
-  @keyframes hero-aurora-drift {
+  @keyframes hero-mesh-drift {
     from { transform: scale(1) translate3d(0, 0, 0); }
-    to   { transform: scale(1.06) translate3d(0, -2%, 0); }
-  }
-
-  /* Realistic black hole: tilted accretion disk + lensing front arc (transform-only) */
-  .hero-blackhole {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: min(56vmin, 460px);
-    height: min(56vmin, 460px);
-    transform: translate(-50%, -50%);
-  }
-
-  .hero-blackhole-halo {
-    position: absolute;
-    inset: -24%;
-    border-radius: 50%;
-    background: radial-gradient(closest-side, rgba(255, 170, 80, 0.26), rgba(150, 80, 200, 0.12) 55%, transparent 78%);
-  }
-
-  .hero-blackhole-disk {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    transform: rotateX(68deg);
-    background: conic-gradient(from 0deg,
-      rgba(255, 214, 150, 0.95) 0deg,
-      rgba(255, 160, 70, 0.95) 35deg,
-      rgba(255, 110, 40, 0.8) 60deg,
-      rgba(120, 50, 30, 0.45) 100deg,
-      rgba(40, 25, 45, 0.2) 150deg,
-      rgba(120, 50, 30, 0.4) 200deg,
-      rgba(255, 130, 50, 0.85) 250deg,
-      rgba(255, 210, 140, 0.95) 300deg,
-      rgba(255, 214, 150, 0.95) 360deg);
-    -webkit-mask-image: radial-gradient(closest-side, transparent calc(100% - 11%), #000 calc(100% - 11%));
-    mask-image: radial-gradient(closest-side, transparent calc(100% - 11%), #000 calc(100% - 11%));
-    animation: hero-blackhole-spin 28s linear infinite;
-    will-change: transform;
-  }
-
-  /* Thin photon ring hugging the shadow edge */
-  .hero-blackhole-photon {
-    position: absolute;
-    inset: 5.5%;
-    border-radius: 50%;
-    box-shadow: 0 0 0 1.5px rgba(255, 200, 130, 0.65), 0 0 20px rgba(255, 170, 90, 0.45);
-  }
-
-  .hero-blackhole-core {
-    position: absolute;
-    inset: 8%;
-    border-radius: 50%;
-    background: radial-gradient(circle at 50% 50%, #000 62%, #060309 100%);
-    box-shadow: inset 0 0 44px rgba(255, 170, 90, 0.28);
-  }
-
-  .hero-blackhole-front {
-    position: absolute;
-    left: 4%;
-    right: 4%;
-    bottom: 27%;
-    height: 12%;
-    border-radius: 50%;
-    background: radial-gradient(ellipse at 50% 100%, rgba(255, 210, 140, 0.95), rgba(255, 150, 70, 0.4) 50%, transparent 72%);
-  }
-
-  @keyframes hero-blackhole-spin {
-    from { transform: rotateX(68deg) rotate(0deg); }
-    to   { transform: rotateX(68deg) rotate(360deg); }
+    to   { transform: scale(1.05) translate3d(0, -1.5%, 0); }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero-aurora { animation: none; will-change: auto; }
-    .hero-blackhole-disk { animation: none; will-change: auto; }
+    .hero-mesh { animation: none; will-change: auto; }
   }
 
   .modal-border-conic {
