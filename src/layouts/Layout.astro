@@ -448,17 +448,27 @@ const ldJson = {
     <!-- Reading progress bar -->
     <div id="reading-progress" class="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 z-[100]" style="width:0%" />
     <script>
+      var progressCleanup: (() => void) | null = null;
       function initProgressBar() {
-        var update = function() {
-          var el = document.getElementById('reading-progress');
-          if (!el) return;
-          var pct = document.documentElement.scrollHeight > window.innerHeight
-            ? Math.min(window.scrollY / (document.documentElement.scrollHeight - window.innerHeight), 1)
+        if (progressCleanup) { progressCleanup(); progressCleanup = null; }
+        const el = document.getElementById('reading-progress');
+        if (!el) return;
+        var ticking = false;
+        const update = () => {
+          ticking = false;
+          var docHeight = document.documentElement.scrollHeight;
+          var pct = docHeight > window.innerHeight
+            ? Math.min(window.scrollY / (docHeight - window.innerHeight), 1)
             : 0;
           el.style.width = (pct * 100) + '%';
         };
-        window.addEventListener('scroll', update, { passive: true });
-        update();
+        const onScroll = () => {
+          if (!ticking) { ticking = true; requestAnimationFrame(update); }
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        progressCleanup = function() { window.removeEventListener('scroll', onScroll); };
+        // Defer the initial layout read to the next frame (after first paint).
+        requestAnimationFrame(update);
       }
       initProgressBar();
       document.addEventListener('astro:page-load', initProgressBar);
