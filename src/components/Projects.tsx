@@ -93,7 +93,7 @@ export default function Projects() {
                   <a
                     href={`/projects/${project.slug}`}
                     ref={(el) => { if (el) el.style.setProperty('view-transition-name', `project-card-${project.slug}`); }}
-                    className="group/img block relative rounded-3xl overflow-hidden border border-foreground/10 group-hover/img:border-primary/30 transition-all duration-500 shadow-2xl shadow-black/20"
+                    className="group/img block relative rounded-3xl overflow-hidden border border-foreground/8 group-hover/img:border-primary/40 transition-all duration-500 shadow-2xl shadow-black/20 group-hover/img:shadow-indigo-500/20"
                   >
                     <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-40 group-hover/img:opacity-80 transition-opacity duration-700 z-10`} />
 

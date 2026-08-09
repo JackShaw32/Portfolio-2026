@@ -41,8 +41,9 @@ export default function Footer({ subPage = false }: { subPage?: boolean }) {
     <>
       <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
       <footer className="relative border-t border-border/10 bg-background/95 backdrop-blur-xl pt-10 md:pt-14 pb-8 overflow-hidden">
+      {/* Muted echo of the hero mesh gradient (kept very subtle per visual hierarchy) */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[300px] pointer-events-none flex justify-center opacity-20">
-        <div className="absolute -top-[150px] w-[600px] h-[300px] rounded-[100%] bg-gradient-to-b from-primary/20 to-transparent blur-3xl" />
+        <div className="absolute -top-[150px] w-[600px] h-[300px] rounded-[100%] bg-gradient-to-b from-indigo-500/40 via-violet-500/25 to-transparent blur-3xl" />
       </div>
 
       <div className="px-6 md:px-10 relative z-10">
