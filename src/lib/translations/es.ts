@@ -15,9 +15,12 @@ export const es = {
       trajectory: "Experiencia",
       impact: "Impacto",
       hireMe: "Contrátame",
+      rightsReserved: "Todos los derechos reservados",
     },
     hero: {
-      heading: "Construyendo productos web modernos y escalables",
+      heading: "Desarrollo Web & Productos Digitales",
+      subtitle:
+        "Construyendo con una mirada técnica y creando experiencias modernas.",
       description:
         "Software Engineer especializado en Full Stack Development, e-commerce y productos web modernos.",
       viewProjects: "Ver mis proyectos",
@@ -390,8 +393,8 @@ export const es = {
         { name: "Proyectos", href: "#projects" },
         { name: "Skills", href: "#optimizations" },
         { name: "Acerca de mí", href: "#about" },
-        { name: "Feedback", href: "#comments" },
         { name: "Contacto", href: "#contact" },
+        { name: "Email", href: "mailto:jackshaw@live.com.ar" },
       ],
     },
     comments: {

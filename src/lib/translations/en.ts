@@ -15,9 +15,12 @@ export const en = {
       trajectory: "Journey",
       impact: "Impact",
       hireMe: "Hire Me",
+      rightsReserved: "All rights reserved",
     },
     hero: {
-      heading: "Building modern and scalable web products",
+      heading: "Development & Product Engineering",
+      subtitle:
+        "Building with a developer's mindset, designing with a product-focused approach.",
       description:
         "Software Engineer specialized in Full Stack Development, e-commerce and modern web products.",
       viewProjects: "View my projects",
@@ -390,8 +393,8 @@ export const en = {
         { name: "Skills", href: "#optimizations" },
         { name: "Projects", href: "#projects" },
         { name: "About Me", href: "#about" },
-        { name: "Feedback", href: "#comments" },
         { name: "Contact", href: "#contact" },
+        { name: "Email", href: "mailto:jackshaw@live.com.ar" },
       ],
     },
     comments: {
