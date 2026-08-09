@@ -56,9 +56,7 @@ export function getToolsDefinition(lang: string) {
         },
       };
       const safeDesc = projectDescs[safeImage]?.[lang as 'es' | 'en'] ?? sanitizeStr(args.description);
-      const safeTech = safeImage === '/projects/14milla.webp'
-        ? 'React 18, Vite 6, Tailwind CSS 3, Framer Motion, Swiper, Express 4, MongoDB, Mongoose, JWT, bcrypt, Google OAuth, Cloudinary, MercadoPago API, Meta Pixel, Meta Conversions API, Helmet, Vitest, Playwright, Netlify, Render'
-        : (args.tech ?? '');
+      const safeTech = args.tech ?? '';
       return {
         title:       sanitizeStr(args.title),
         description: safeDesc,
