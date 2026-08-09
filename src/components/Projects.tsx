@@ -72,7 +72,7 @@ export default function Projects() {
       <div className="container mx-auto px-6 relative z-10">
 
         <div className="projects-heading opacity-0 text-center mb-10 md:mb-12 flex flex-col items-center">
-          <h2 className="text-[clamp(1.2rem,6vw,2rem)] sm:text-4xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-1 md:mb-1 leading-tight whitespace-nowrap">
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-1 md:mb-1 leading-tight text-balance">
               {pr.title}<span className="text-primary">{pr.titleHighlight}</span>
           </h2>
           <p className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-foreground to-violet-500 text-sm sm:text-base md:text-lg max-w-2xl mx-auto font-medium leading-relaxed">

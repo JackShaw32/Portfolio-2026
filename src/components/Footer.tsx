@@ -85,7 +85,7 @@ export default function Footer({ subPage = false }: { subPage?: boolean }) {
           </div>
 
           <nav aria-label={ft.navigation} className="w-full lg:w-fit lg:mx-auto xl:col-start-2 xl:col-span-2">
-            <h2 className="font-semibold text-foreground uppercase tracking-wider text-sm mb-3">{ft.navigation}</h2>
+            <h3 className="font-semibold text-foreground uppercase tracking-wider text-sm mb-3">{ft.navigation}</h3>
             <ul className="grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-2 list-none m-0 p-0">
               {links.map((link) => (
                 <li key={link.name}>
@@ -169,7 +169,7 @@ export default function Footer({ subPage = false }: { subPage?: boolean }) {
           </nav>
 
           <div className="md:col-span-2 lg:col-span-1 xl:col-start-4">
-            <h2 className="font-semibold text-foreground mb-3 uppercase tracking-wider text-sm">{ft.technologies}</h2>
+            <h3 className="font-semibold text-foreground mb-3 uppercase tracking-wider text-sm">{ft.technologies}</h3>
             <ul className="flex flex-wrap gap-x-3 gap-y-2 max-w-sm list-none m-0 p-0">
               {["Astro v5", "React 19", "TypeScript", "Tailwind CSS v4", "Redis", "Lenis", "GSAP", "View Transitions", "Vercel AI + Groq"].map((tech) => (
                 <li key={tech} className="text-xs font-mono text-muted-foreground">
