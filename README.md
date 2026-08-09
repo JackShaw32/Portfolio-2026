@@ -51,7 +51,7 @@ El objetivo fue reemplazar un CV estático por una experiencia interactiva donde
     │                    │      │  Resend Email API     │
     │  Hero / Navbar     │      │                       │
     │  Skills / Projects │      └───────────────────────┘
-    │  About / Contact   │
+    │  About             │
     │  ChatAI / Footer   │
     └────────────────────┘
 ```
@@ -62,9 +62,9 @@ Astro renderiza el HTML en el servidor. Solo los componentes React que necesitan
 
 | Directiva | Cuándo hidrata | Usado en |
 |---|---|---|
-| `client:load` | Inmediatamente | Navbar, Hero, ChatAI |
-| `client:visible` | Al hacer scroll | Skills, Projects, About, Contact, CommentsSection |
-| `client:idle` | Cuando el browser está libre | Footer |
+| `client:load` | Inmediatamente | Navbar, Hero |
+| `client:visible` | Al hacer scroll | Skills, Projects, Optimizations, CommentsSection |
+| `client:idle` | Cuando el browser está libre | About, Footer, ChatAI |
 
 Esto resulta en un sitio con carga inicial muy rápida, ya que la mayoría del contenido llega como HTML puro sin JS.
 
@@ -99,7 +99,6 @@ educcabral/
 │   │   ├── Projects.tsx             # Grid de proyectos con GSAP
 │   │   ├── Optimizations.tsx        # Scores de Lighthouse + tech stack visual
 │   │   ├── About.tsx                # Biografía y foto
-│   │   ├── Contact.tsx              # Formulario y datos de contacto
 │   │   ├── ContactModal.tsx         # Modal de contacto reutilizable
 │   │   ├── CommentsSection.tsx      # Sección de reseñas con estrellas
 │   │   ├── Footer.tsx               # Pie de página
@@ -179,8 +178,6 @@ El sitio se compone de una sola página (`/`) con secciones continuas, más pág
 **Optimizations** — Muestra los scores de Lighthouse del sitio (97 Performance, 98 SEO) con círculos SVG animados vía RAF. Los arcos, los números y los iconos arrancan en rojo y transicionan a naranja y luego a verde siguiendo la escala de colores oficial de Lighthouse (0–49 rojo, 50–89 naranja, 90+ verde), todo interpolado con `lerp()` RGB en sync con los contadores. Incluye un botón de replay junto al filename `lighthouse-report.json` que reinicia la animación completa. También contiene un grid visual de todas las tecnologías usadas con iconos de `react-icons`.
 
 **About** — Biografía bilingüe, foto de perfil circular con zoom sutil al hover (`scale-[1.08]` interno, clippeado al círculo), badges flotantes de ubicación y rol, y links a redes sociales.
-
-**Contact** — Cards con datos de contacto (email, LinkedIn, GitHub, ubicación) y formulario completo que envía al endpoint `/api/contact`. Incluye un modal de contacto reutilizable (`ContactModal`) con validación por campo y botón con ícono `ArrowRight`.
 
 **CommentsSection** — Sección de reseñas con sistema de estrellas (1-5). Los comentarios se almacenan en Upstash Redis y se muestran con paginación (3 por desktop, 1 por mobile). Cada tarjeta muestra iniciales del autor con avatar de color aleatorio, fecha formateada, badge de "Verified review" y botón de traducción automática ES/EN via MyMemory API. Al enviar un nuevo comentario desde el chat, la sección se actualiza automáticamente sin recargar la página.
 

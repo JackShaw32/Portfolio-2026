@@ -14,7 +14,6 @@ export const en = {
       contactSection: "Contact",
       switchLang: "ES",
       trajectory: "Journey",
-      impact: "Impact",
       hireMe: "Hire Me",
       rightsReserved: "All rights reserved",
     },
@@ -365,18 +364,6 @@ export const en = {
           description:
             "Adaptive interfaces that maintain consistency and usability across different screen sizes.",
         },
-      ],
-    },
-    impact: {
-      title: "Real",
-      titleHighlight: " Impact",
-      subtitle: "Numbers that show the work, not just the code.",
-      cta: "Work with me",
-      metrics: [
-        { value: 10, suffix: "+", label: "Projects Built",          description: "Full-stack web applications in production", ring: 80 },
-        { value: 3,  suffix: "+", label: "Years of Experience",     description: "Building digital products",                ring: 60 },
-        { value: 45, suffix: "%", label: "Performance Improved",    description: "Optimization in React production projects", ring: 45 },
-        { value: 30, suffix: "%", label: "Technical Debt Reduced",  description: "In React component refactoring projects",   ring: 30 },
       ],
     },
     footer: {

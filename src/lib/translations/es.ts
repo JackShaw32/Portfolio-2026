@@ -14,7 +14,6 @@ export const es = {
       contactSection: "Contacto",
       switchLang: "EN",
       trajectory: "Experiencia",
-      impact: "Impacto",
       hireMe: "Contrátame",
       rightsReserved: "Todos los derechos reservados",
     },
@@ -365,18 +364,6 @@ export const es = {
           description:
             "Interfaces adaptables que mantienen consistencia y usabilidad en distintos tamaños de pantalla.",
         },
-      ],
-    },
-    impact: {
-      title: "Impacto",
-      titleHighlight: " Real",
-      subtitle: "Números que muestran el trabajo, no solo el código.",
-      cta: "Trabajar juntos",
-      metrics: [
-        { value: 10, suffix: "+", label: "Proyectos Construidos",    description: "Aplicaciones web full-stack en producción", ring: 80 },
-        { value: 3,  suffix: "+", label: "Años de Experiencia",      description: "Desarrollando productos digitales",          ring: 60 },
-        { value: 45, suffix: "%", label: "Mejora de Performance",    description: "Optimización en proyectos React en producción", ring: 45 },
-        { value: 30, suffix: "%", label: "Reducción de Deuda Técnica", description: "En refactorizaciones de componentes React",  ring: 30 },
       ],
     },
     footer: {
