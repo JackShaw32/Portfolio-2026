@@ -454,21 +454,32 @@ const ldJson = {
         const el = document.getElementById('reading-progress');
         if (!el) return;
         var ticking = false;
+        // Cache the document height: reading scrollHeight on every scroll frame
+        // forces a synchronous layout (reflow) after the width write below.
+        // Re-measure only when the viewport size or page content changes.
+        var docHeight = document.documentElement.scrollHeight;
         const update = () => {
           ticking = false;
-          var docHeight = document.documentElement.scrollHeight;
           var pct = docHeight > window.innerHeight
             ? Math.min(window.scrollY / (docHeight - window.innerHeight), 1)
             : 0;
           el.style.width = (pct * 100) + '%';
         };
+        const remeasure = () => {
+          docHeight = document.documentElement.scrollHeight;
+          update();
+        };
         const onScroll = () => {
           if (!ticking) { ticking = true; requestAnimationFrame(update); }
         };
         window.addEventListener('scroll', onScroll, { passive: true });
-        progressCleanup = function() { window.removeEventListener('scroll', onScroll); };
+        window.addEventListener('resize', remeasure, { passive: true });
+        progressCleanup = function() {
+          window.removeEventListener('scroll', onScroll);
+          window.removeEventListener('resize', remeasure);
+        };
         // Defer the initial layout read to the next frame (after first paint).
-        requestAnimationFrame(update);
+        requestAnimationFrame(remeasure);
       }
       initProgressBar();
       document.addEventListener('astro:page-load', initProgressBar);
