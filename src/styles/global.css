@@ -626,113 +626,78 @@
     to   { transform: scale(1.06) translate3d(0, -2%, 0); }
   }
 
-  /* Genie-style flowing gradients: organic blobs + iridescent sheen (transform-only) */
-  .hero-flow {
+  /* Realistic black hole: tilted accretion disk + lensing front arc (transform-only) */
+  .hero-blackhole {
     position: absolute;
-    border-radius: 9999px;
-    will-change: transform;
+    left: 50%;
+    top: 50%;
+    width: min(56vmin, 460px);
+    height: min(56vmin, 460px);
+    transform: translate(-50%, -50%);
   }
 
-  .dark .hero-flow,
-  .dark .hero-flow-sheen {
-    mix-blend-mode: screen;
-  }
-
-  .hero-flow-1 {
-    width: 78vmin;
-    height: 78vmin;
-    left: -14%;
-    top: -30%;
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.32), transparent 62%);
-    animation: hero-flow-a 18s ease-in-out infinite alternate;
-  }
-  .hero-flow-2 {
-    width: 66vmin;
-    height: 66vmin;
-    right: -16%;
-    top: -6%;
-    background: radial-gradient(circle, rgba(34, 211, 238, 0.24), transparent 62%);
-    animation: hero-flow-b 24s ease-in-out -6s infinite alternate;
-  }
-  .hero-flow-3 {
-    width: 70vmin;
-    height: 70vmin;
-    left: 28%;
-    bottom: -32%;
-    background: radial-gradient(circle, rgba(236, 72, 153, 0.26), transparent 62%);
-    animation: hero-flow-c 20s ease-in-out -10s infinite alternate;
-  }
-  .hero-flow-4 {
-    width: 60vmin;
-    height: 60vmin;
-    left: -12%;
-    bottom: -16%;
-    background: radial-gradient(circle, rgba(99, 102, 241, 0.26), transparent 62%);
-    animation: hero-flow-d 26s ease-in-out -2s infinite alternate;
-  }
-  .hero-flow-5 {
-    width: 82vmin;
-    height: 82vmin;
-    left: 14%;
-    top: 2%;
-    background: radial-gradient(circle, rgba(168, 85, 247, 0.22), transparent 62%);
-    animation: hero-flow-e 22s ease-in-out -14s infinite alternate;
-  }
-
-  .hero-flow-sheen {
+  .hero-blackhole-halo {
     position: absolute;
-    inset: -40%;
+    inset: -24%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(255, 170, 80, 0.26), rgba(150, 80, 200, 0.12) 55%, transparent 78%);
+  }
+
+  .hero-blackhole-disk {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    transform: rotateX(68deg);
     background: conic-gradient(from 0deg,
-      transparent 0deg,
-      rgba(236, 72, 153, 0.10) 90deg,
-      rgba(34, 211, 238, 0.08) 160deg,
-      rgba(139, 92, 246, 0.10) 230deg,
-      transparent 320deg);
-    -webkit-mask-image: radial-gradient(closest-side, #000, transparent 72%);
-    mask-image: radial-gradient(closest-side, #000, transparent 72%);
-    animation: hero-flow-sheen 60s linear infinite;
+      rgba(255, 214, 150, 0.95) 0deg,
+      rgba(255, 160, 70, 0.95) 35deg,
+      rgba(255, 110, 40, 0.8) 60deg,
+      rgba(120, 50, 30, 0.45) 100deg,
+      rgba(40, 25, 45, 0.2) 150deg,
+      rgba(120, 50, 30, 0.4) 200deg,
+      rgba(255, 130, 50, 0.85) 250deg,
+      rgba(255, 210, 140, 0.95) 300deg,
+      rgba(255, 214, 150, 0.95) 360deg);
+    -webkit-mask-image: radial-gradient(closest-side, transparent calc(100% - 11%), #000 calc(100% - 11%));
+    mask-image: radial-gradient(closest-side, transparent calc(100% - 11%), #000 calc(100% - 11%));
+    animation: hero-blackhole-spin 28s linear infinite;
     will-change: transform;
   }
 
-  @keyframes hero-flow-a {
-    from { transform: translate3d(0, 0, 0) scale(1); }
-    to   { transform: translate3d(-10%, -12%, 0) scale(1.2); }
-  }
-  @keyframes hero-flow-b {
-    from { transform: translate3d(0, 0, 0) scale(1); }
-    to   { transform: translate3d(12%, 10%, 0) scale(1.14); }
-  }
-  @keyframes hero-flow-c {
-    from { transform: translate3d(0, 0, 0) scale(1); }
-    to   { transform: translate3d(-8%, 12%, 0) scale(1.22); }
-  }
-  @keyframes hero-flow-d {
-    from { transform: translate3d(0, 0, 0) scale(1); }
-    to   { transform: translate3d(14%, -8%, 0) scale(1.1); }
-  }
-  @keyframes hero-flow-e {
-    from { transform: translate3d(0, 0, 0) scale(1); }
-    to   { transform: translate3d(-6%, 8%, 0) scale(1.18); }
-  }
-  @keyframes hero-flow-sheen {
-    to { transform: rotate(360deg); }
+  /* Thin photon ring hugging the shadow edge */
+  .hero-blackhole-photon {
+    position: absolute;
+    inset: 5.5%;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1.5px rgba(255, 200, 130, 0.65), 0 0 20px rgba(255, 170, 90, 0.45);
   }
 
-  /* On small screens keep 3 blobs, no sheen, no blend mode (GPU/battery friendly) */
-  @media (max-width: 767px) {
-    .hero-flow-4,
-    .hero-flow-5,
-    .hero-flow-sheen {
-      display: none;
-    }
-    .dark .hero-flow {
-      mix-blend-mode: normal;
-    }
+  .hero-blackhole-core {
+    position: absolute;
+    inset: 8%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%, #000 62%, #060309 100%);
+    box-shadow: inset 0 0 44px rgba(255, 170, 90, 0.28);
+  }
+
+  .hero-blackhole-front {
+    position: absolute;
+    left: 4%;
+    right: 4%;
+    bottom: 27%;
+    height: 12%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at 50% 100%, rgba(255, 210, 140, 0.95), rgba(255, 150, 70, 0.4) 50%, transparent 72%);
+  }
+
+  @keyframes hero-blackhole-spin {
+    from { transform: rotateX(68deg) rotate(0deg); }
+    to   { transform: rotateX(68deg) rotate(360deg); }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .hero-aurora { animation: none; will-change: auto; }
-    .hero-flow, .hero-flow-sheen { animation: none; will-change: auto; }
+    .hero-blackhole-disk { animation: none; will-change: auto; }
   }
 
   .modal-border-conic {

@@ -11,13 +11,14 @@ export default function Hero() {
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
         <div className="hero-aurora absolute inset-0" />
 
-        {/* Genie-style flowing gradient field: organic blobs + iridescent sheen */}
-        <div className="hero-flow-sheen" />
-        <div className="hero-flow hero-flow-1" />
-        <div className="hero-flow hero-flow-2" />
-        <div className="hero-flow hero-flow-3" />
-        <div className="hero-flow hero-flow-4" />
-        <div className="hero-flow hero-flow-5" />
+        {/* Realistic black hole: tilted accretion disk + lensing front arc (dark theme only, keeps heading readable in light mode) */}
+        <div className="hero-blackhole hidden dark:block">
+          <div className="hero-blackhole-halo" />
+          <div className="hero-blackhole-disk" />
+          <div className="hero-blackhole-photon" />
+          <div className="hero-blackhole-core" />
+          <div className="hero-blackhole-front" />
+        </div>
       </div>
 
       <div
