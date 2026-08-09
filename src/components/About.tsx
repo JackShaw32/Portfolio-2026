@@ -98,10 +98,6 @@ export default function About() {
                     className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.08]"
                   />
                 </div>
-                <span className="absolute bottom-3 left-3 flex h-4 w-4">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-4 w-4 bg-green-500 border-2 border-background" />
-                </span>
                 <div className="absolute -bottom-2 -right-2 glass rounded-2xl p-3 border-border/50 shadow-xl animate-float">
                   <div className="flex items-center gap-2 text-xs">
                     <MapPin className="w-3.5 h-3.5 text-foreground/70" />
@@ -120,37 +116,37 @@ export default function About() {
                 <button
                   onClick={() => setContactOpen(true)}
                   title="Contactar"
-                  className="flex-1 glass hover:bg-foreground/5 text-muted-foreground hover:text-foreground h-12 rounded-2xl flex items-center justify-center transition-all duration-300 border border-border/50 hover:border-foreground/30 cursor-pointer"
+                  className="flex-1 glass hover:bg-foreground/5 text-muted-foreground hover:text-foreground h-10 rounded-2xl flex items-center justify-center transition-all duration-300 border border-border/50 hover:border-foreground/30 cursor-pointer"
                 >
-                  <Mail className="w-5 h-5" />
+                  <Mail className="w-4 h-4" />
                 </button>
                 <a
                   href="/Eduardo-Cabral-Full-Stack-Developer-ES.pdf"
                   download
                   title="Descargar CV en Español"
-                  className="flex-1 glass hover:bg-foreground/5 text-muted-foreground hover:text-foreground h-12 rounded-2xl flex items-center justify-center gap-1 transition-all duration-300 border border-border/50 hover:border-foreground/30 cursor-pointer"
+                  className="flex-1 glass hover:bg-foreground/5 text-muted-foreground hover:text-foreground h-10 rounded-2xl flex items-center justify-center gap-1 transition-all duration-300 border border-border/50 hover:border-foreground/30 cursor-pointer"
                 >
-                  <FileDown className="w-4 h-4" />
+                  <FileDown className="w-3.5 h-3.5" />
                   <span className="text-[10px] font-semibold">ES</span>
                 </a>
                 <a
                   href="/Eduardo-Cabral-Full-Stack-Developer-EN.pdf"
                   download
                   title="Download CV in English"
-                  className="flex-1 glass hover:bg-foreground/5 text-muted-foreground hover:text-foreground h-12 rounded-2xl flex items-center justify-center gap-1 transition-all duration-300 border border-border/50 hover:border-foreground/30 cursor-pointer"
+                  className="flex-1 glass hover:bg-foreground/5 text-muted-foreground hover:text-foreground h-10 rounded-2xl flex items-center justify-center gap-1 transition-all duration-300 border border-border/50 hover:border-foreground/30 cursor-pointer"
                 >
-                  <FileDown className="w-4 h-4" />
+                  <FileDown className="w-3.5 h-3.5" />
                   <span className="text-[10px] font-semibold">EN</span>
                 </a>
                 <a href="https://linkedin.com/in/raul-eduardo-cabral" target="_blank" rel="noopener noreferrer"
                   title="LinkedIn" aria-label="LinkedIn"
-                  className="flex-1 glass hover:bg-foreground/5 text-muted-foreground hover:text-foreground h-12 rounded-2xl flex items-center justify-center transition-all duration-300 border border-border/50 hover:border-foreground/30 cursor-pointer">
-                  <Linkedin className="w-5 h-5" />
+                  className="flex-1 glass hover:bg-foreground/5 text-muted-foreground hover:text-foreground h-10 rounded-2xl flex items-center justify-center transition-all duration-300 border border-border/50 hover:border-foreground/30 cursor-pointer">
+                  <Linkedin className="w-4 h-4" />
                 </a>
                 <a href="https://github.com/JackShaw32" target="_blank" rel="noopener noreferrer"
                   title="GitHub" aria-label="GitHub"
-                  className="flex-1 glass hover:bg-foreground/5 text-muted-foreground hover:text-foreground h-12 rounded-2xl flex items-center justify-center transition-all duration-300 border border-border/50 hover:border-foreground/30 cursor-pointer">
-                  <Github className="w-5 h-5" />
+                  className="flex-1 glass hover:bg-foreground/5 text-muted-foreground hover:text-foreground h-10 rounded-2xl flex items-center justify-center transition-all duration-300 border border-border/50 hover:border-foreground/30 cursor-pointer">
+                  <Github className="w-4 h-4" />
                 </a>
               </div>
             </div>
