@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Download, Moon, Sun, Menu, X, Github, Linkedin, Mail, MapPin, Terminal } from "lucide-react";
+import { Download, FileText, Moon, Sun, Menu, X, Github, Linkedin, Terminal } from "lucide-react";
 import ContactModal from "./ContactModal";
 import { useLanguage } from "@/hooks/useLanguage";
 import { translations } from "@/lib/translations";
@@ -18,6 +18,7 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
   const [contactOpen, setContactOpen] = useState(false);
   const { lang, toggleLang } = useLanguage();
   const t = translations[lang];
+  const cvHrefEn = "/Eduardo-Cabral-Full-Stack-Developer-EN.pdf";
 
   const navLinks = [
     { href: "#top", label: t.nav.home },
@@ -91,17 +92,6 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
   };
 
   useEffect(() => {
-    if (menuOpen) {
-      document.body.classList.add("overflow-hidden");
-    } else {
-      document.body.classList.remove("overflow-hidden");
-    }
-    return () => {
-      document.body.classList.remove("overflow-hidden");
-    };
-  }, [menuOpen]);
-
-  useEffect(() => {
     const handler = (e: MouseEvent) => {
       const el = (e.target as HTMLElement).closest<HTMLElement>('.glass, .glow-card');
       if (!el) return;
@@ -112,6 +102,12 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
     document.addEventListener('mousemove', handler, { passive: true });
     return () => document.removeEventListener('mousemove', handler);
   }, []);
+
+  useEffect(() => {
+    if (menuOpen) {
+      setHidden(false);
+    }
+  }, [menuOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -136,57 +132,39 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out ${
-          hidden ? "-translate-y-full" : "translate-y-0"
-        } ${
-          isScrolled || menuOpen
-            ? "bg-background/80 backdrop-blur-md border-b border-border/50 shadow-sm"
-            : "bg-transparent"
-        }`}
+        className={`fixed top-0 left-0 right-0 transition-all duration-300 ease-in-out ${
+          hidden && !menuOpen ? "-translate-y-full" : "translate-y-0"
+        } z-50`}
       >
-        <div className="w-full px-4 lg:px-6 py-4 flex flex-row items-center justify-between">
+        <div className="w-full px-3 md:px-6 pt-3 md:pt-4">
+          <div
+            className={`mx-auto flex flex-row items-center justify-between px-3 md:px-5 py-2.5 md:py-3 rounded-2xl transition-all duration-300 ease-in-out ${
+              isScrolled ? "max-w-6xl" : "max-w-full md:max-w-[88rem]"
+            } ${
+              menuOpen
+                ? "bg-background/72 backdrop-blur-[4px] border border-border/45 shadow-sm"
+                :
+              isScrolled && !menuOpen
+                ? "bg-background/80 backdrop-blur-md border border-border/50 shadow-sm"
+                : "border border-transparent"
+            }`}
+          >
 
           <button className="flex items-center gap-3 group cursor-pointer" onClick={() => scrollToSection('top')}>
-            <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full block md:hidden bg-foreground/10 flex items-center justify-center group-hover:bg-foreground/20 transition-colors">
-              <img
-                src="/20220924_233024.webp"
-                alt="Eduardo Cabral"
-                fetchPriority="high"
-                width={40}
-                height={40}
-                className="w-full h-full object-cover"
-              />
-            </span>
-            <span className="hidden md:flex relative h-10 w-10 shrink-0 rounded-xl bg-foreground/10 items-center justify-center group-hover:bg-foreground/15 transition-colors border border-foreground/[0.08] group-hover:border-foreground/20">
+            <span className="hidden md:flex relative h-10 w-10 shrink-0 rounded-xl bg-foreground/10 items-center justify-center border border-foreground/[0.08]">
               <Terminal className="w-4 h-4 text-foreground" />
             </span>
             <div className="flex flex-col items-start">
-              <span className="font-semibold text-base lg:text-xl text-foreground leading-tight">Eduardo Cabral</span>
+              <span className="font-semibold text-base lg:text-xl text-foreground leading-tight whitespace-nowrap">Eduardo Cabral</span>
               <span className="text-xs text-muted-foreground font-medium leading-tight">Full Stack Software Engineer</span>
             </div>
-          </button>
-
-          <button
-            className="hidden md:flex items-center justify-center absolute left-1/2 -translate-x-1/2 group cursor-pointer"
-            onClick={() => scrollToSection('top')}
-            aria-label="Ir al inicio"
-            title="Go to top"
-          >
-            <span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full bg-foreground/10 flex items-center justify-center group-hover:bg-foreground/20 transition-all duration-300">
-              <img
-                src="/20220924_233024.webp"
-                alt="Eduardo Cabral"
-                fetchPriority="high"
-                className="w-full h-full object-cover"
-              />
-            </span>
           </button>
 
           <div className="inline-flex gap-2 items-center">
             <a
               href="/Eduardo-Cabral-Full-Stack-Developer-EN.pdf"
               download
-              className="hidden md:flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors border border-border/50 bg-transparent hover:bg-foreground/5 text-foreground h-9 rounded-md px-4"
+              className="hidden md:flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all duration-300 ease-out border border-border/50 bg-transparent hover:bg-foreground/15 text-foreground h-9 rounded-md px-4"
             >
               <Download className="mr-2 w-4 h-4" />
               {t.nav.downloadCV}
@@ -194,13 +172,13 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
             <button
               type="button"
               onClick={() => { setMenuOpen(false); setContactOpen(true); }}
-              className="hidden sm:inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all duration-300 ease-out bg-foreground text-background hover:opacity-85 h-8 rounded-md px-3 cursor-pointer"
+              className="hidden sm:inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all duration-300 ease-out bg-foreground text-background hover:opacity-90 hover:shadow-lg hover:shadow-foreground/25 h-8 rounded-md px-3 cursor-pointer"
             >
               {t.nav.contactBtn}
             </button>
             <button
               onClick={toggleLang}
-              className="inline-flex items-center justify-center whitespace-nowrap text-xs font-bold transition-all duration-300 ease-out border border-border/50 bg-transparent hover:bg-foreground/10 text-foreground h-9 w-9 rounded-full cursor-pointer"
+              className="inline-flex items-center justify-center whitespace-nowrap text-xs font-bold transition-all duration-300 ease-out border border-border/50 bg-transparent hover:bg-foreground/15 text-foreground h-9 w-9 rounded-full cursor-pointer"
               type="button"
               aria-label="Toggle language"
               title={lang === "es" ? "Switch to English" : "Cambiar a Español"}
@@ -210,7 +188,7 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
 
             <button
               onClick={toggleTheme}
-              className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all duration-300 ease-out border border-border/50 bg-transparent hover:bg-foreground/10 text-foreground h-9 w-9 rounded-full cursor-pointer group"
+              className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all duration-300 ease-out border border-border/50 bg-transparent hover:bg-foreground/15 text-foreground h-9 w-9 rounded-full cursor-pointer group"
               type="button"
               aria-label="Toggle theme"
             >
@@ -222,32 +200,35 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
 
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all duration-300 ease-out border border-border/50 bg-foreground/5 hover:bg-foreground/10 text-foreground h-9 w-9 rounded-md ml-1 relative z-50 cursor-pointer"
+              className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all duration-300 ease-out border border-border/50 bg-transparent hover:bg-foreground/15 text-foreground h-9 w-9 rounded-md ml-1 relative z-50 cursor-pointer"
               aria-label="Toggle menu"
             >
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
 
+          </div>
         </div>
       </header>
 
       <div
-        className={`fixed inset-0 bg-background/80 backdrop-blur-sm z-40 transition-opacity duration-300 ${
+        className={`fixed inset-0 bg-black/70 backdrop-blur-[2px] z-[60] transition-opacity duration-300 ${
           menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setMenuOpen(false)}
       />
 
       <div
-        className={`fixed top-0 right-0 bottom-0 w-full max-w-md bg-background border-l border-border/50 z-40 flex flex-col overflow-y-auto transition-transform duration-500 ease-in-out ${
-          menuOpen ? "translate-x-0" : "translate-x-full"
+        className={`fixed inset-x-0 bottom-0 z-[70] mx-auto w-full max-w-none border-t border-border/60 bg-background/95 shadow-2xl backdrop-blur-md transition-transform duration-500 ease-in-out rounded-t-3xl lg:top-0 lg:right-0 lg:bottom-0 lg:left-auto lg:w-full lg:max-w-md lg:rounded-t-none lg:rounded-l-3xl lg:border-t-0 lg:border-l ${
+          menuOpen ? "translate-y-0 lg:translate-x-0" : "translate-y-full lg:translate-y-0 lg:translate-x-full"
         }`}
       >
-        <div className="flex-1 px-6 pt-20 pb-8 flex flex-col overflow-y-auto">
+        <div className="flex h-auto max-h-[88vh] flex-col overflow-y-auto pl-7 pr-5 pb-6 pt-4 lg:h-full lg:max-h-none lg:pl-8 lg:pr-6 lg:pt-20 lg:pb-8">
 
-          <nav aria-label={t.nav.navigation} className="flex flex-col gap-4 mb-8">
-            <span className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-2">
+          <div className="mx-auto mb-4 h-1.5 w-20 rounded-full bg-muted-foreground/35 lg:hidden" />
+
+          <nav aria-label={t.nav.navigation} className="mb-8 flex flex-col gap-2.5 px-1 pt-1">
+            <span className="mb-1 text-4xl font-semibold tracking-tight text-foreground">
               {t.nav.navigation}
             </span>
             {mobileNavLinks.map((link, i) =>
@@ -255,11 +236,11 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
                 <button
                   key={link.sectionId}
                   onClick={() => { setMenuOpen(false); setContactOpen(true); }}
-                  className={`text-3xl font-semibold w-fit transition-all duration-300 text-left cursor-pointer ${
+                  className={`w-fit text-left text-[1.15rem] leading-snug font-medium tracking-tight transition-all duration-300 cursor-pointer ${
                     menuOpen ? `opacity-100 translate-x-0 nav-delay-${i}` : "opacity-0 translate-x-8 nav-delay-none"
                   }`}
                 >
-                  <span className="text-foreground/70 hover:text-foreground transition-colors duration-200">
+                  <span className="text-foreground/80 transition-colors duration-200 hover:text-foreground">
                     {link.label}
                   </span>
                 </button>
@@ -268,11 +249,11 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
                   key={link.sectionId}
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
-                  className={`text-3xl font-semibold w-fit transition-all duration-300 text-left cursor-pointer ${
+                  className={`w-fit text-left text-[1.15rem] leading-snug font-medium tracking-tight transition-all duration-300 cursor-pointer ${
                     menuOpen ? `opacity-100 translate-x-0 nav-delay-${i}` : "opacity-0 translate-x-8 nav-delay-none"
                   }`}
                 >
-                  <span className="text-foreground/70 hover:text-foreground transition-colors duration-200">
+                  <span className="text-foreground/80 transition-colors duration-200 hover:text-foreground">
                     {link.label}
                   </span>
                 </a>
@@ -280,11 +261,11 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
                 <button
                   key={link.sectionId}
                   onClick={() => scrollToSection(link.sectionId)}
-                  className={`text-3xl font-semibold w-fit transition-all duration-300 text-left cursor-pointer ${
+                  className={`w-fit text-left text-[1.15rem] leading-snug font-medium tracking-tight transition-all duration-300 cursor-pointer ${
                     menuOpen ? `opacity-100 translate-x-0 nav-delay-${i}` : "opacity-0 translate-x-8 nav-delay-none"
                   }`}
                 >
-                  <span className="text-foreground/70 hover:text-foreground transition-colors duration-200">
+                  <span className="text-foreground/80 transition-colors duration-200 hover:text-foreground">
                     {link.label}
                   </span>
                 </button>
@@ -292,36 +273,17 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
             )}
           </nav>
 
-          <div className="mt-auto">
-            <div className="h-px w-full bg-border/50 mb-6" />
-
-            <div className="flex flex-col gap-3 mb-6">
-              <span className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
-                {t.nav.contactSection}
-              </span>
-              <a
-                href="mailto:jackshaw@live.com.ar"
-                className="flex items-center gap-2 text-foreground/70 hover:text-foreground transition-colors"
-              >
-                <Mail className="w-5 h-5" />
-                <span>jackshaw@live.com.ar</span>
-              </a>
-              <div className="flex items-center gap-2 text-foreground/70">
-                <MapPin className="w-5 h-5" />
-                <span>Córdoba, Argentina</span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
+          <div className="mb-6 flex items-center gap-2 px-1">
+            <div className="flex items-center gap-2">
               <a
                 href="https://github.com/JackShaw32"
                 target="_blank"
                 rel="noopener noreferrer"
                 title="GitHub Profile"
                 aria-label="GitHub Profile"
-                className="w-8 h-8 rounded-full border border-border/50 flex items-center justify-center text-foreground/70 hover:text-foreground hover:bg-foreground/5 transition-all"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-border/45 bg-background/60 text-foreground/80 transition-all hover:bg-foreground/10 hover:text-foreground"
               >
-                <Github className="w-5 h-5" />
+                <Github className="h-4.5 w-4.5" />
               </a>
               <a
                 href="https://www.linkedin.com/in/raul-eduardo-cabral/"
@@ -329,11 +291,30 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
                 rel="noopener noreferrer"
                 title="LinkedIn Profile"
                 aria-label="LinkedIn Profile"
-                className="w-8 h-8 rounded-full border border-border/50 flex items-center justify-center text-foreground/70 hover:text-foreground hover:bg-foreground/5 transition-all"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-border/45 bg-background/60 text-foreground/80 transition-all hover:bg-foreground/10 hover:text-foreground"
               >
-                <Linkedin className="w-5 h-5" />
+                <Linkedin className="h-4.5 w-4.5" />
               </a>
             </div>
+
+            <div className="flex-1" />
+          </div>
+
+          <div className="mt-auto border-t border-border/40 px-1 pt-5">
+            <div className="mb-6 flex flex-col items-start gap-1.5">
+              <a
+                href={cvHrefEn}
+                download
+                className="inline-flex items-center gap-1.5 text-[13px] leading-none font-light text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground"
+              >
+                <FileText className="h-3.5 w-3.5 shrink-0" />
+                <span className="leading-none">{t.nav.downloadCV}</span>
+              </a>
+            </div>
+
+            <p className="text-xs text-muted-foreground/70">
+              © {new Date().getFullYear()} Eduardo Cabral. {t.nav.rightsReserved}
+            </p>
           </div>
 
         </div>
