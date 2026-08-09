@@ -456,10 +456,11 @@ const ldJson = {
         var ticking = false;
         // Cache the document height: reading scrollHeight on every scroll frame
         // forces a synchronous layout (reflow) after the width write below.
-        // Re-measure only when the viewport size or page content changes.
+        // Re-measure only when the viewport resizes, when the page finishes
+        // loading resources (images/fonts can grow the page without a resize),
+        // or when the cached value is provably stale near the bottom.
         var docHeight = document.documentElement.scrollHeight;
-        const update = () => {
-          ticking = false;
+        const paint = () => {
           var pct = docHeight > window.innerHeight
             ? Math.min(window.scrollY / (docHeight - window.innerHeight), 1)
             : 0;
@@ -467,16 +468,28 @@ const ldJson = {
         };
         const remeasure = () => {
           docHeight = document.documentElement.scrollHeight;
-          update();
+          paint();
+        };
+        const update = () => {
+          ticking = false;
+          // Cheap stale check: if we are already at (or past) the cached max
+          // scroll, re-measure once instead of reading layout every frame.
+          if (docHeight <= window.innerHeight + window.scrollY + 10) {
+            remeasure();
+            return;
+          }
+          paint();
         };
         const onScroll = () => {
           if (!ticking) { ticking = true; requestAnimationFrame(update); }
         };
         window.addEventListener('scroll', onScroll, { passive: true });
         window.addEventListener('resize', remeasure, { passive: true });
+        window.addEventListener('load', remeasure, { passive: true });
         progressCleanup = function() {
           window.removeEventListener('scroll', onScroll);
           window.removeEventListener('resize', remeasure);
+          window.removeEventListener('load', remeasure);
         };
         // Defer the initial layout read to the next frame (after first paint).
         requestAnimationFrame(remeasure);
