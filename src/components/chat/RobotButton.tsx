@@ -20,7 +20,7 @@ export default function RobotButton({
   onRobotClick,
 }: RobotButtonProps) {
   return (
-    <div className={`fixed bottom-10 right-5 sm:bottom-10 sm:right-10 z-50 transition-all duration-500 origin-bottom-right ${open ? "scale-0 opacity-0 pointer-events-none sm:scale-100 sm:opacity-100 sm:pointer-events-auto" : "scale-[0.7] sm:scale-100 opacity-100"}`}>
+    <div className={`fixed bottom-14 sm:bottom-16 right-5 sm:right-10 z-50 transition-all duration-500 origin-bottom-right ${open ? "scale-0 opacity-0 pointer-events-none sm:scale-100 sm:opacity-100 sm:pointer-events-auto" : "scale-[0.7] sm:scale-100 opacity-100"}`}>
       <button onClick={onRobotClick} aria-label={open ? openChatAriaLabel : closeChatAriaLabel} className={`group relative flex items-end focus:outline-none ${jumping ? "animate-robot-jump" : (!open ? "animate-robot-bob" : "")}`}>
         <div className={`mb-3 mr-1 transition-all duration-300 self-end ${(showLabel && !jumping && !open) ? "opacity-100 -translate-y-2" : "opacity-0 translate-y-0 pointer-events-none"} group-hover:opacity-100 group-hover:-translate-y-2`}>
           <div className="relative bg-foreground text-background text-[13px] sm:text-[11px] font-semibold px-4 py-3 sm:px-3 sm:py-2 rounded-2xl rounded-br-sm shadow-xl whitespace-nowrap">
