@@ -222,18 +222,20 @@ const ldJson = {
 
     <script>
       import Lenis from 'lenis';
-      import gsap from 'gsap';
-      import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-      gsap.registerPlugin(ScrollTrigger);
 
       let lenis: InstanceType<typeof Lenis> | null = null;
-      let tickerCallback: ((time: number) => void) | null = null;
+      let rafId: number | null = null;
+
+      function rafLoop(time: number) {
+        if (!lenis) return;
+        lenis.raf(time);
+        rafId = requestAnimationFrame(rafLoop);
+      }
 
       function destroyLenis() {
-        if (tickerCallback) {
-          gsap.ticker.remove(tickerCallback);
-          tickerCallback = null;
+        if (rafId !== null) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
         }
         if (lenis) {
           lenis.destroy();
@@ -255,12 +257,7 @@ const ldJson = {
 
         (window as any).lenis = lenis;
 
-        tickerCallback = (time: number) => lenis!.raf(time * 1000);
-        gsap.ticker.add(tickerCallback);
-        gsap.ticker.lagSmoothing(0);
-        (window as any).ScrollTrigger = ScrollTrigger;
-
-        lenis.on('scroll', ScrollTrigger.update);
+        rafId = requestAnimationFrame(rafLoop);
 
         var saved = sessionStorage.getItem('scroll-pos');
         if (saved && !sessionStorage.getItem('skip-scroll-restore')) {

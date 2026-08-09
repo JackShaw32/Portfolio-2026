@@ -9,6 +9,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
+  // Keep the refresh entry point used by Layout's after-swap scroll restoration.
+  (window as any).ScrollTrigger = ScrollTrigger;
 }
 
 export default function Projects() {
