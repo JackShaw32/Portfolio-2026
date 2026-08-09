@@ -207,6 +207,19 @@ const ldJson = {
       document.addEventListener('astro:after-swap', applyTheme);
     </script>
 
+    <script is:inline>
+      (function() {
+        try {
+          var saved = sessionStorage.getItem('scroll-pos');
+          if (saved && !sessionStorage.getItem('skip-scroll-restore')) {
+            history.scrollRestoration = 'manual';
+            var y = parseFloat(saved);
+            if (!isNaN(y)) window.scrollTo(0, y);
+          }
+        } catch(e) {}
+      })();
+    </script>
+
     <script>
       import Lenis from 'lenis';
       import gsap from 'gsap';
@@ -255,7 +268,6 @@ const ldJson = {
           lenis.scrollTo(Number(saved), { immediate: true });
         }
         sessionStorage.removeItem('skip-scroll-restore');
-        document.body.classList.remove('no-flicker');
       }
 
       window.addEventListener('beforeunload', function() {
@@ -433,10 +445,9 @@ const ldJson = {
       });
     </script>
 
-    <style>body.no-flicker{visibility:hidden}</style>
     <ClientRouter />
   </head>
-  <body class="min-h-screen bg-background font-sans antialiased selection:bg-primary/30 overflow-x-hidden no-flicker">
+  <body class="min-h-screen bg-background font-sans antialiased selection:bg-primary/30 overflow-x-hidden">
     <!-- Reading progress bar -->
     <div id="reading-progress" class="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 z-[100]" style="width:0%" />
     <script>
