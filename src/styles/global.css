@@ -626,8 +626,20 @@
     to   { transform: scale(1.06) translate3d(0, -2%, 0); }
   }
 
+  /* GoPro-style fisheye lens: slow rotating focus ring (transform-only) */
+  .hero-fisheye-ring {
+    transform-box: view-box;
+    transform-origin: center;
+    animation: hero-fisheye-spin 90s linear infinite;
+  }
+
+  @keyframes hero-fisheye-spin {
+    to { transform: rotate(360deg); }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .hero-aurora { animation: none; will-change: auto; }
+    .hero-fisheye-ring { animation: none; }
   }
 
   .modal-border-conic {
