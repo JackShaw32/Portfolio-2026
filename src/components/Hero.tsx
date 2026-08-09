@@ -9,10 +9,10 @@ export default function Hero() {
   return (
     <section id="top" className="relative min-h-screen flex items-center justify-center overflow-hidden w-full hero-tablet-short">
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        <div className="absolute -top-[25%] left-1/2 -translate-x-1/2 w-[1000px] h-[760px] rounded-full bg-violet-500/[0.16] dark:bg-violet-500/[0.20] blur-[170px]" />
-        <div className="absolute top-[5%] -right-[12%] w-[600px] h-[480px] rounded-full bg-pink-500/[0.10] dark:bg-pink-500/[0.13] blur-[150px]" />
-        <div className="absolute top-[15%] -left-[8%] w-[520px] h-[420px] rounded-full bg-indigo-500/[0.09] dark:bg-indigo-500/[0.12] blur-[140px]" />
-        <div className="absolute bottom-[-10%] left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full bg-fuchsia-500/[0.08] dark:bg-fuchsia-500/[0.10] blur-[160px]" />
+        <div className="absolute -top-[25%] left-1/2 -translate-x-1/2 w-[640px] h-[520px] md:w-[1000px] md:h-[760px] rounded-full bg-violet-500/[0.16] dark:bg-violet-500/[0.20] blur-[60px] md:blur-[170px]" />
+        <div className="absolute top-[5%] -right-[12%] w-[400px] h-[340px] md:w-[600px] md:h-[480px] rounded-full bg-pink-500/[0.10] dark:bg-pink-500/[0.13] blur-[55px] md:blur-[150px]" />
+        <div className="absolute top-[15%] -left-[8%] w-[360px] h-[300px] md:w-[520px] md:h-[420px] rounded-full bg-indigo-500/[0.09] dark:bg-indigo-500/[0.12] blur-[50px] md:blur-[140px]" />
+        <div className="absolute bottom-[-10%] left-1/2 -translate-x-1/2 w-[600px] h-[360px] md:w-[900px] md:h-[500px] rounded-full bg-fuchsia-500/[0.08] dark:bg-fuchsia-500/[0.10] blur-[60px] md:blur-[160px]" />
       </div>
 
       <div
