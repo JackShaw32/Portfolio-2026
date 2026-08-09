@@ -9,10 +9,7 @@ export default function Hero() {
   return (
     <section id="top" className="relative min-h-screen flex items-center justify-center overflow-hidden w-full hero-tablet-short">
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        <div className="absolute -top-[25%] left-1/2 -translate-x-1/2 w-[640px] h-[520px] md:w-[1000px] md:h-[760px] rounded-full bg-[radial-gradient(closest-side,rgba(139,92,246,0.18),transparent_70%)] dark:bg-[radial-gradient(closest-side,rgba(139,92,246,0.22),transparent_70%)] md:blur-[170px]" />
-        <div className="absolute top-[5%] -right-[12%] w-[400px] h-[340px] md:w-[600px] md:h-[480px] rounded-full bg-[radial-gradient(closest-side,rgba(236,72,153,0.12),transparent_70%)] dark:bg-[radial-gradient(closest-side,rgba(236,72,153,0.15),transparent_70%)] md:blur-[150px]" />
-        <div className="absolute top-[15%] -left-[8%] w-[360px] h-[300px] md:w-[520px] md:h-[420px] rounded-full bg-[radial-gradient(closest-side,rgba(99,102,241,0.11),transparent_70%)] dark:bg-[radial-gradient(closest-side,rgba(99,102,241,0.14),transparent_70%)] md:blur-[140px]" />
-        <div className="absolute bottom-[-10%] left-1/2 -translate-x-1/2 w-[600px] h-[360px] md:w-[900px] md:h-[500px] rounded-full bg-[radial-gradient(closest-side,rgba(217,70,239,0.10),transparent_70%)] dark:bg-[radial-gradient(closest-side,rgba(217,70,239,0.12),transparent_70%)] md:blur-[160px]" />
+        <div className="hero-aurora absolute inset-0" />
       </div>
 
       <div

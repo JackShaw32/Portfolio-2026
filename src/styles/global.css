@@ -602,6 +602,34 @@
     background-size: 400px 400px;
   }
 
+  /* Hero aurora: layered radial gradients (no filter blur → cheap first paint) */
+  .hero-aurora {
+    background-image:
+      radial-gradient(60% 55% at 50% 15%, rgba(139, 92, 246, 0.16), transparent 70%),
+      radial-gradient(45% 45% at 85% 40%, rgba(236, 72, 153, 0.12), transparent 70%),
+      radial-gradient(45% 45% at 10% 55%, rgba(99, 102, 241, 0.11), transparent 70%),
+      radial-gradient(55% 50% at 50% 95%, rgba(217, 70, 239, 0.10), transparent 70%);
+    animation: hero-aurora-drift 20s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+
+  .dark .hero-aurora {
+    background-image:
+      radial-gradient(60% 55% at 50% 15%, rgba(139, 92, 246, 0.30), transparent 70%),
+      radial-gradient(45% 45% at 85% 40%, rgba(236, 72, 153, 0.22), transparent 70%),
+      radial-gradient(45% 45% at 10% 55%, rgba(99, 102, 241, 0.20), transparent 70%),
+      radial-gradient(55% 50% at 50% 95%, rgba(217, 70, 239, 0.18), transparent 70%);
+  }
+
+  @keyframes hero-aurora-drift {
+    from { transform: scale(1) translate3d(0, 0, 0); }
+    to   { transform: scale(1.06) translate3d(0, -2%, 0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-aurora { animation: none; will-change: auto; }
+  }
+
   .modal-border-conic {
     width: 300%;
     height: 300%;
