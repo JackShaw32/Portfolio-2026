@@ -3,6 +3,7 @@ export const en = {
       home: "Home",
       about: "About Me",
       skills: "Skills",
+      performance: "Performance",
       projects: "Projects",
       chat: "AI Chat",
       contact: "Contact",
@@ -390,7 +391,7 @@ export const en = {
       links: [
         { name: "Home", href: "#top" },
         { name: "Journey", href: "#skills" },
-        { name: "Skills", href: "#optimizations" },
+        { name: "Performance", href: "#optimizations" },
         { name: "Projects", href: "#projects" },
         { name: "About Me", href: "#about" },
         { name: "Contact", href: "#contact" },

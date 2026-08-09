@@ -20,20 +20,11 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
   const t = translations[lang];
   const cvHrefEn = "/Eduardo-Cabral-Full-Stack-Developer-EN.pdf";
 
-  const navLinks = [
-    { href: "#top", label: t.nav.home },
-    { href: "#about", label: t.nav.about },
-    { href: "#projects", label: t.nav.skills },
-    { href: "#optimizations", label: t.nav.projects },
-    { href: "#chat", label: t.nav.chat },
-    { href: "#contact", label: t.nav.contact },
-  ];
-
   const mobileNavLinks = [
     { href: subPage ? "/" : "#top",                sectionId: "top",           label: t.nav.home },
     { href: subPage ? "/#skills" : "#skills",     sectionId: "skills",        label: t.nav.trajectory },
     { href: subPage ? "/#projects" : "#projects", sectionId: "projects",      label: t.nav.projects },
-    { href: subPage ? "/#optimizations" : "#optimizations", sectionId: "optimizations", label: t.nav.skills },
+    { href: subPage ? "/#optimizations" : "#optimizations", sectionId: "optimizations", label: t.nav.performance },
     { href: subPage ? "/#about" : "#about",       sectionId: "about",         label: t.nav.about },
     { href: subPage ? "/#comments" : "#comments", sectionId: "comments",      label: t.nav.comments },
     { href: subPage ? "/#contact" : "#contact",   sectionId: "contact",       label: t.nav.contact },
