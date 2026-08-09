@@ -1,5 +1,5 @@
 import { ExternalLink, Github, ArrowRight } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { translations } from "@/lib/translations";
 import { projectsStaticData } from "@/config/projects";
@@ -13,38 +13,14 @@ if (typeof window !== "undefined") {
 
 export default function Projects() {
   const sectionRef = useRef<HTMLElement>(null);
-  const carouselRef = useRef<HTMLDivElement>(null);
   const { lang } = useLanguage();
   const t = translations[lang];
   const pr = t.projects;
-  const [activeIndex, setActiveIndex] = useState(0);
 
   const projects = pr.projects.map((proj, i) => ({
     ...projectsStaticData[i],
     ...proj,
   }));
-
-  useEffect(() => {
-    const el = carouselRef.current;
-    if (!el) return;
-    const handleScroll = () => {
-      const cardWidth = el.querySelector<HTMLElement>('.project-row')?.offsetWidth ?? 1;
-      const gap = 24; // gap-6
-      const scrollPos = el.scrollLeft;
-      const idx = Math.round(scrollPos / (cardWidth + gap));
-      setActiveIndex(Math.min(idx, projects.length - 1));
-    };
-    el.addEventListener('scroll', handleScroll, { passive: true });
-    return () => el.removeEventListener('scroll', handleScroll);
-  }, [projects.length]);
-
-  const scrollTo = (index: number) => {
-    const el = carouselRef.current;
-    if (!el) return;
-    const cardWidth = el.querySelector<HTMLElement>('.project-row')?.offsetWidth ?? 0;
-    const gap = 24;
-    el.scrollTo({ left: index * (cardWidth + gap), behavior: 'smooth' });
-  };
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -105,11 +81,11 @@ export default function Projects() {
         </div>
 
         <div className="relative">
-          <div ref={carouselRef} className="flex md:flex-col gap-6 md:gap-20 xl:gap-40 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none scroll-pl-6 md:scroll-pl-0 pb-4 md:pb-0 [&::-webkit-scrollbar]:hidden">
+          <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-pl-6 pb-4 [&::-webkit-scrollbar]:hidden xl:flex-col xl:gap-20 2xl:gap-40 xl:overflow-visible xl:snap-none xl:scroll-pl-0 xl:pb-0">
           {projects.map((project, index) => {
             const isEven = index % 2 !== 0;
             return (
-              <div key={project.slug} data-project-slug={project.slug} className="project-row min-w-[85vw] md:min-w-0 snap-start md:snap-none flex flex-col xl:flex-row gap-6 lg:gap-16 items-center group">
+              <div key={project.slug} data-project-slug={project.slug} className="project-row min-w-[85vw] snap-start flex flex-col xl:flex-row gap-6 xl:gap-16 items-center group xl:min-w-0 xl:snap-none">
 
                 <div className={`project-img-wrap opacity-0 w-full xl:w-3/5 ${isEven ? "xl:order-2" : "xl:order-1"}`}>
                   <a
@@ -205,25 +181,11 @@ export default function Projects() {
           })}
           </div>
 
-          {/* Mobile carousel dots */}
-          <div className="flex md:hidden items-center justify-center gap-2 mt-4">
-            {projects.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => scrollTo(i)}
-                className={`rounded-full transition-all duration-300 ${
-                  i === activeIndex
-                    ? 'w-6 h-2 bg-foreground'
-                    : 'w-2 h-2 bg-foreground/30 hover:bg-foreground/50'
-                }`}
-                aria-label={`Ir al proyecto ${i + 1}`}
-              />
-            ))}
-          </div>
+          
 
           {/* Mobile fade hint at edges */}
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-background to-transparent md:hidden" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background to-transparent md:hidden" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-background to-transparent xl:hidden" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background to-transparent xl:hidden" />
         </div>
       </div>
     </section>
