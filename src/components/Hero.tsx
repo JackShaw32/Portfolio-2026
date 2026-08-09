@@ -1,50 +1,18 @@
 import { Linkedin, ArrowRight } from "lucide-react";
-import { useEffect, useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { translations } from "@/lib/translations";
-
-const roles = [
-  "Full Stack Software Engineer",
-  "Building Web Products"
-];
 
 export default function Hero() {
   const { lang } = useLanguage();
   const t = translations[lang];
-  const [currentRole, setCurrentRole] = useState(0);
-  const [displayText, setDisplayText] = useState(roles[0]);
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  useEffect(() => {
-    const role = roles[currentRole];
-    const speed = isDeleting ? 40 : 80;
-
-    const timer = setTimeout(() => {
-      if (!isDeleting) {
-        if (displayText.length < role.length) {
-          setDisplayText(role.slice(0, displayText.length + 1));
-        } else {
-          setTimeout(() => setIsDeleting(true), 2000);
-        }
-      } else {
-        if (displayText.length > 0) {
-          setDisplayText(displayText.slice(0, -1));
-        } else {
-          setIsDeleting(false);
-          setCurrentRole((prev) => (prev + 1) % roles.length);
-        }
-      }
-    }, speed);
-
-    return () => clearTimeout(timer);
-  }, [displayText, isDeleting, currentRole]);
 
   return (
-    <section id="top" className="relative min-h-screen flex items-center justify-center overflow-hidden w-full">
-      <div className="absolute inset-0 pointer-events-none overflow-hidden dark:hidden" aria-hidden="true">
-        <div className="absolute -top-[25%] left-1/2 -translate-x-1/2 w-[900px] h-[700px] rounded-full bg-violet-500/[0.10] dark:bg-violet-500/[0.13] blur-[160px]" />
-        <div className="absolute top-[5%] -right-[12%] w-[550px] h-[450px] rounded-full bg-pink-500/[0.07] dark:bg-pink-500/[0.09] blur-[140px]" />
-        <div className="absolute top-[15%] -left-[8%] w-[480px] h-[380px] rounded-full bg-indigo-500/[0.06] dark:bg-indigo-500/[0.08] blur-[130px]" />
+    <section id="top" className="relative min-h-screen flex items-center justify-center overflow-hidden w-full hero-tablet-short">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        <div className="absolute -top-[25%] left-1/2 -translate-x-1/2 w-[1000px] h-[760px] rounded-full bg-violet-500/[0.16] dark:bg-violet-500/[0.20] blur-[170px]" />
+        <div className="absolute top-[5%] -right-[12%] w-[600px] h-[480px] rounded-full bg-pink-500/[0.10] dark:bg-pink-500/[0.13] blur-[150px]" />
+        <div className="absolute top-[15%] -left-[8%] w-[520px] h-[420px] rounded-full bg-indigo-500/[0.09] dark:bg-indigo-500/[0.12] blur-[140px]" />
+        <div className="absolute bottom-[-10%] left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full bg-fuchsia-500/[0.08] dark:bg-fuchsia-500/[0.10] blur-[160px]" />
       </div>
 
       <div
@@ -56,28 +24,25 @@ export default function Hero() {
         aria-hidden="true"
       />
 
-      <div className="container mx-auto px-6 pt-20 relative z-30">
-          <div className="max-w-4xl mx-auto text-center">
-          
-          <div className="mb-4">
-            <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-4">
-              <span className="scroll-m-20 text-5xl font-heading font-semibold lg:text-7xl text-balance max-w-screen-lg text-metallic inline-block leading-tight lg:leading-[1]">
-                {t.hero.heading}
-              </span>
+      <div className="container mx-auto px-4 md:px-6 pt-20 relative z-30">
+        <div className="max-w-5xl mx-auto hero-frame relative p-10 md:p-14 lg:p-16 text-center">
+          <div className="hero-frame-corners absolute inset-2 rounded-[1.6rem] md:rounded-[2.1rem] pointer-events-none" aria-hidden="true" />
+
+          <div className="mb-1 relative">
+            <h1 className="scroll-m-20 text-5xl font-heading font-semibold lg:text-7xl text-balance max-w-screen-lg text-metallic inline-block leading-[1.05] tracking-wide">
+              {t.hero.heading}
             </h1>
           </div>
 
-          <div className="mb-6 h-12 flex items-center justify-center">
-            <div className="text-xl md:text-2xl font-mono text-muted-foreground">
-              <span className="text-primary">{">"}</span>{" "}
-              <span className="text-foreground/90">{displayText}</span>
-              <span className="animate-typing-cursor text-primary ml-0.5">|</span>
+          <div className="mb-8 relative flex items-center justify-center py-2">
+            <div className="text-lg md:text-xl font-mono leading-relaxed tracking-wide">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-600 dark:from-violet-400 dark:via-fuchsia-400 dark:to-pink-400 font-semibold">
+                {t.hero.subtitle}
+              </span>
             </div>
           </div>
 
-
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6 relative">
             <a
               href="#projects"
               className="group/btn bg-foreground text-background hover:opacity-85 font-bold px-6 py-3 rounded-2xl text-sm inline-flex items-center justify-center gap-2 transition-all duration-300 ease-out cursor-pointer"
@@ -98,7 +63,7 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none z-20" />
+      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background via-background/35 to-transparent pointer-events-none z-20" />
     </section>
   );
 }
