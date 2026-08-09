@@ -11,39 +11,13 @@ export default function Hero() {
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
         <div className="hero-aurora absolute inset-0" />
 
-        {/* GoPro-style fisheye lens overlay: curved grid + slow focus ring */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <svg
-            className="w-[min(76vmin,620px)] h-[min(76vmin,620px)] text-foreground/15 dark:text-foreground/25"
-            viewBox="0 0 600 600"
-            fill="none"
-          >
-            <circle cx="300" cy="300" r="294" stroke="currentColor" strokeOpacity="0.6" strokeWidth="1.5" />
-            <circle cx="300" cy="300" r="286" stroke="currentColor" strokeOpacity="0.25" strokeWidth="1" />
-            <path d="M300 8 V 592" stroke="currentColor" strokeOpacity="0.55" strokeWidth="1" />
-            <path d="M220 108 Q 120 300 220 492" stroke="currentColor" strokeOpacity="0.55" strokeWidth="1" />
-            <path d="M120 34 Q 30 300 120 566" stroke="currentColor" strokeOpacity="0.55" strokeWidth="1" />
-            <path d="M380 108 Q 480 300 380 492" stroke="currentColor" strokeOpacity="0.55" strokeWidth="1" />
-            <path d="M480 34 Q 570 300 480 566" stroke="currentColor" strokeOpacity="0.55" strokeWidth="1" />
-            <path d="M8 300 H 592" stroke="currentColor" strokeOpacity="0.55" strokeWidth="1" />
-            <path d="M108 220 Q 300 120 492 220" stroke="currentColor" strokeOpacity="0.55" strokeWidth="1" />
-            <path d="M34 120 Q 300 30 566 120" stroke="currentColor" strokeOpacity="0.55" strokeWidth="1" />
-            <path d="M108 380 Q 300 480 492 380" stroke="currentColor" strokeOpacity="0.55" strokeWidth="1" />
-            <path d="M34 480 Q 300 570 566 480" stroke="currentColor" strokeOpacity="0.55" strokeWidth="1" />
-            <circle cx="300" cy="300" r="2.5" fill="currentColor" fillOpacity="0.6" />
-            <circle
-              className="hero-fisheye-ring"
-              cx="300"
-              cy="300"
-              r="296"
-              stroke="currentColor"
-              strokeOpacity="0.55"
-              strokeWidth="1"
-              strokeDasharray="1 5"
-              strokeLinecap="round"
-            />
-          </svg>
-        </div>
+        {/* Genie-style flowing gradient field: organic blobs + iridescent sheen */}
+        <div className="hero-flow-sheen" />
+        <div className="hero-flow hero-flow-1" />
+        <div className="hero-flow hero-flow-2" />
+        <div className="hero-flow hero-flow-3" />
+        <div className="hero-flow hero-flow-4" />
+        <div className="hero-flow hero-flow-5" />
       </div>
 
       <div
