@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Download, FileText, Moon, Sun, Menu, X, Github, Linkedin, Terminal } from "lucide-react";
 import ContactModal from "./ContactModal";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -8,7 +8,7 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
   const [hidden, setHidden] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const lastScrollYRef = useRef(0);
 
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   useEffect(() => {
@@ -110,24 +110,27 @@ export default function Navbar({ subPage = false }: { subPage?: boolean }) {
   }, [menuOpen]);
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
+      if (ticking) return;
+      ticking = true;
 
-      if (menuOpen) return;
+      requestAnimationFrame(() => {
+        ticking = false;
+        const currentScrollY = window.scrollY;
 
-      if (currentScrollY > lastScrollY && currentScrollY > 150) {
-        setHidden(true);
-      } else {
-        setHidden(false);
-      }
+        if (menuOpen) return;
 
-      setIsScrolled(currentScrollY > 50);
-      setLastScrollY(currentScrollY);
+        setHidden(currentScrollY > lastScrollYRef.current && currentScrollY > 150);
+        setIsScrolled(currentScrollY > 50);
+        lastScrollYRef.current = currentScrollY;
+      });
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY, menuOpen]);
+  }, [menuOpen]);
 
   return (
     <>
