@@ -62,13 +62,13 @@ function ImageSlider({ images, title }: { images: readonly string[]; title: stri
         if (entry.contentRect.width > 0) {
           const slideW = getSlideWidth();
           if (slideW > 0 && trackRef.current) {
+            const newX = getX(idxRef.current);
             const slideH = getSlideHeight(slideW);
             trackRef.current.querySelectorAll<HTMLElement>(".slide-item").forEach(el => {
               el.style.width = `${slideW}px`;
               el.style.height = `${slideH}px`;
             });
             
-            const newX = getX(idxRef.current);
             gsap.set(trackRef.current, { x: newX });
             
             trackRef.current.querySelectorAll<HTMLElement>(".slide-item").forEach((slide, idx) => {
@@ -87,13 +87,13 @@ function ImageSlider({ images, title }: { images: readonly string[]; title: stri
       if (containerRef.current) {
         const slideW = getSlideWidth();
         if (slideW > 0 && trackRef.current) {
+          const initialX = getX(1);
           const slideH = getSlideHeight(slideW);
           trackRef.current.querySelectorAll<HTMLElement>(".slide-item").forEach(el => {
             el.style.width = `${slideW}px`;
             el.style.height = `${slideH}px`;
           });
 
-          const initialX = getX(1);
           gsap.set(trackRef.current, { x: initialX });
 
           trackRef.current.querySelectorAll<HTMLElement>(".slide-item").forEach((slide, idx) => {
@@ -117,13 +117,13 @@ function ImageSlider({ images, title }: { images: readonly string[]; title: stri
       
       const slideW = getSlideWidth();
       if (slideW > 0) {
+        const newX = getX(idxRef.current);
         const slideH = getSlideHeight(slideW);
         trackRef.current.querySelectorAll<HTMLElement>(".slide-item").forEach(el => {
           el.style.width = `${slideW}px`;
           el.style.height = `${slideH}px`;
         });
         
-        const newX = getX(idxRef.current);
         gsap.set(trackRef.current, { x: newX });
         
         trackRef.current.querySelectorAll<HTMLElement>(".slide-item").forEach((slide, idx) => {
