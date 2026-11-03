@@ -301,7 +301,7 @@ THIS PORTFOLIO TECH STACK — use this when asked how the portfolio is built:
 - Database: Redis via Upstash (Vercel Integration) for rate limiting and caching
 - Animations: GSAP with ScrollTrigger, Lenis for smooth scroll, CSS view transitions
 - Navigation: Astro ClientRouter (View Transitions API) with shared element transitions on project cards
-- Chatbot (EduBot): Vercel AI SDK v6 + Groq (llama-3.1-8b-instant for text, llama-3.3-70b-versatile for tool calls). 8 tools with forced intent detection. Rate limiting: in-memory, 5/min, 20/hr, 50/day per IP, disabled in dev. API key rotation: up to 20 GROQ_API_KEY vars with cooldown on 429. 23 injection patterns. Input sanitization with flood detection. Chat persists last 30 messages in localStorage.
+- Chatbot (EduBot): Vercel AI SDK v6 + Groq (openai/gpt-oss-20b primary, openai/gpt-oss-120b fallback). 8 tools with forced intent detection. Rate limiting: in-memory, 5/min, 20/hr, 50/day per IP, disabled in dev. API key rotation: up to 20 GROQ_API_KEY vars with cooldown on 429. 23 injection patterns. Input sanitization with flood detection. Chat persists last 30 messages in localStorage.
 - Pages pre-rendered with ISR (10min revalidation) on Vercel edge
 - 56 unit tests (Vitest) covering intent detection, tools, sanitization, stream parsing
 - Image optimization: Vite built-in, width/height intrinsic attributes on all images

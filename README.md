@@ -286,11 +286,11 @@ Request (IP + messages[] + pageSection)
 9. intentDetection() (regex → forzar tool específica)
         │
         ▼
-10. streamText() con Groq (llama-3.1-8b-instant)
+10. streamText() con Groq (openai/gpt-oss-120b)
     + tools: showProject, showContact, showSkills,
              showExperience, showAvailability, sendContactForm
         │
-        ├─ Si 429 / fallo → fallback a llama-3.3-70b-versatile
+        ├─ Hasta 2 reintentos de generación (maxRetries: 2)
         │
         ▼
 11. streamPipeline() → emitir eventos en formato Vercel AI
@@ -343,8 +343,8 @@ Permite configurar hasta 20 API keys de Groq (`GROQ_API_KEY`, `GROQ_API_KEY_1` .
 
 | Modelo | Uso | Velocidad |
 |---|---|---|
-| `llama-3.1-8b-instant` | Primario (la mayoría de respuestas) | ~80-200ms |
-| `llama-3.3-70b-versatile` | Fallback ante fallos o 429 | Más lento, más capaz |
+| `openai/gpt-oss-20b` | Modelo primario configurado | ~1000 tokens/s |
+| `openai/gpt-oss-120b` | Modelo configurado actualmente en el stream (texto y tools) | ~500 tokens/s |
 
 ### Herramientas del chatbot (Tool Calling)
 
@@ -365,11 +365,11 @@ EduBot tiene 10 herramientas que el LLM puede invocar. Los resultados se muestra
 | `showCommentForm` | Renderiza formulario de reseña con estrellas |
 | `submitComment` | Guarda la reseña en Redis |
 
-### Modelo dual (8b + 70b)
+### Modelos configurados
 
-- **`llama-3.1-8b-instant`** — respuestas de texto (rápido, 560 t/s, $0.05/1M tokens)
-- **`llama-3.3-70b-versatile`** — tool calls forzadas (280 t/s, $0.59/1M tokens, soporta function calling nativo)
-- `prepareStep` en `streamText` cambia de modelo automáticamente por step: cuando se detecta un tool forzado (forcedTool, multiProject), usa 70b para ese step y vuelve a 8b para texto.
+- **`openai/gpt-oss-20b`** — reemplazo recomendado por Groq para el antiguo modelo de 8B; soporta function calling.
+- **`openai/gpt-oss-120b`** — reemplazo recomendado por Groq para el antiguo modelo de 70B; soporta function calling y es el modelo que usa actualmente `streamText`.
+- Aunque `PRIMARY_MODEL` y `FALLBACK_MODEL` están configurados, el flujo actual de `chat.ts` usa `FALLBACK_MODEL` para todas las solicitudes; no cambia automáticamente entre los dos modelos.
 - `sendContactForm` se ejecuta del lado del servidor (bypassea el LLM) cuando `isContactMessageStep` detecta que el usuario completó nombre + email + mensaje.
 
 ### Slash commands

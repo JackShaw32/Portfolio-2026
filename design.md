@@ -12,7 +12,7 @@
 |---|---|
 | Tailwind v4 via Vite plugin | No config file needed, CSS variables for theming |
 | Lenis + GSAP ScrollTrigger | Smooth scroll with synced scroll-driven animations |
-| Groq (llama-3.1-8b-instant) | Near-instant inference, free tier |
+| Groq (OpenAI GPT-OSS 20B / 120B) | Fast inference, free tier with rate limits |
 | Vercel AI SDK | Abstracts streaming + tool calling + fallbacks |
 | pnpm with shamefully-hoist | Flat node_modules for tooling compat |
 

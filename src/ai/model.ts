@@ -1,2 +1,2 @@
-export const PRIMARY_MODEL  = 'llama-3.1-8b-instant';
-export const FALLBACK_MODEL = 'llama-3.3-70b-versatile';
+export const PRIMARY_MODEL  = 'openai/gpt-oss-20b';
+export const FALLBACK_MODEL = 'openai/gpt-oss-120b';

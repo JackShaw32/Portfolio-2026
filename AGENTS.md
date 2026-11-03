@@ -29,7 +29,7 @@ pnpm. `.npmrc` sets `shamefully-hoist=true` and `node-linker=hoisted` so tooling
 ## Architecture
 
 - **Single page app illusion**: `src/pages/index.astro` contains all sections. Astro `ClientRouter` handles client-side navigation to `src/pages/projects/[slug].astro`.
-- **Chatbot API** (`/api/chat`): streams from Groq (primary: `llama-3.1-8b-instant`, fallback: `llama-3.3-70b-versatile`). Has in-memory rate limiting (5/min, 20/hr, 50/day per IP), input sanitization, 23 injection patterns, and a rotating key pool (up to 20 `GROQ_API_KEY` vars). `maxDuration: 30` on the endpoint Vercel function.
+- **Chatbot API** (`/api/chat`): configured with Groq models `openai/gpt-oss-20b` (primary) and `openai/gpt-oss-120b` (fallback). The current stream path uses the fallback model for requests. Has in-memory rate limiting (5/min, 20/hr, 50/day per IP), input sanitization, 23 injection patterns, and a rotating key pool (up to 20 `GROQ_API_KEY` vars). `maxDuration: 30` on the endpoint Vercel function.
 - **Language switching** uses `CustomEvent('langchange')` on DOM (not React context). All React components listen via `useEffect`.
 - **Theme**: inline script in `<head>` prevents flash. Persisted in `localStorage`.
 - **Smooth scroll**: Lenis with `data-lenis-prevent` on chat panel. GSAP ScrollTrigger synced to Lenis ticker.
